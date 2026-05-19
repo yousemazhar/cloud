@@ -1,17 +1,12 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
-import { createApp, createStore } from "../src/app.js";
-
-async function login(app: ReturnType<typeof createApp>, userId: string) {
-  const response = await request(app).post("/api/auth/demo-login").send({ userId }).expect(200);
-  return response.body.token as string;
-}
+import { type App, login, newApp } from "./helpers.js";
 
 describe("team-scoped API access", () => {
-  let app: ReturnType<typeof createApp>;
+  let app: App;
 
   beforeEach(() => {
-    app = createApp(createStore());
+    app = newApp();
   });
 
   it("rejects Sara when she guesses Omar's backend task ID", async () => {

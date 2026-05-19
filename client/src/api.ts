@@ -169,7 +169,31 @@ export class ApiClient {
     });
   }
 
-  uploadAttachment(taskId: string, file: File) {
+  async uploadAttachment(taskId: string, file: File) {
+    if (import.meta.env.VITE_BACKEND === "aws") {
+      const presigned = await this.request<{
+        presigned: { attachmentId: string; uploadUrl: string; key: string; headers?: Record<string, string> };
+      }>(`/api/tasks/${taskId}/attachments/presign`, {
+        method: "POST",
+        body: JSON.stringify({ fileName: file.name, mimeType: file.type, size: file.size })
+      });
+      const putRes = await fetch(presigned.presigned.uploadUrl, {
+        method: "PUT",
+        headers: presigned.presigned.headers ?? { "Content-Type": file.type },
+        body: file
+      });
+      if (!putRes.ok) throw new Error(`S3 upload failed (${putRes.status})`);
+      return this.request<{ attachment: AttachmentVersion; task: Task }>(`/api/tasks/${taskId}/attachments`, {
+        method: "POST",
+        body: JSON.stringify({
+          attachmentId: presigned.presigned.attachmentId,
+          key: presigned.presigned.key,
+          fileName: file.name,
+          mimeType: file.type,
+          size: file.size
+        })
+      });
+    }
     const form = new FormData();
     form.append("file", file);
     return this.request<{ attachment: AttachmentVersion; task: Task }>(`/api/tasks/${taskId}/attachments`, {

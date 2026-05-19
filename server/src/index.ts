@@ -1,7 +1,15 @@
 import { createApp } from "./app.js";
+import { buildServices } from "./buildServices.js";
+import { loadConfig } from "./config.js";
+import { createLogger } from "./logger.js";
 
-const port = Number(process.env.PORT ?? 4000);
+const config = loadConfig();
+const logger = createLogger(config);
+const services = buildServices(config, { logger });
 
-createApp().listen(port, () => {
-  console.log(`Mini-Jira API running on http://localhost:${port}`);
+createApp(services).listen(config.port, () => {
+  logger.info(
+    { port: config.port, backend: config.backend, region: config.awsRegion },
+    `Mini-Jira API listening (backend=${config.backend})`
+  );
 });

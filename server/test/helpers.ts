@@ -1,10 +1,19 @@
 import request from "supertest";
-import { createApp, createStore } from "../src/app.js";
+import { createApp } from "../src/app.js";
+import { buildLocalServices } from "../src/buildServices.js";
+import { pino } from "pino";
+import type { AppServices } from "../src/services/index.js";
 
 export type App = ReturnType<typeof createApp>;
 
-export function newApp(): App {
-  return createApp(createStore());
+const silentLogger = pino({ level: "silent" });
+
+export function buildServices(): AppServices {
+  return buildLocalServices({ logger: silentLogger });
+}
+
+export function newApp(services: AppServices = buildServices()): App {
+  return createApp(services);
 }
 
 export async function login(app: App, userId: string): Promise<string> {
