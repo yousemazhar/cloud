@@ -1,0 +1,740 @@
+{
+ "Resources": {
+  "InstanceRole3CCE2F1D": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/CloudWatchAgentServerPolicy"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/InstanceRole/Resource"
+   }
+  },
+  "InstanceRoleDefaultPolicy1531605C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttAuditLogsTable7D096F6FArnA930D5BA"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttCommentsTableBBDBF0A8ArnC37CA4A1"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttProjectsTableAA0A2089ArnA2260F04"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTeamsTableE80F987EArnFF84A080"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttProjectsTableAA0A2089ArnA2260F04"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttOriginalsBucket68DFDD5EArn17C46A81"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttOriginalsBucket68DFDD5EArn17C46A81"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttArtifactsBucket2AAC5544ArnD57FAE19"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttArtifactsBucket2AAC5544ArnD57FAE19"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+       }
+      },
+      {
+       "Action": [
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminInitiateAuth"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "MiniJira-Auth:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "InstanceRoleDefaultPolicy1531605C",
+    "Roles": [
+     {
+      "Ref": "InstanceRole3CCE2F1D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/InstanceRole/DefaultPolicy/Resource"
+   }
+  },
+  "AlbSg1155C1BE": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow HTTP from the internet",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "HTTP from internet",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/AlbSg/Resource"
+   }
+  },
+  "InstanceSg4966687D": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Allow :4000 only from ALB",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/InstanceSg/Resource"
+   }
+  },
+  "InstanceSgfromMiniJiraComputeAlbSgEDF6AE5B40004E64F80E": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "App port from ALB",
+    "FromPort": 4000,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "InstanceSg4966687D",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "AlbSg1155C1BE",
+      "GroupId"
+     ]
+    },
+    "ToPort": 4000
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/InstanceSg/from MiniJiraComputeAlbSgEDF6AE5B:4000"
+   }
+  },
+  "AppAsgInstanceProfile38EFB29C": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "InstanceRole3CCE2F1D"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/AppAsg/InstanceProfile"
+   }
+  },
+  "AppAsgLaunchTemplate63BEDC51": {
+   "Type": "AWS::EC2::LaunchTemplate",
+   "Properties": {
+    "LaunchTemplateData": {
+     "IamInstanceProfile": {
+      "Arn": {
+       "Fn::GetAtt": [
+        "AppAsgInstanceProfile38EFB29C",
+        "Arn"
+       ]
+      }
+     },
+     "ImageId": {
+      "Ref": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter"
+     },
+     "InstanceType": "t3.micro",
+     "Monitoring": {
+      "Enabled": false
+     },
+     "NetworkInterfaces": [
+      {
+       "AssociatePublicIpAddress": true,
+       "DeviceIndex": 0,
+       "Groups": [
+        {
+         "Fn::GetAtt": [
+          "InstanceSg4966687D",
+          "GroupId"
+         ]
+        }
+       ]
+      }
+     ],
+     "TagSpecifications": [
+      {
+       "ResourceType": "instance",
+       "Tags": [
+        {
+         "Key": "Course",
+         "Value": "cloud-computing-s26"
+        },
+        {
+         "Key": "Name",
+         "Value": "MiniJira-Compute/AppAsg/LaunchTemplate"
+        },
+        {
+         "Key": "Project",
+         "Value": "mini-jira"
+        }
+       ]
+      },
+      {
+       "ResourceType": "volume",
+       "Tags": [
+        {
+         "Key": "Course",
+         "Value": "cloud-computing-s26"
+        },
+        {
+         "Key": "Name",
+         "Value": "MiniJira-Compute/AppAsg/LaunchTemplate"
+        },
+        {
+         "Key": "Project",
+         "Value": "mini-jira"
+        }
+       ]
+      }
+     ],
+     "UserData": {
+      "Fn::Base64": {
+       "Fn::Join": [
+        "",
+        [
+         "#!/bin/bash\nset -euxo pipefail\ndnf install -y nodejs unzip\nmkdir -p /opt/app\naws s3 cp s3://",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefArtifactsBucket2AAC55442DB5E6C9"
+         },
+         "/server-bundle.tgz /opt/app/server-bundle.tgz\ntar -xzf /opt/app/server-bundle.tgz -C /opt/app\ncd /opt/app && npm ci --omit=dev || true\ncat > /etc/mini-jira.env <<'EOF'\nMINI_JIRA_BACKEND=aws\nAWS_REGION=us-east-1\nPORT=4000\nCOGNITO_USER_POOL_ID=",
+         {
+          "Fn::ImportValue": "MiniJira-Auth:ExportsOutputRefUserPool6BA7E5F296FD7236"
+         },
+         "\nCOGNITO_CLIENT_ID=",
+         {
+          "Fn::ImportValue": "MiniJira-Auth:ExportsOutputRefUserPoolClient2F5918F753847A55"
+         },
+         "\nDYNAMO_TASKS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefTasksTable88911DC507408875"
+         },
+         "\nDYNAMO_PROJECTS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefProjectsTableAA0A2089BD3C4802"
+         },
+         "\nDYNAMO_COMMENTS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefCommentsTableBBDBF0A89EAECA43"
+         },
+         "\nDYNAMO_AUDIT_LOGS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefAuditLogsTable7D096F6FD00CC541"
+         },
+         "\nDYNAMO_USERS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefUsersTable9725E9C857961836"
+         },
+         "\nDYNAMO_TEAMS_TABLE=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefTeamsTableE80F987EA947034E"
+         },
+         "\nS3_ORIGINALS_BUCKET=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+         },
+         "\nS3_RESIZED_BUCKET=",
+         {
+          "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefResizedBucket29EBF811328C7E12"
+         },
+         "\nSNS_TOPIC_TASKS_ASSIGNED=",
+         {
+          "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+         },
+         "\nEOF\ncat > /etc/systemd/system/mini-jira.service <<'EOF'\n[Unit]\nDescription=Mini-Jira server\nAfter=network.target\n[Service]\nType=simple\nEnvironmentFile=/etc/mini-jira.env\nWorkingDirectory=/opt/app\nExecStart=/usr/bin/node /opt/app/server/dist/src/index.js\nRestart=always\nRestartSec=5\nUser=ec2-user\n[Install]\nWantedBy=multi-user.target\nEOF\nchown -R ec2-user:ec2-user /opt/app\nsystemctl daemon-reload\nsystemctl enable mini-jira.service\nsystemctl start mini-jira.service"
+        ]
+       ]
+      }
+     }
+    },
+    "TagSpecifications": [
+     {
+      "ResourceType": "launch-template",
+      "Tags": [
+       {
+        "Key": "Course",
+        "Value": "cloud-computing-s26"
+       },
+       {
+        "Key": "Name",
+        "Value": "MiniJira-Compute/AppAsg/LaunchTemplate"
+       },
+       {
+        "Key": "Project",
+        "Value": "mini-jira"
+       }
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "InstanceRoleDefaultPolicy1531605C",
+    "InstanceRole3CCE2F1D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/AppAsg/LaunchTemplate/Resource"
+   }
+  },
+  "AppAsgASGE6306ECF": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "DesiredCapacity": "2",
+    "HealthCheckGracePeriod": 300,
+    "HealthCheckType": "ELB",
+    "LaunchTemplate": {
+     "LaunchTemplateId": {
+      "Ref": "AppAsgLaunchTemplate63BEDC51"
+     },
+     "Version": {
+      "Fn::GetAtt": [
+       "AppAsgLaunchTemplate63BEDC51",
+       "LatestVersionNumber"
+      ]
+     }
+    },
+    "MaxSize": "4",
+    "MinSize": "2",
+    "Tags": [
+     {
+      "Key": "Course",
+      "PropagateAtLaunch": true,
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "MiniJira-Compute/AppAsg"
+     },
+     {
+      "Key": "Project",
+      "PropagateAtLaunch": true,
+      "Value": "mini-jira"
+     }
+    ],
+    "TargetGroupARNs": [
+     {
+      "Ref": "AppTG218EBF05"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     {
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet1SubnetAE489B2F386690C8"
+     },
+     {
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet2Subnet2449FB56F27A422B"
+     }
+    ]
+   },
+   "UpdatePolicy": {
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/AppAsg/ASG"
+   }
+  },
+  "Alb16C2F182": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "AlbSg1155C1BE",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet1SubnetAE489B2F386690C8"
+     },
+     {
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet2Subnet2449FB56F27A422B"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Type": "application"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/Alb/Resource"
+   }
+  },
+  "AlbHttpListener00C8B33E": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "AppTG218EBF05"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "Alb16C2F182"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/Alb/HttpListener/Resource"
+   }
+  },
+  "AppTG218EBF05": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "HealthCheckIntervalSeconds": 30,
+    "HealthCheckPath": "/api/health",
+    "HealthCheckTimeoutSeconds": 5,
+    "HealthyThresholdCount": 2,
+    "Matcher": {
+     "HttpCode": "200"
+    },
+    "Port": 4000,
+    "Protocol": "HTTP",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "TargetGroupAttributes": [
+     {
+      "Key": "deregistration_delay.timeout_seconds",
+      "Value": "15"
+     },
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "instance",
+    "UnhealthyThresholdCount": 3,
+    "VpcId": {
+     "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpc8378EB38272D6E3A"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/AppTG/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/31PTW/CMAz9LdxDNir4AWyHCQmJquU+Gdd0hjSpEgeEovz3iXZj3Q472e9D79mFLlYr/TyDa5hjc54bPuhUC+BZwTW8J4ZOp8oZUq9HO8zSGcbbHf5sGxsELFLp3ZENZUVY6FQTRs9ye/Mu9nfb/8TGtp5CUFuIFj/21PUGZOj9zWQFUVxAMGxbndZRXD2CR+5fLisyEITROGgOYMAi2/ZS6LTue8MIws5uHTQvg0Z+aJ3iqY+DkP3yfO8TfQ++JXncMoE5q4qCix6Ht0rw0JGMSbsofZSsrGtIn8LTpVjqxVIvZqfAPPfRCnekq3F+AsQbgZ22AQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Compute/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Outputs": {
+  "AlbDnsName": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Alb16C2F182",
+     "DNSName"
+    ]
+   }
+  },
+  "AsgName": {
+   "Value": {
+    "Ref": "AppAsgASGE6306ECF"
+   }
+  },
+  "ExportsOutputFnGetAttAlb16C2F182DNSNameB67BDABC": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Alb16C2F182",
+     "DNSName"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Compute:ExportsOutputFnGetAttAlb16C2F182DNSNameB67BDABC"
+   }
+  },
+  "ExportsOutputRefAppAsgASGE6306ECF6A2F7834": {
+   "Value": {
+    "Ref": "AppAsgASGE6306ECF"
+   },
+   "Export": {
+    "Name": "MiniJira-Compute:ExportsOutputRefAppAsgASGE6306ECF6A2F7834"
+   }
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

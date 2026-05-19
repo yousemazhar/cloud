@@ -9,6 +9,7 @@ import type {
 import type { AuthVerifier } from "./auth.js";
 import type { AttachmentStorage } from "./storage.js";
 import type { AssignmentNotifier } from "./notifications.js";
+import type { MetricsEmitter } from "./metrics.js";
 import type { Logger } from "../logger.js";
 
 export interface AppServices {
@@ -21,5 +22,6 @@ export interface AppServices {
   teams: TeamRepo;
   storage: AttachmentStorage;
   notifier: AssignmentNotifier;
+  metrics: MetricsEmitter;
   logger: Logger;
 }

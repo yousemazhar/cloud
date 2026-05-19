@@ -1,3 +1,4 @@
+import { CloudWatchClient } from "@aws-sdk/client-cloudwatch";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { S3Client } from "@aws-sdk/client-s3";
@@ -27,6 +28,7 @@ import {
   type DynamoTableNames
 } from "./services/aws/dynamo-repos.js";
 import { NoopNotifier, SnsNotifier } from "./services/notifications.js";
+import { CloudWatchMetrics, NoopMetrics } from "./services/metrics.js";
 import type { AppServices } from "./services/index.js";
 
 /**
@@ -48,6 +50,7 @@ export function buildLocalServices(options: { logger?: Logger } = {}): AppServic
     teams: new InMemoryTeamRepo(state),
     storage: new LocalDiskStorage(),
     notifier: new NoopNotifier(logger),
+    metrics: new NoopMetrics(logger),
     logger
   };
 }
@@ -63,6 +66,7 @@ export function buildAwsServices(config: AppConfig, options: { logger?: Logger }
   const ctx = { client: docClient, tables };
   const s3 = new S3Client({ region: config.awsRegion });
   const sns = new SNSClient({ region: config.awsRegion });
+  const cw = new CloudWatchClient({ region: config.awsRegion });
 
   return {
     auth: new CognitoAuth(cognito),
@@ -74,6 +78,7 @@ export function buildAwsServices(config: AppConfig, options: { logger?: Logger }
     teams: new DynamoTeamRepo(ctx),
     storage: new S3Storage({ client: s3, originalsBucket: buckets.originalsBucket }),
     notifier: new SnsNotifier({ client: sns, topicArn: topic }, logger),
+    metrics: new CloudWatchMetrics({ client: cw }, logger),
     logger
   };
 }

@@ -1,6 +1,10 @@
 import type { Role, User } from "@mini-jira/shared";
-import type { Request } from "express";
+import type { Request, Router } from "express";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
+import {
+  AdminInitiateAuthCommand,
+  CognitoIdentityProviderClient
+} from "@aws-sdk/client-cognito-identity-provider";
 import type { AuthVerifier } from "../auth.js";
 
 function httpError(status: number, message: string) {
@@ -12,23 +16,61 @@ function httpError(status: number, message: string) {
 interface CognitoVerifierConfig {
   userPoolId: string;
   clientId: string;
+  region?: string;
 }
 
 /**
  * CognitoAuth verifies Cognito ID/Access tokens with aws-jwt-verify and maps the
- * `custom:role` and `custom:teamId` claims onto the shared User shape. There is
- * intentionally no `mountRoutes` — the CLAUDE.md rule says demo-login must 404 in
- * AWS mode, which is achieved by not registering it.
+ * `custom:role` and `custom:teamId` claims onto the shared User shape.
+ *
+ * Mounts ONLY `POST /api/auth/login` (email + password -> Cognito AdminInitiateAuth
+ * -> returns ID token). The demo-login route is NOT mounted in AWS mode per the
+ * project rule that demo-login must 404 outside local mode.
  */
 export class CognitoAuth implements AuthVerifier {
   private readonly verifier: ReturnType<typeof CognitoJwtVerifier.create>;
+  private readonly cog: CognitoIdentityProviderClient;
+  private readonly userPoolId: string;
+  private readonly clientId: string;
 
   constructor(config: CognitoVerifierConfig) {
+    this.userPoolId = config.userPoolId;
+    this.clientId = config.clientId;
     this.verifier = CognitoJwtVerifier.create({
       userPoolId: config.userPoolId,
       tokenUse: "id",
       clientId: config.clientId
     });
+    this.cog = new CognitoIdentityProviderClient({ region: config.region });
+  }
+
+  mountRoutes(router: Router): void {
+    router.post("/api/auth/login", async (req, res, next) => {
+      try {
+        const { email, password } = (req.body ?? {}) as { email?: string; password?: string };
+        if (!email || !password) throw httpError(400, "email and password are required");
+        const result = await this.cog.send(new AdminInitiateAuthCommand({
+          AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
+          UserPoolId: this.userPoolId,
+          ClientId: this.clientId,
+          AuthParameters: { USERNAME: email, PASSWORD: password }
+        }));
+        const idToken = result.AuthenticationResult?.IdToken;
+        if (!idToken) throw httpError(401, "Login failed");
+        // Echo back the user info so the client can populate its state without a second call.
+        const user = await this.authenticateToken(idToken);
+        res.json({ token: idToken, user });
+      } catch (err) {
+        const status = (err as Error & { status?: number }).status;
+        if (status) next(err);
+        else next(httpError(401, "Invalid credentials"));
+      }
+    });
+  }
+
+  private async authenticateToken(token: string): Promise<User> {
+    const payload = (await this.verifier.verify(token)) as Record<string, unknown>;
+    return claimsToUser(payload);
   }
 
   async authenticate(req: Request): Promise<User> {
@@ -41,22 +83,26 @@ export class CognitoAuth implements AuthVerifier {
     } catch {
       throw httpError(401, "Invalid token");
     }
-    const id = typeof payload.sub === "string" ? payload.sub : undefined;
-    const email = typeof payload.email === "string" ? payload.email : undefined;
-    const name =
-      typeof payload.name === "string"
-        ? payload.name
-        : typeof payload["cognito:username"] === "string"
-          ? (payload["cognito:username"] as string)
-          : email;
-    const role = parseRole(payload["custom:role"]);
-    const teamId =
-      typeof payload["custom:teamId"] === "string" && payload["custom:teamId"]
-        ? (payload["custom:teamId"] as string)
-        : undefined;
-    if (!id || !email || !name || !role) throw httpError(401, "Token is missing required claims");
-    return { id, email, name, role, teamId };
+    return claimsToUser(payload);
   }
+}
+
+function claimsToUser(payload: Record<string, unknown>): User {
+  const id = typeof payload.sub === "string" ? payload.sub : undefined;
+  const email = typeof payload.email === "string" ? payload.email : undefined;
+  const name =
+    typeof payload.name === "string"
+      ? payload.name
+      : typeof payload["cognito:username"] === "string"
+        ? (payload["cognito:username"] as string)
+        : email;
+  const role = parseRole(payload["custom:role"]);
+  const teamId =
+    typeof payload["custom:teamId"] === "string" && payload["custom:teamId"]
+      ? (payload["custom:teamId"] as string)
+      : undefined;
+  if (!id || !email || !name || !role) throw httpError(401, "Token is missing required claims");
+  return { id, email, name, role, teamId };
 }
 
 function parseRole(value: unknown): Role | undefined {

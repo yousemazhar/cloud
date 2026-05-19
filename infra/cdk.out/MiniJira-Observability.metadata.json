@@ -1,0 +1,93 @@
+{
+  "/MiniJira-Observability": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:59:1)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Observability/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Observability/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Observability/Dashboard/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Dashboard9E4231ED"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Dashboard2 in aws-cdk-lib...",
+        "new ObservabilityStack (P:\\uni_projects\\cloud\\infra\\lib\\observability-stack.ts:74:23)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:59:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Observability/OverdueTasksAlarm/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OverdueTasksAlarm7080FFA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in aws-cdk-lib...",
+        "new ObservabilityStack (P:\\uni_projects\\cloud\\infra\\lib\\observability-stack.ts:128:19)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:59:1)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Observability/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

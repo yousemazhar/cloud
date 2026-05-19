@@ -1,0 +1,36 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200": {
+      "displayName": "MiniJira-Network/Custom::VpcRestrictDefaultSGCustomResourceProvider Code",
+      "source": {
+        "path": "asset.7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "839629614250-us-east-1-6bb2d789": {
+          "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
+          "objectKey": "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
+        }
+      }
+    },
+    "7b943a40d8098f8996bd87e17157da163db7d3bc81cf6984409a8a01bd277368": {
+      "displayName": "MiniJira-Network Template",
+      "source": {
+        "path": "MiniJira-Network.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "839629614250-us-east-1-fed75a1d": {
+          "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
+          "objectKey": "7b943a40d8098f8996bd87e17157da163db7d3bc81cf6984409a8a01bd277368.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

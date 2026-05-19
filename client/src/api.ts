@@ -99,6 +99,13 @@ export class ApiClient {
     });
   }
 
+  cognitoLogin(email: string, password: string) {
+    return this.request<{ token: string; user: User }>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password })
+    });
+  }
+
   me() {
     return this.request<{ user: User }>("/api/me");
   }

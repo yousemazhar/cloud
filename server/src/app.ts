@@ -1,6 +1,14 @@
 import cors from "cors";
+import { randomUUID } from "node:crypto";
+import { existsSync } from "node:fs";
+import * as path from "node:path";
 import express, { type NextFunction, type Request, type Response, type Router } from "express";
 import { pinoHttp } from "pino-http";
+
+// Polyfill globalThis.crypto.randomUUID for Node 18 (only available as global in 19+).
+if (!(globalThis as any).crypto?.randomUUID) {
+  (globalThis as any).crypto = { ...((globalThis as any).crypto ?? {}), randomUUID };
+}
 import { STATUS_LABELS, type AttachmentVersion, type Task, type User } from "@mini-jira/shared";
 import { canSeeTask, canWriteTask, isManager } from "./auth/policy.js";
 import type { AppServices } from "./services/index.js";
@@ -46,7 +54,7 @@ function activeAttachment(task: Task): AttachmentVersion | undefined {
 
 export function createApp(services: AppServices) {
   const app = express();
-  const { auth, tasks, projects, comments, audit, users, teams, storage, notifier, logger } = services;
+  const { auth, tasks, projects, comments, audit, users, teams, storage, notifier, metrics, logger } = services;
 
   app.use(
     pinoHttp({
@@ -65,6 +73,20 @@ export function createApp(services: AppServices) {
 
   if (storage instanceof LocalDiskStorage) {
     app.use("/uploads", express.static(storage.uploadDir));
+  }
+
+  // Serve the React SPA build if bundled alongside the server (deployed mode).
+  const clientDist = path.resolve(process.cwd(), "client", "dist");
+  const indexHtmlPath = path.join(clientDist, "index.html");
+  if (existsSync(indexHtmlPath)) {
+    app.use(express.static(clientDist));
+    // SPA fallback as a use() so Express 5 doesn't try to compile a path pattern.
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.method !== "GET") return next();
+      if (req.path.startsWith("/api/") || req.path.startsWith("/uploads/")) return next();
+      return res.sendFile(indexHtmlPath);
+    });
+    logger.info({ clientDist }, "serving SPA static bundle");
   }
 
   app.get("/api/health", (_req, res) => {
@@ -241,6 +263,7 @@ export function createApp(services: AppServices) {
         updatedAt: timestamp
       });
       await notifier.publishAssignment(task, assignee);
+      metrics.taskCreated(task.teamId);
       res.status(201).json({ task });
     } catch (error) {
       next(error);
@@ -323,6 +346,10 @@ export function createApp(services: AppServices) {
           toStatus: nextStatus,
           createdAt: updatedAt
         });
+        if (nextStatus === "done") {
+          const elapsed = new Date(updatedAt).getTime() - new Date(updated.createdAt).getTime();
+          metrics.taskClosed(updated.teamId, Math.max(0, elapsed));
+        }
       }
       if (reassigns && nextAssignee && wasAssigneeId !== nextAssigneeId) {
         await notifier.publishAssignment(updated, nextAssignee);

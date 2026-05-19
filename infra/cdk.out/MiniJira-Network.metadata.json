@@ -1,0 +1,330 @@
+{
+  "/MiniJira-Network": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Network/Custom::VpcRestrictDefaultSGCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/MiniJira-Network/VpcId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:30:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Vpc8378EB38"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/IGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcIGWD7BA715C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/VPCGW": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcVPCGWBF912B6E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/Exports/Output{\"Ref\":\"Vpc8378EB38\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpc8378EB38272D6E3A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/Exports/Output{\"Ref\":\"VpcappSubnet1SubnetAE489B2F\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcappSubnet1SubnetAE489B2F386690C8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/Exports/Output{\"Ref\":\"VpcappSubnet2Subnet2449FB56\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefVpcappSubnet2Subnet2449FB56F27A422B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet1/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet1SubnetAE489B2F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet1/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet1RouteTable072E8E09"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet1/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet1RouteTableAssociation168BF781"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet1/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet1DefaultRoute64294A8F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:197 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet2/Subnet": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet2Subnet2449FB56"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet2/RouteTable": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet2RouteTableB76BFC59"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet2/RouteTableAssociation": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet2RouteTableAssociation81E96A75"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:257 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...aws-cdk-lib..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/appSubnet2/DefaultRoute": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcappSubnet2DefaultRouteEBCCC1EA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\vpc.js:1:197 in aws-cdk-lib...",
+        "Array.forEach (:)",
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Network/Vpc/RestrictDefaultSecurityGroupCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "VpcRestrictDefaultSecurityGroupCustomResourceC73DA2BE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Vpc2 in aws-cdk-lib...",
+        "new NetworkStack (P:\\uni_projects\\cloud\\infra\\lib\\network-stack.ts:16:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:21:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ]
+}

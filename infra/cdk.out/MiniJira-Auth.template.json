@@ -1,0 +1,203 @@
+{
+ "Resources": {
+  "UserPool6BA7E5F2": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true
+    },
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "EmailVerificationMessage": "The verification code to your new account is {####}",
+    "EmailVerificationSubject": "Verify your new account",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "RequireUppercase": false
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "name",
+      "Required": false
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "role",
+      "StringAttributeConstraints": {
+       "MaxLength": "32",
+       "MinLength": "1"
+      }
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "teamId",
+      "StringAttributeConstraints": {
+       "MaxLength": "64",
+       "MinLength": "0"
+      }
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolName": "mini-jira-users",
+    "UserPoolTags": {
+     "Course": "cloud-computing-s26",
+     "Project": "mini-jira"
+    },
+    "UsernameAttributes": [
+     "email"
+    ],
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "The verification code to your new account is {####}",
+     "EmailSubject": "Verify your new account",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Auth/UserPool/Resource"
+   }
+  },
+  "UserPoolClient2F5918F7": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "openid",
+     "email",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "https://example.com"
+    ],
+    "ClientName": "mini-jira-web",
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "GenerateSecret": false,
+    "PreventUserExistenceErrors": "ENABLED",
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "UserPoolId": {
+     "Ref": "UserPool6BA7E5F2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Auth/UserPoolClient/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02JQQ6CMBAA38K9XaWBF/AAjcazKaWahbpL2C0cCH83hmg8zWTGgatrOBZ+ERu6wSZsYb2qD4Pxi9wDPwmVYb1JnM7MyTQP+vlXmoSR9H/tZfukU9Yx62aIuwi9HGZXQVlBWfSCaKdMiq8Il51vUAKe6Y8AAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Auth/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "UserPoolId": {
+   "Description": "Set as COGNITO_USER_POOL_ID env var on EC2",
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "Set as COGNITO_CLIENT_ID env var on EC2 and VITE_COGNITO_CLIENT_ID on the client",
+   "Value": {
+    "Ref": "UserPoolClient2F5918F7"
+   }
+  },
+  "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UserPool6BA7E5F2",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Auth:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+   }
+  },
+  "ExportsOutputRefUserPool6BA7E5F296FD7236": {
+   "Value": {
+    "Ref": "UserPool6BA7E5F2"
+   },
+   "Export": {
+    "Name": "MiniJira-Auth:ExportsOutputRefUserPool6BA7E5F296FD7236"
+   }
+  },
+  "ExportsOutputRefUserPoolClient2F5918F753847A55": {
+   "Value": {
+    "Ref": "UserPoolClient2F5918F7"
+   },
+   "Export": {
+    "Name": "MiniJira-Auth:ExportsOutputRefUserPoolClient2F5918F753847A55"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

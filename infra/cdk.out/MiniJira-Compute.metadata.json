@@ -1,0 +1,327 @@
+{
+  "/MiniJira-Compute": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AppAsg": [
+    {
+      "type": "aws:cdk:warning",
+      "data": "desiredCapacity has been configured. Be aware this will reset the size of your AutoScalingGroup on every deployment. See https://github.com/aws/aws-cdk/issues/5215 [ack: @aws-cdk/aws-autoscaling:desiredCapacitySet]",
+      "trace": [
+        "Annotations.addMessage (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:2399)",
+        "Annotations.addWarningV2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1087)",
+        "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-autoscaling\\lib\\auto-scaling-group.js:1:26946)",
+        "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\no-box-stack-traces.js:1:345)",
+        "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:855)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "Object.<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "Module._compile (node:internal/modules/cjs/loader:1812:14)",
+        "Module.m._compile (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\index.ts:1618:23)",
+        "node:internal/modules/cjs/loader:1943:10",
+        "Object.require.extensions.<computed> [as .ts] (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\index.ts:1621:12)",
+        "Module.load (node:internal/modules/cjs/loader:1533:32)",
+        "Module._load (node:internal/modules/cjs/loader:1335:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "phase4 (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\bin.ts:649:14)",
+        "bootstrap (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\bin.ts:95:10)",
+        "main (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\bin.ts:55:10)",
+        "Object.<anonymous> (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\bin.ts:800:3)",
+        "Module._compile (node:internal/modules/cjs/loader:1812:14)",
+        "Object.<anonymous> (node:internal/modules/cjs/loader:1943:10)",
+        "Module.load (node:internal/modules/cjs/loader:1533:32)",
+        "Module._load (node:internal/modules/cjs/loader:1335:12)",
+        "wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+        "Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)",
+        "node:internal/main/run_main_module:33:47"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/SsmParameterValue:--aws--service--ami-amazon-linux-latest--al2023-ami-kernel-6.1-x86_64:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SsmParameterValueawsserviceamiamazonlinuxlatestal2023amikernel61x8664C96584B6F00A464EAD1953AFF4B05118Parameter"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AlbDnsName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbDnsName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:199:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AsgName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AsgName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:200:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/InstanceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceRole3CCE2F1D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:68:26)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AlbSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbSg1155C1BE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:92:19)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/InstanceSg/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceSg4966687D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new SecurityGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:99:24)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/InstanceSg/from MiniJiraComputeAlbSgEDF6AE5B:4000": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceSgfromMiniJiraComputeAlbSgEDF6AE5B40004E64F80E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:104:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AppAsg/InstanceProfile": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppAsgInstanceProfile38EFB29C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AppAsg/ASG": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppAsgASGE6306ECF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/Alb/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "Alb16C2F182"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:169:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AppTG/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppTG218EBF05"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ApplicationTargetGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:176:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/Exports/Output{\"Fn::GetAtt\":[\"Alb16C2F182\",\"DNSName\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttAlb16C2F182DNSNameB67BDABC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/Exports/Output{\"Ref\":\"AppAsgASGE6306ECF\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefAppAsgASGE6306ECF6A2F7834"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/InstanceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "InstanceRoleDefaultPolicy1531605C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Compute/AppAsg/LaunchTemplate/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AppAsgLaunchTemplate63BEDC51"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new AutoScalingGroup2 in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Compute/Alb/HttpListener/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlbHttpListener00C8B33E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.<anonymous> in aws-cdk-lib...",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:193:14)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
+        "...node internals..."
+      ]
+    }
+  ]
+}

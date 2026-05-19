@@ -1,0 +1,121 @@
+{
+ "Resources": {
+  "Dashboard9E4231ED": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"widgets\":[{\"type\":\"text\",\"width\":24,\"height\":2,\"x\":0,\"y\":0,\"properties\":{\"markdown\":\"# Mini-Jira on AWS\\nDashboard for the Cloud Computing S'26 project. Widgets satisfy the spec requirement of ≥4 widgets including tasks created/day, tasks closed/day per team, average time-to-close, and EC2 CPU.\"}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":2,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tasks created per day\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"MiniJira\",\"TasksCreated\",{\"period\":86400,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":2,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tasks closed per day (sum across teams)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"MiniJira\",\"TasksClosed\",{\"period\":86400,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":8,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Average time-to-close (ms)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"MiniJira\",\"TaskTimeToCloseMs\",{\"period\":86400}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":8,\"properties\":{\"view\":\"timeSeries\",\"title\":\"EC2 CPU utilization (avg across ASG)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"AWS/EC2\",\"CPUUtilization\",\"AutoScalingGroupName\",\"",
+       {
+        "Fn::ImportValue": "MiniJira-Compute:ExportsOutputRefAppAsgASGE6306ECF6A2F7834"
+       },
+       "\"]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":24,\"height\":6,\"x\":0,\"y\":14,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Overdue tasks\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"MiniJira\",\"OverdueTasks\",{\"period\":900,\"stat\":\"Maximum\"}]],\"yAxis\":{}}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "MiniJira-Main"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Observability/Dashboard/Resource"
+   }
+  },
+  "OverdueTasksAlarm7080FFA6": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+     }
+    ],
+    "AlarmDescription": "Fires when the daily-digest Lambda reports >5 overdue tasks.",
+    "AlarmName": "MiniJira-OverdueTasks-GT5",
+    "ComparisonOperator": "GreaterThanThreshold",
+    "EvaluationPeriods": 1,
+    "MetricName": "OverdueTasks",
+    "Namespace": "MiniJira",
+    "Period": 900,
+    "Statistic": "Maximum",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Observability/OverdueTasksAlarm/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/0WISw5AMBBAz2LfDhoOIJyAA8hoiVJt0ildiLsLFlbvI0CUJWQJRuJSrdzoAc4uoFwZRuqlcbuKGOQMZ4M0Dw69YvVk/6gM+u1Zr1wXs06NsFB6iALyAvJkIa25323Q2wjtxxvdcTzVeAAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Observability/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

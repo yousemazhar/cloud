@@ -1,0 +1,160 @@
+{
+  "/MiniJira-Auth": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:23:14)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Auth/UserPoolId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new AuthStack (P:\\uni_projects\\cloud\\infra\\lib\\auth-stack.ts:67:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:23:14)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Auth/UserPoolClientId": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new AuthStack (P:\\uni_projects\\cloud\\infra\\lib\\auth-stack.ts:71:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:23:14)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Auth/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Auth/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Auth/UserPool/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPool6BA7E5F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPool2 in aws-cdk-lib...",
+        "new AuthStack (P:\\uni_projects\\cloud\\infra\\lib\\auth-stack.ts:26:21)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:23:14)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Auth/UserPoolClient/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "UserPoolClient2F5918F7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPoolClient2 in aws-cdk-lib...",
+        "new AuthStack (P:\\uni_projects\\cloud\\infra\\lib\\auth-stack.ts:50:27)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:23:14)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Auth/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Auth/Exports/Output{\"Fn::GetAtt\":[\"UserPool6BA7E5F2\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Auth/Exports/Output{\"Ref\":\"UserPool6BA7E5F2\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUserPool6BA7E5F296FD7236"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Auth/Exports/Output{\"Ref\":\"UserPoolClient2F5918F7\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUserPoolClient2F5918F753847A55"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

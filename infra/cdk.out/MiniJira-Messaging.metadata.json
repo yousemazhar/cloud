@@ -1,0 +1,321 @@
+{
+  "/MiniJira-Messaging": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/TaskAssignedTopicArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TaskAssignedTopicArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:65:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AssignmentQueueUrl": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentQueueUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:69:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/DailyDigestTopicArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestTopicArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:70:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AlertsTopicArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlertsTopicArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:71:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AssignmentDLQ/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentDLQ0EEBF7EF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:28:26)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AssignmentQueue/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentQueue2C3AEE16"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:35:28)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/TaskAssignedTopic/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TaskAssignedTopicDC76001C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Topic2 in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:44:30)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/DailyDigestTopic/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestTopicF5B539A4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Topic2 in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:53:29)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AlertsTopic/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlertsTopic3414BE91"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Topic2 in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:59:24)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/Exports/Output{\"Fn::GetAtt\":[\"AssignmentQueue2C3AEE16\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttAssignmentQueue2C3AEE16Arn6568D604"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/Exports/Output{\"Ref\":\"DailyDigestTopicF5B539A4\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/Exports/Output{\"Ref\":\"AlertsTopic3414BE91\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/Exports/Output{\"Ref\":\"TaskAssignedTopicDC76001C\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AssignmentQueue/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentQueuePolicyEA6D9AA7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addSubscription in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:51:28)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AssignmentQueue/MiniJiraMessagingTaskAssignedTopicCF5E30DD/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentQueueMiniJiraMessagingTaskAssignedTopicCF5E30DDF694A81D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addSubscription in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:51:28)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/TaskAssignedTopic/yousefmazhar121@gmail.com/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "TaskAssignedTopicyousefmazhar121gmailcom304845F5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addSubscription in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:49:28)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/DailyDigestTopic/yousefmazhar121@gmail.com/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestTopicyousefmazhar121gmailcomF1A34DB7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addSubscription in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:57:27)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Messaging/AlertsTopic/yousefmazhar121@gmail.com/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AlertsTopicyousefmazhar121gmailcom40B53037"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addSubscription in aws-cdk-lib...",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:63:22)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ]
+}

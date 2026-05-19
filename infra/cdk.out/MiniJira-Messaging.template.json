@@ -1,0 +1,319 @@
+{
+ "Resources": {
+  "AssignmentDLQ0EEBF7EF": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "mini-jira-assignment-events-dlq",
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AssignmentDLQ/Resource"
+   }
+  },
+  "AssignmentQueue2C3AEE16": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 345600,
+    "QueueName": "mini-jira-assignment-events",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "AssignmentDLQ0EEBF7EF",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 5
+    },
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VisibilityTimeout": 60
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AssignmentQueue/Resource"
+   }
+  },
+  "AssignmentQueuePolicyEA6D9AA7": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:SendMessage",
+       "Condition": {
+        "ArnEquals": {
+         "aws:SourceArn": {
+          "Ref": "TaskAssignedTopicDC76001C"
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "sns.amazonaws.com"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "AssignmentQueue2C3AEE16",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "AssignmentQueue2C3AEE16"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AssignmentQueue/Policy/Resource"
+   }
+  },
+  "AssignmentQueueMiniJiraMessagingTaskAssignedTopicCF5E30DDF694A81D": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "AssignmentQueue2C3AEE16",
+      "Arn"
+     ]
+    },
+    "Protocol": "sqs",
+    "TopicArn": {
+     "Ref": "TaskAssignedTopicDC76001C"
+    }
+   },
+   "DependsOn": [
+    "AssignmentQueuePolicyEA6D9AA7"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AssignmentQueue/MiniJiraMessagingTaskAssignedTopicCF5E30DD/Resource"
+   }
+  },
+  "TaskAssignedTopicDC76001C": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Mini-Jira assignments",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "TopicName": "mini-jira-tasks-assigned"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/TaskAssignedTopic/Resource"
+   }
+  },
+  "TaskAssignedTopicyousefmazhar121gmailcom304845F5": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": "yousefmazhar121@gmail.com",
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "TaskAssignedTopicDC76001C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/TaskAssignedTopic/yousefmazhar121@gmail.com/Resource"
+   }
+  },
+  "DailyDigestTopicF5B539A4": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Mini-Jira daily digest",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "TopicName": "mini-jira-daily-digest"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/DailyDigestTopic/Resource"
+   }
+  },
+  "DailyDigestTopicyousefmazhar121gmailcomF1A34DB7": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": "yousefmazhar121@gmail.com",
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "DailyDigestTopicF5B539A4"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/DailyDigestTopic/yousefmazhar121@gmail.com/Resource"
+   }
+  },
+  "AlertsTopic3414BE91": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "DisplayName": "Mini-Jira alarms",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "TopicName": "mini-jira-alerts"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AlertsTopic/Resource"
+   }
+  },
+  "AlertsTopicyousefmazhar121gmailcom40B53037": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": "yousefmazhar121@gmail.com",
+    "Protocol": "email",
+    "TopicArn": {
+     "Ref": "AlertsTopic3414BE91"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/AlertsTopic/yousefmazhar121@gmail.com/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WKWw6DIBRE1+I/3FaiK+gC+rD/DSJNrlpAL9Q0hL03SNKkPzPnTEaAaFs4VnIjroaJz9hD7LxUE5MbPSItBPEadNDs9DQF9rzYGdXnNxZNjAxB7EJPakXn0Zr8+PO7dajyukNKGc/Bu+ATM3bQMNLhLRqoG6irkRD5GozHl4Zb6S8Fa1iyswAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Messaging/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "TaskAssignedTopicArn": {
+   "Description": "Set as SNS_TOPIC_TASKS_ASSIGNED env var on EC2",
+   "Value": {
+    "Ref": "TaskAssignedTopicDC76001C"
+   }
+  },
+  "AssignmentQueueUrl": {
+   "Value": {
+    "Ref": "AssignmentQueue2C3AEE16"
+   }
+  },
+  "DailyDigestTopicArn": {
+   "Value": {
+    "Ref": "DailyDigestTopicF5B539A4"
+   }
+  },
+  "AlertsTopicArn": {
+   "Value": {
+    "Ref": "AlertsTopic3414BE91"
+   }
+  },
+  "ExportsOutputFnGetAttAssignmentQueue2C3AEE16Arn6568D604": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AssignmentQueue2C3AEE16",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Messaging:ExportsOutputFnGetAttAssignmentQueue2C3AEE16Arn6568D604"
+   }
+  },
+  "ExportsOutputRefDailyDigestTopicF5B539A452F046E6": {
+   "Value": {
+    "Ref": "DailyDigestTopicF5B539A4"
+   },
+   "Export": {
+    "Name": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+   }
+  },
+  "ExportsOutputRefAlertsTopic3414BE910C2DFF03": {
+   "Value": {
+    "Ref": "AlertsTopic3414BE91"
+   },
+   "Export": {
+    "Name": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+   }
+  },
+  "ExportsOutputRefTaskAssignedTopicDC76001C2318C272": {
+   "Value": {
+    "Ref": "TaskAssignedTopicDC76001C"
+   },
+   "Export": {
+    "Name": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "a614dea4f55a884eb2435366cca0c5ee225e0e255cffde793342e07f004096f9": {
+      "displayName": "MiniJira-Auth Template",
+      "source": {
+        "path": "MiniJira-Auth.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "839629614250-us-east-1-3e094ad7": {
+          "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
+          "objectKey": "a614dea4f55a884eb2435366cca0c5ee225e0e255cffde793342e07f004096f9.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

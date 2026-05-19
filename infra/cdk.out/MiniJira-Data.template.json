@@ -1,0 +1,1081 @@
+{
+ "Resources": {
+  "TasksTable88911DC5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "teamId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "deadline",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "assigneeId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "teamId-deadline-index",
+      "KeySchema": [
+       {
+        "AttributeName": "teamId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "deadline",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "assigneeId-deadline-index",
+      "KeySchema": [
+       {
+        "AttributeName": "assigneeId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "deadline",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "TableName": "MiniJira_Tasks",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/TasksTable/Resource"
+   }
+  },
+  "ProjectsTableAA0A2089": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "teamId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "teamId-index",
+      "KeySchema": [
+       {
+        "AttributeName": "teamId",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "MiniJira_Projects",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ProjectsTable/Resource"
+   }
+  },
+  "CommentsTableBBDBF0A8": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "taskId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt#id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "taskId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "createdAt#id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "MiniJira_Comments",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/CommentsTable/Resource"
+   }
+  },
+  "AuditLogsTable7D096F6F": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "taskId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt#id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "taskId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "createdAt#id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "TableName": "MiniJira_AuditLogs",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/AuditLogsTable/Resource"
+   }
+  },
+  "UsersTable9725E9C8": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "email",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "email-index",
+      "KeySchema": [
+       {
+        "AttributeName": "email",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "MiniJira_Users",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/UsersTable/Resource"
+   }
+  },
+  "TeamsTableE80F987E": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "MiniJira_Teams",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/TeamsTable/Resource"
+   }
+  },
+  "OriginalsBucket68DFDD5E": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "mini-jira-originals-839629614250",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "PUT",
+        "GET",
+        "HEAD"
+       ],
+       "AllowedOrigins": [
+        "*"
+       ],
+       "ExposedHeaders": [
+        "ETag"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "OwnershipControls": {
+     "Rules": [
+      {
+       "ObjectOwnership": "BucketOwnerEnforced"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/OriginalsBucket/Resource"
+   }
+  },
+  "ResizedBucket29EBF811": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "mini-jira-resized-839629614250",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "PUT",
+        "GET",
+        "HEAD"
+       ],
+       "AllowedOrigins": [
+        "*"
+       ],
+       "ExposedHeaders": [
+        "ETag"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 30,
+       "Id": "expire-thumbnails-after-30d",
+       "Status": "Enabled"
+      }
+     ]
+    },
+    "OwnershipControls": {
+     "Rules": [
+      {
+       "ObjectOwnership": "BucketOwnerEnforced"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ResizedBucket/Resource"
+   }
+  },
+  "ResizedBucketPolicy093242EF": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "ResizedBucket29EBF811"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ResizedBucket29EBF811",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ResizedBucket29EBF811",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ResizedBucket/Policy/Resource"
+   }
+  },
+  "ResizedBucketAutoDeleteObjectsCustomResource9926BB49": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "ResizedBucket29EBF811"
+    }
+   },
+   "DependsOn": [
+    "ResizedBucketPolicy093242EF"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ResizedBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "ResizedBucket29EBF811"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "WebBucket12880F5B": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "mini-jira-web-839629614250",
+    "OwnershipControls": {
+     "Rules": [
+      {
+       "ObjectOwnership": "BucketOwnerEnforced"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/WebBucket/Resource"
+   }
+  },
+  "WebBucketPolicy95D08FAA": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "WebBucket12880F5B"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "WebBucket12880F5B",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "WebBucket12880F5B",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/WebBucket/Policy/Resource"
+   }
+  },
+  "WebBucketAutoDeleteObjectsCustomResource9C1A079F": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "WebBucket12880F5B"
+    }
+   },
+   "DependsOn": [
+    "WebBucketPolicy95D08FAA"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/WebBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "ArtifactsBucket2AAC5544": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "mini-jira-artifacts-839629614250",
+    "OwnershipControls": {
+     "Rules": [
+      {
+       "ObjectOwnership": "BucketOwnerEnforced"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VersioningConfiguration": {
+     "Status": "Enabled"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ArtifactsBucket/Resource"
+   }
+  },
+  "ArtifactsBucketPolicy852CB646": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "ArtifactsBucket2AAC5544"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ArtifactsBucket2AAC5544",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ArtifactsBucket2AAC5544",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ArtifactsBucket/Policy/Resource"
+   }
+  },
+  "ArtifactsBucketAutoDeleteObjectsCustomResource0E3B4320": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "ArtifactsBucket2AAC5544"
+    }
+   },
+   "DependsOn": [
+    "ArtifactsBucketPolicy852CB646"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/ArtifactsBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/8WNTW7CMBCFz0LWzlACbNgVDgAi7KqqcuwBDYltlBlDkeW7VyGVYNN1V+9Pn14F1XIJbxN949LYtuyogVSLNq3SN/5K9u61C7aBdNBNh2pz9A+TFc8hraNpUYby142yCx2Z+7Me80cqHH2TL1bF69tww3N4TAyvQC1a0KEXLrL6N/gzZ7VHDrE3qDaRJbhnPPo/pl0frmSxX2tG9c6MUos+kT8NzDbKJUpWPliEM0+v1QJmC5hNzkxU9tELOYT9qD8IV0Q6ogEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Data/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "OriginalsBucketName": {
+   "Value": {
+    "Ref": "OriginalsBucket68DFDD5E"
+   }
+  },
+  "ResizedBucketName": {
+   "Value": {
+    "Ref": "ResizedBucket29EBF811"
+   }
+  },
+  "WebBucketName": {
+   "Value": {
+    "Ref": "WebBucket12880F5B"
+   }
+  },
+  "ArtifactsBucketName": {
+   "Value": {
+    "Ref": "ArtifactsBucket2AAC5544"
+   }
+  },
+  "ExportsOutputRefOriginalsBucket68DFDD5E51A2831D": {
+   "Value": {
+    "Ref": "OriginalsBucket68DFDD5E"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+   }
+  },
+  "ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ResizedBucket29EBF811",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C"
+   }
+  },
+  "ExportsOutputRefResizedBucket29EBF811328C7E12": {
+   "Value": {
+    "Ref": "ResizedBucket29EBF811"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefResizedBucket29EBF811328C7E12"
+   }
+  },
+  "ExportsOutputFnGetAttAuditLogsTable7D096F6FArnA930D5BA": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AuditLogsTable7D096F6F",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttAuditLogsTable7D096F6FArnA930D5BA"
+   }
+  },
+  "ExportsOutputRefAuditLogsTable7D096F6FD00CC541": {
+   "Value": {
+    "Ref": "AuditLogsTable7D096F6F"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefAuditLogsTable7D096F6FD00CC541"
+   }
+  },
+  "ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2": {
+   "Value": {
+    "Fn::GetAtt": [
+     "TasksTable88911DC5",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+   }
+  },
+  "ExportsOutputRefTasksTable88911DC507408875": {
+   "Value": {
+    "Ref": "TasksTable88911DC5"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefTasksTable88911DC507408875"
+   }
+  },
+  "ExportsOutputFnGetAttProjectsTableAA0A2089ArnA2260F04": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ProjectsTableAA0A2089",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttProjectsTableAA0A2089ArnA2260F04"
+   }
+  },
+  "ExportsOutputFnGetAttCommentsTableBBDBF0A8ArnC37CA4A1": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CommentsTableBBDBF0A8",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttCommentsTableBBDBF0A8ArnC37CA4A1"
+   }
+  },
+  "ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UsersTable9725E9C8",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+   }
+  },
+  "ExportsOutputFnGetAttTeamsTableE80F987EArnFF84A080": {
+   "Value": {
+    "Fn::GetAtt": [
+     "TeamsTableE80F987E",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttTeamsTableE80F987EArnFF84A080"
+   }
+  },
+  "ExportsOutputFnGetAttOriginalsBucket68DFDD5EArn17C46A81": {
+   "Value": {
+    "Fn::GetAtt": [
+     "OriginalsBucket68DFDD5E",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttOriginalsBucket68DFDD5EArn17C46A81"
+   }
+  },
+  "ExportsOutputFnGetAttArtifactsBucket2AAC5544ArnD57FAE19": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ArtifactsBucket2AAC5544",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttArtifactsBucket2AAC5544ArnD57FAE19"
+   }
+  },
+  "ExportsOutputRefArtifactsBucket2AAC55442DB5E6C9": {
+   "Value": {
+    "Ref": "ArtifactsBucket2AAC5544"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefArtifactsBucket2AAC55442DB5E6C9"
+   }
+  },
+  "ExportsOutputRefProjectsTableAA0A2089BD3C4802": {
+   "Value": {
+    "Ref": "ProjectsTableAA0A2089"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefProjectsTableAA0A2089BD3C4802"
+   }
+  },
+  "ExportsOutputRefCommentsTableBBDBF0A89EAECA43": {
+   "Value": {
+    "Ref": "CommentsTableBBDBF0A8"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefCommentsTableBBDBF0A89EAECA43"
+   }
+  },
+  "ExportsOutputRefUsersTable9725E9C857961836": {
+   "Value": {
+    "Ref": "UsersTable9725E9C8"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefUsersTable9725E9C857961836"
+   }
+  },
+  "ExportsOutputRefTeamsTableE80F987EA947034E": {
+   "Value": {
+    "Ref": "TeamsTableE80F987E"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefTeamsTableE80F987EA947034E"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

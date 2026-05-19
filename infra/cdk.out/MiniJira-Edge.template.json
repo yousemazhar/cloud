@@ -1,0 +1,131 @@
+{
+ "Resources": {
+  "Distribution830FAC52": {
+   "Type": "AWS::CloudFront::Distribution",
+   "Properties": {
+    "DistributionConfig": {
+     "CacheBehaviors": [
+      {
+       "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+       "Compress": true,
+       "PathPattern": "/assets/*",
+       "TargetOriginId": "MiniJiraEdgeDistributionOrigin1A44B62BC",
+       "ViewerProtocolPolicy": "redirect-to-https"
+      }
+     ],
+     "Comment": "Mini-Jira CloudFront in front of ALB",
+     "DefaultCacheBehavior": {
+      "AllowedMethods": [
+       "GET",
+       "HEAD",
+       "OPTIONS",
+       "PUT",
+       "PATCH",
+       "POST",
+       "DELETE"
+      ],
+      "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+      "Compress": true,
+      "OriginRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3",
+      "TargetOriginId": "MiniJiraEdgeDistributionOrigin1A44B62BC",
+      "ViewerProtocolPolicy": "redirect-to-https"
+     },
+     "Enabled": true,
+     "HttpVersion": "http2",
+     "IPV6Enabled": true,
+     "Origins": [
+      {
+       "ConnectionAttempts": 3,
+       "ConnectionTimeout": 5,
+       "CustomOriginConfig": {
+        "HTTPPort": 80,
+        "OriginProtocolPolicy": "http-only",
+        "OriginReadTimeout": 30,
+        "OriginSSLProtocols": [
+         "TLSv1.2"
+        ]
+       },
+       "DomainName": {
+        "Fn::ImportValue": "MiniJira-Compute:ExportsOutputFnGetAttAlb16C2F182DNSNameB67BDABC"
+       },
+       "Id": "MiniJiraEdgeDistributionOrigin1A44B62BC"
+      }
+     ],
+     "PriceClass": "PriceClass_100"
+    },
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Edge/Distribution/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzI11TNQTCwv1k1OydbNyUzSqw4uSUzO1kksL45PzskvTUkrys8r0at2ySwuKcpMKi3JzM/TcU7LQ+bXggT8S0sKSktqdfLyU1L1sor1y4xM9AxN9AwVs4ozM3WLSvNKMnNT9YIgNAD26RxueQAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Edge/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DistributionDomainName": {
+   "Description": "PUBLIC URL FOR SUBMISSION (open in browser without changes)",
+   "Value": {
+    "Fn::GetAtt": [
+     "Distribution830FAC52",
+     "DomainName"
+    ]
+   }
+  },
+  "DistributionId": {
+   "Value": {
+    "Ref": "Distribution830FAC52"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

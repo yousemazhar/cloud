@@ -122,6 +122,22 @@ export function App() {
     }
   }
 
+  async function loginWithCognito(email: string, password: string) {
+    setLoading(true);
+    try {
+      const response = await api.cognitoLogin(email, password);
+      api.setToken(response.token);
+      setUser(response.user);
+      setFilters({});
+      await load({});
+      setToast(`Signed in as ${response.user.name}`);
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function logout() {
     api.clearToken();
     setUser(null);
@@ -148,7 +164,7 @@ export function App() {
     void load(next);
   }
 
-  if (!user) return <LoginScreen loading={loading} onLogin={login} toast={toast} />;
+  if (!user) return <LoginScreen loading={loading} onLogin={login} onCognitoLogin={loginWithCognito} toast={toast} />;
 
   return (
     <div className="app-shell">
@@ -258,21 +274,63 @@ export function App() {
   );
 }
 
-function LoginScreen({ loading, onLogin, toast }: { loading: boolean; onLogin: (userId: string) => void; toast: string }) {
+function LoginScreen({
+  loading, onLogin, onCognitoLogin, toast
+}: {
+  loading: boolean;
+  onLogin: (userId: string) => void;
+  onCognitoLogin: (email: string, password: string) => void;
+  toast: string;
+}) {
+  const isAws = import.meta.env.VITE_BACKEND === "aws";
+  const [email, setEmail] = useState("ali@minijira.test");
+  const [password, setPassword] = useState("");
   return (
     <main className="login-screen">
       <section className="login-panel">
         <p className="eyebrow">Cloud Computing 2026</p>
         <h1>Mini-Jira</h1>
-        <p className="login-copy">Choose a seeded user to run the required demo scenario without Cognito deployment.</p>
-        <div className="login-users">
-          {demoUsers.map((demoUser) => (
-            <button key={demoUser.id} disabled={loading} onClick={() => onLogin(demoUser.id)}>
-              <strong>{demoUser.label}</strong>
-              <span>{demoUser.helper}</span>
-            </button>
-          ))}
-        </div>
+        {isAws ? (
+          <>
+            <p className="login-copy">Sign in with your Cognito account.</p>
+            <form
+              className="login-users"
+              onSubmit={(e) => { e.preventDefault(); onCognitoLogin(email, password); }}
+              style={{ display: "flex", flexDirection: "column", gap: 8 }}
+            >
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit" disabled={loading || !email || !password}>
+                <strong>Sign in</strong>
+                <span>Demo: ali / sara / omar @minijira.test</span>
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <p className="login-copy">Choose a seeded user to run the required demo scenario without Cognito deployment.</p>
+            <div className="login-users">
+              {demoUsers.map((demoUser) => (
+                <button key={demoUser.id} disabled={loading} onClick={() => onLogin(demoUser.id)}>
+                  <strong>{demoUser.label}</strong>
+                  <span>{demoUser.helper}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
         {toast && <p className="inline-error">{toast}</p>}
       </section>
     </main>

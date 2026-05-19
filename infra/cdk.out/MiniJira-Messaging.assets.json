@@ -1,0 +1,21 @@
+{
+  "version": "53.0.0",
+  "files": {
+    "6344ab7ebbf46736bf303bc54d68d453498ccb99550e9b6c39c5e3f9b1cfcb5e": {
+      "displayName": "MiniJira-Messaging Template",
+      "source": {
+        "path": "MiniJira-Messaging.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "839629614250-us-east-1-431a4b77": {
+          "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
+          "objectKey": "6344ab7ebbf46736bf303bc54d68d453498ccb99550e9b6c39c5e3f9b1cfcb5e.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

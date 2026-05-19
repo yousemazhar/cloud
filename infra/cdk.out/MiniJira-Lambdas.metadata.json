@@ -1,0 +1,450 @@
+{
+  "/MiniJira-Lambdas": [
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node, ts-node..."
+      ]
+    },
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "Course",
+          "value": "cloud-computing-s26"
+        },
+        {
+          "key": "Project",
+          "value": "mini-jira"
+        }
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFnName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFnName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:152:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFnName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:153:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestFnName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestFnName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:154:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFn/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFn4F16065C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFn/AllowS3Invoke": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFnAllowS3InvokeDC56C380"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addPermission in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:81:17)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/OriginalsBucketRef/AllowBucketNotificationsToMiniJiraLambdasImageResizeFnFC63FCA6": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OriginalsBucketRefAllowBucketNotificationsToMiniJiraLambdasImageResizeFnFC63FCA6ECDD6C20"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addEventNotification in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addEventNotification in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFn/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnE6834048"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestFn/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestFn4BA2268D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestSchedule/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestSchedule5C061357"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Rule2 in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:145:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestSchedule/AllowEventRuleMiniJiraLambdasDailyDigestFn7215E41D": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestScheduleAllowEventRuleMiniJiraLambdasDailyDigestFn7215E41D8D4B4971"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Rule2 in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:145:5)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFn/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFnServiceRoleC9935594"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFn/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFnLogRetention701DEC17"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/OriginalsBucketRef/Notifications/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OriginalsBucketRefNotifications027A382E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addEventNotification in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addEventNotification in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFn/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnServiceRole200F964B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFn/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnLogRetentionAAA0CE8B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFn/SqsEventSource:MiniJiraMessagingAssignmentQueue43F0BC40/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnSqsEventSourceMiniJiraMessagingAssignmentQueue43F0BC40390E1A28"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...NodejsFunction.addEventSource in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:108:22)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestFn/ServiceRole/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestFnServiceRoleA2DF1008"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestFn/LogRetention/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestFnLogRetention54D60BF2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new NodejsFunction in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
+        "...node internals, ts-node..."
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/ImageResizeFn/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ImageResizeFnServiceRoleDefaultPolicy758650FE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/OriginalsBucketRef/Notifications/HandlerPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "OriginalsBucketRefNotificationsHandlerPolicy4ADCBCA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...WrappedClass.addEventNotification in aws-cdk-lib...",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/AssignmentWorkerFn/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "AssignmentWorkerFnServiceRoleDefaultPolicy85A2FB61"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Lambdas/DailyDigestFn/ServiceRole/DefaultPolicy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "DailyDigestFnServiceRoleDefaultPolicy1E82B6F9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ]
+}

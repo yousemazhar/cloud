@@ -1,0 +1,1029 @@
+{
+ "Resources": {
+  "ImageResizeFnServiceRoleC9935594": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/ServiceRole/Resource"
+   }
+  },
+  "ImageResizeFnServiceRoleDefaultPolicy758650FE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+           },
+           "/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:aws:s3:::",
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+           }
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:Abort*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttResizedBucket29EBF811Arn9133AF2C"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ImageResizeFnServiceRoleDefaultPolicy758650FE",
+    "Roles": [
+     {
+      "Ref": "ImageResizeFnServiceRoleC9935594"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ImageResizeFn4F16065C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
+     "S3Key": "0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "RESIZED_BUCKET": {
+       "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefResizedBucket29EBF811328C7E12"
+      },
+      "THUMB_WIDTH": "400"
+     }
+    },
+    "FunctionName": "mini-jira-image-resize",
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "ImageResizeFnServiceRoleC9935594",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "ImageResizeFnServiceRoleDefaultPolicy758650FE",
+    "ImageResizeFnServiceRoleC9935594"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/Resource",
+    "aws:asset:path": "asset.0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ImageResizeFnLogRetention701DEC17": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "ImageResizeFn4F16065C"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/LogRetention/Resource"
+   }
+  },
+  "ImageResizeFnAllowS3InvokeDC56C380": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ImageResizeFn4F16065C",
+      "Arn"
+     ]
+    },
+    "Principal": "s3.amazonaws.com",
+    "SourceAccount": "839629614250",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:s3:::",
+       {
+        "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/AllowS3Invoke"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:DeleteRetentionPolicy",
+        "logs:PutRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs22.x",
+    "Timeout": 900,
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
+     "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+    "aws:asset:path": "asset.2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "OriginalsBucketRefNotificationsHandlerPolicy4ADCBCA6": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucketNotification",
+        "s3:PutBucketNotification"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:s3:::",
+          {
+           "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+          }
+         ]
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "OriginalsBucketRefNotificationsHandlerPolicy4ADCBCA6",
+    "Roles": [
+     {
+      "Ref": "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/OriginalsBucketRef/Notifications/HandlerPolicy/Resource"
+   }
+  },
+  "OriginalsBucketRefNotifications027A382E": {
+   "Type": "Custom::S3BucketNotifications",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+    },
+    "NotificationConfiguration": {
+     "LambdaFunctionConfigurations": [
+      {
+       "Events": [
+        "s3:ObjectCreated:*"
+       ],
+       "LambdaFunctionArn": {
+        "Fn::GetAtt": [
+         "ImageResizeFn4F16065C",
+         "Arn"
+        ]
+       }
+      }
+     ]
+    },
+    "Managed": false,
+    "SkipDestinationValidation": false
+   },
+   "DependsOn": [
+    "OriginalsBucketRefAllowBucketNotificationsToMiniJiraLambdasImageResizeFnFC63FCA6ECDD6C20",
+    "OriginalsBucketRefNotificationsHandlerPolicy4ADCBCA6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/OriginalsBucketRef/Notifications/Resource"
+   }
+  },
+  "OriginalsBucketRefAllowBucketNotificationsToMiniJiraLambdasImageResizeFnFC63FCA6ECDD6C20": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "ImageResizeFn4F16065C",
+      "Arn"
+     ]
+    },
+    "Principal": "s3.amazonaws.com",
+    "SourceAccount": "839629614250",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:s3:::",
+       {
+        "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefOriginalsBucket68DFDD5E51A2831D"
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/OriginalsBucketRef/AllowBucketNotificationsToMiniJiraLambdasImageResizeFnFC63FCA6"
+   }
+  },
+  "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Role/Resource"
+   }
+  },
+  "BucketNotificationsHandler050a0587b7544547bf325f094a3db8347ECC3691": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Description": "AWS CloudFormation handler for \"Custom::S3BucketNotifications\" resources (@aws-cdk/aws-s3)",
+    "Code": {
+     "ZipFile": "import boto3  # type: ignore\nimport json\nimport logging\nimport urllib.request\n\ns3 = boto3.client(\"s3\")\n\nEVENTBRIDGE_CONFIGURATION = 'EventBridgeConfiguration'\nCONFIGURATION_TYPES = [\"TopicConfigurations\", \"QueueConfigurations\", \"LambdaFunctionConfigurations\"]\n\ndef handler(event: dict, context):\n  response_status = \"SUCCESS\"\n  error_message = \"\"\n  try:\n    props = event[\"ResourceProperties\"]\n    notification_configuration = props[\"NotificationConfiguration\"]\n    managed = props.get('Managed', 'true').lower() == 'true'\n    skipDestinationValidation = props.get('SkipDestinationValidation', 'false').lower() == 'true'\n    stack_id = event['StackId']\n    old = event.get(\"OldResourceProperties\", {}).get(\"NotificationConfiguration\", {})\n    if managed:\n      config = handle_managed(event[\"RequestType\"], notification_configuration)\n    else:\n      config = handle_unmanaged(props[\"BucketName\"], stack_id, event[\"RequestType\"], notification_configuration, old)\n    s3.put_bucket_notification_configuration(Bucket=props[\"BucketName\"], NotificationConfiguration=config, SkipDestinationValidation=skipDestinationValidation)\n  except Exception as e:\n    logging.exception(\"Failed to put bucket notification configuration\")\n    response_status = \"FAILED\"\n    error_message = f\"Error: {str(e)}. \"\n  finally:\n    submit_response(event, context, response_status, error_message)\n\ndef handle_managed(request_type, notification_configuration):\n  if request_type == 'Delete':\n    return {}\n  return notification_configuration\n\ndef handle_unmanaged(bucket, stack_id, request_type, notification_configuration, old):\n  def get_id(n):\n    n['Id'] = ''\n    sorted_notifications = sort_filter_rules(n)\n    strToHash=json.dumps(sorted_notifications, sort_keys=True).replace('\"Name\": \"prefix\"', '\"Name\": \"Prefix\"').replace('\"Name\": \"suffix\"', '\"Name\": \"Suffix\"')\n    return f\"{stack_id}-{hash(strToHash)}\"\n  def with_id(n):\n    n['Id'] = get_id(n)\n    return n\n\n  external_notifications = {}\n  existing_notifications = s3.get_bucket_notification_configuration(Bucket=bucket)\n  for t in CONFIGURATION_TYPES:\n    if request_type == 'Update':\n        old_incoming_ids = [get_id(n) for n in old.get(t, [])]\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not get_id(n) in old_incoming_ids]      \n    elif request_type == 'Delete':\n        external_notifications[t] = [n for n in existing_notifications.get(t, []) if not n['Id'].startswith(f\"{stack_id}-\")]\n    elif request_type == 'Create':\n        external_notifications[t] = [n for n in existing_notifications.get(t, [])]\n  if EVENTBRIDGE_CONFIGURATION in existing_notifications:\n    external_notifications[EVENTBRIDGE_CONFIGURATION] = existing_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  if request_type == 'Delete':\n    return external_notifications\n\n  notifications = {}\n  for t in CONFIGURATION_TYPES:\n    external = external_notifications.get(t, [])\n    incoming = [with_id(n) for n in notification_configuration.get(t, [])]\n    notifications[t] = external + incoming\n\n  if EVENTBRIDGE_CONFIGURATION in notification_configuration:\n    notifications[EVENTBRIDGE_CONFIGURATION] = notification_configuration[EVENTBRIDGE_CONFIGURATION]\n  elif EVENTBRIDGE_CONFIGURATION in external_notifications:\n    notifications[EVENTBRIDGE_CONFIGURATION] = external_notifications[EVENTBRIDGE_CONFIGURATION]\n\n  return notifications\n\ndef submit_response(event: dict, context, response_status: str, error_message: str):\n  response_body = json.dumps(\n    {\n      \"Status\": response_status,\n      \"Reason\": f\"{error_message}See the details in CloudWatch Log Stream: {context.log_stream_name}\",\n      \"PhysicalResourceId\": event.get(\"PhysicalResourceId\") or event[\"LogicalResourceId\"],\n      \"StackId\": event[\"StackId\"],\n      \"RequestId\": event[\"RequestId\"],\n      \"LogicalResourceId\": event[\"LogicalResourceId\"],\n      \"NoEcho\": False,\n    }\n  ).encode(\"utf-8\")\n  headers = {\"content-type\": \"\", \"content-length\": str(len(response_body))}\n  try:\n    req = urllib.request.Request(url=event[\"ResponseURL\"], headers=headers, data=response_body, method=\"PUT\")\n    with urllib.request.urlopen(req) as response:\n      print(response.read().decode(\"utf-8\"))\n    print(\"Status code: \" + response.reason)\n  except Exception as e:\n      print(\"send(..) failed executing request.urlopen(..): \" + str(e))\n\ndef sort_filter_rules(json_obj):\n  if not isinstance(json_obj, dict):\n      return json_obj\n  for key, value in json_obj.items():\n      if isinstance(value, dict):\n          json_obj[key] = sort_filter_rules(value)\n      elif isinstance(value, list):\n          json_obj[key] = [sort_filter_rules(item) for item in value]\n  if \"Filter\" in json_obj and \"Key\" in json_obj[\"Filter\"] and \"FilterRules\" in json_obj[\"Filter\"][\"Key\"]:\n      filter_rules = json_obj[\"Filter\"][\"Key\"][\"FilterRules\"]\n      sorted_filter_rules = sorted(filter_rules, key=lambda x: x[\"Name\"])\n      json_obj[\"Filter\"][\"Key\"][\"FilterRules\"] = sorted_filter_rules\n  return json_obj"
+    },
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.13",
+    "Timeout": 300,
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "DependsOn": [
+    "BucketNotificationsHandler050a0587b7544547bf325f094a3db834RoleB6FB88EC"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/BucketNotificationsHandler050a0587b7544547bf325f094a3db834/Resource"
+   }
+  },
+  "AssignmentWorkerFnServiceRole200F964B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/AssignmentWorkerFn/ServiceRole/Resource"
+   }
+  },
+  "AssignmentWorkerFnServiceRoleDefaultPolicy85A2FB61": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttAuditLogsTable7D096F6FArnA930D5BA"
+       }
+      },
+      {
+       "Action": [
+        "sqs:ChangeMessageVisibility",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputFnGetAttAssignmentQueue2C3AEE16Arn6568D604"
+       }
+      },
+      {
+       "Action": "cloudwatch:PutMetricData",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AssignmentWorkerFnServiceRoleDefaultPolicy85A2FB61",
+    "Roles": [
+     {
+      "Ref": "AssignmentWorkerFnServiceRole200F964B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/AssignmentWorkerFn/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "AssignmentWorkerFnE6834048": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
+     "S3Key": "d9962aa00a7e53ea1255158a75ae8636106569572d43e1e124f3c2e4a8f87fb8.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMO_AUDIT_LOGS_TABLE": {
+       "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefAuditLogsTable7D096F6FD00CC541"
+      },
+      "METRIC_NAMESPACE": "MiniJira"
+     }
+    },
+    "FunctionName": "mini-jira-assignment-worker",
+    "Handler": "index.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AssignmentWorkerFnServiceRole200F964B",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "AssignmentWorkerFnServiceRoleDefaultPolicy85A2FB61",
+    "AssignmentWorkerFnServiceRole200F964B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/AssignmentWorkerFn/Resource",
+    "aws:asset:path": "asset.d9962aa00a7e53ea1255158a75ae8636106569572d43e1e124f3c2e4a8f87fb8",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AssignmentWorkerFnLogRetentionAAA0CE8B": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "AssignmentWorkerFnE6834048"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/AssignmentWorkerFn/LogRetention/Resource"
+   }
+  },
+  "AssignmentWorkerFnSqsEventSourceMiniJiraMessagingAssignmentQueue43F0BC40390E1A28": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 5,
+    "EventSourceArn": {
+     "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputFnGetAttAssignmentQueue2C3AEE16Arn6568D604"
+    },
+    "FunctionName": {
+     "Ref": "AssignmentWorkerFnE6834048"
+    },
+    "FunctionResponseTypes": [
+     "ReportBatchItemFailures"
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/AssignmentWorkerFn/SqsEventSource:MiniJiraMessagingAssignmentQueue43F0BC40/Resource"
+   }
+  },
+  "DailyDigestFnServiceRoleA2DF1008": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestFn/ServiceRole/Resource"
+   }
+  },
+  "DailyDigestFnServiceRoleDefaultPolicy1E82B6F9": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+        }
+       ]
+      },
+      {
+       "Action": "cloudwatch:PutMetricData",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DailyDigestFnServiceRoleDefaultPolicy1E82B6F9",
+    "Roles": [
+     {
+      "Ref": "DailyDigestFnServiceRoleA2DF1008"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestFn/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DailyDigestFn4BA2268D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
+     "S3Key": "3c19e00054b5bbd33ce24b5246a114c28761ce694bcd4555b1a8efca12a5fc92.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "DYNAMO_TASKS_TABLE": {
+       "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefTasksTable88911DC507408875"
+      },
+      "DAILY_DIGEST_TOPIC_ARN": {
+       "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+      },
+      "ALERTS_TOPIC_ARN": {
+       "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+      },
+      "METRIC_NAMESPACE": "MiniJira",
+      "OVERDUE_THRESHOLD": "5"
+     }
+    },
+    "FunctionName": "mini-jira-daily-digest",
+    "Handler": "index.handler",
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "DailyDigestFnServiceRoleA2DF1008",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "DailyDigestFnServiceRoleDefaultPolicy1E82B6F9",
+    "DailyDigestFnServiceRoleA2DF1008"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestFn/Resource",
+    "aws:asset:path": "asset.3c19e00054b5bbd33ce24b5246a114c28761ce694bcd4555b1a8efca12a5fc92",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DailyDigestFnLogRetention54D60BF2": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/lambda/",
+       {
+        "Ref": "DailyDigestFn4BA2268D"
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 7
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestFn/LogRetention/Resource"
+   }
+  },
+  "DailyDigestSchedule5C061357": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Name": "mini-jira-daily-9am",
+    "ScheduleExpression": "cron(0 9 * * ? *)",
+    "State": "ENABLED",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "DailyDigestFn4BA2268D",
+        "Arn"
+       ]
+      },
+      "Id": "Target0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestSchedule/Resource"
+   }
+  },
+  "DailyDigestScheduleAllowEventRuleMiniJiraLambdasDailyDigestFn7215E41D8D4B4971": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "DailyDigestFn4BA2268D",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "DailyDigestSchedule5C061357",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/DailyDigestSchedule/AllowEventRuleMiniJiraLambdasDailyDigestFn7215E41D"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WPTW6DMBCFz5K9mTYkOUCDmlX/ZA6AHDMggxkjxk5UId+9somy6eq9N3rzaaaE8nSC1526c6HbsbDmCmvtlR6FunOzWjVdW9WQa3Fg+MpyCaS9cSSMmmCVzqKoOsr646zRvyluLgo+NIoZPcNbEsEHOAc9oj8rRrHhYa06elLTMi6TYU7p/YbkaxcWjZ9qng31qfB/GoV1PcOH6yV6pEzC1GJYZXicGCzGKPIhtVf9AyaRM0k8TdXRd/Bz8FGkz2Hgl1t5hP0R9ruBjSmWQN5MCHLTP5qf0hRGAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Lambdas/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ImageResizeFnName": {
+   "Value": {
+    "Ref": "ImageResizeFn4F16065C"
+   }
+  },
+  "AssignmentWorkerFnName": {
+   "Value": {
+    "Ref": "AssignmentWorkerFnE6834048"
+   }
+  },
+  "DailyDigestFnName": {
+   "Value": {
+    "Ref": "DailyDigestFn4BA2268D"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
