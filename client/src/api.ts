@@ -176,6 +176,38 @@ export class ApiClient {
     });
   }
 
+  updateComment(commentId: string, body: string) {
+    return this.request<{ comment: Comment }>(`/api/comments/${commentId}`, {
+      method: "PUT",
+      body: JSON.stringify({ body })
+    });
+  }
+
+  deleteComment(commentId: string) {
+    return this.request<void>(`/api/comments/${commentId}`, { method: "DELETE" });
+  }
+
+  createTeam(name: string) {
+    return this.request<{ team: Team }>("/api/teams", {
+      method: "POST",
+      body: JSON.stringify({ name })
+    });
+  }
+
+  createUser(payload: { name: string; email: string; role: User["role"]; teamId?: string }) {
+    return this.request<{ user: User }>("/api/users", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  }
+
+  updateUserTeam(userId: string, teamId: string | null) {
+    return this.request<{ user: User }>(`/api/users/${userId}/team`, {
+      method: "PATCH",
+      body: JSON.stringify({ teamId })
+    });
+  }
+
   async uploadAttachment(taskId: string, file: File) {
     if (import.meta.env.VITE_BACKEND === "aws") {
       const presigned = await this.request<{

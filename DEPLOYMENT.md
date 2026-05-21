@@ -2,7 +2,6 @@
 
 Course: **Software Cloud Computing 2026 (Dr. John Zaki)**
 Spec: [`Cloud Computing Project S'26.md`](./Cloud%20Computing%20Project%20S'26.md)
-Submission deadline: **2026-05-22**
 AWS account: **839629614250** · region **us-east-1**
 
 > **Live URL: https://d2r9r2l6xg406y.cloudfront.net**

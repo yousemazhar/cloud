@@ -10,7 +10,6 @@ Donia Ali
 
 **Mini-Jira on AWS** 
 
-**Deadline: 22/5/2026 at 11:59PM** 
 
 **Description:** You will build and host a lightweight team task-management web application  ( think of it as a stripped-down Jira or Trello ) fully running on AWS. The application supports multiple teams inside a company, where a manager assigns tasks to specific employees on specific teams, and each team only sees its own work. Beyond CRUD, the system uses event-driven AWS services (SNS, SQS, EventBridge), a Lambda-based image pipeline, and CloudWatch dashboards for monitoring — so the architecture genuinely exercises the topics covered in lectures. The app must be deployed in a high-availability setup across at least two Availability Zones, fronted by an Application Load Balancer and CloudFront. All persistence is on DynamoDB; uploaded images live in S3 and are processed by Lambda. 
 
