@@ -10,6 +10,7 @@ import type {
   Team,
   User
 } from "@mini-jira/shared";
+import { ApiError } from "./errors";
 
 const API_BASE = "";
 
@@ -56,6 +57,19 @@ export interface ProjectPayload {
   teamId?: string;
 }
 
+export interface CreateUserPayload {
+  name: string;
+  email: string;
+  role: User["role"];
+  teamId?: string;
+  password?: string;
+}
+
+export interface RuntimeConfig {
+  uploadMode: "multipart" | "presigned";
+  backend: "local" | "aws";
+}
+
 export class ApiClient {
   token = localStorage.getItem("mini-jira-token") ?? "";
   private onUnauthorized: (() => void) | null = null;
@@ -82,34 +96,40 @@ export class ApiClient {
     if (response.status === 401) {
       this.clearToken();
       this.onUnauthorized?.();
-      throw new Error("Your session has expired. Please sign in again.");
+      throw new ApiError(401, "Your session has expired. Please sign in again.");
     }
     if (!response.ok) {
-      const payload = (await response.json().catch(() => ({}))) as { message?: string };
-      throw new Error(payload.message ?? `Request failed with ${response.status}`);
+      const payload = (await response.json().catch(() => ({}))) as {
+        message?: string;
+        errors?: { field: string; message: string }[];
+      };
+      const fieldErrors = new Map<string, string>();
+      for (const entry of payload.errors ?? []) fieldErrors.set(entry.field, entry.message);
+      throw new ApiError(
+        response.status,
+        payload.message ?? `Request failed with ${response.status}`,
+        fieldErrors
+      );
     }
     if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
   }
 
+  /* --- auth --- */
+  config() { return this.request<RuntimeConfig>("/api/config"); }
   demoLogin(userId: string) {
     return this.request<{ token: string; user: User }>("/api/auth/demo-login", {
-      method: "POST",
-      body: JSON.stringify({ userId })
+      method: "POST", body: JSON.stringify({ userId })
     });
   }
-
   cognitoLogin(email: string, password: string) {
     return this.request<{ token: string; user: User }>("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password })
+      method: "POST", body: JSON.stringify({ email, password })
     });
   }
+  me() { return this.request<{ user: User }>("/api/me"); }
 
-  me() {
-    return this.request<{ user: User }>("/api/me");
-  }
-
+  /* --- bundled load --- */
   async loadAppData(filters: TaskFilters = {}): Promise<AppData> {
     const entries = Object.entries(filters).filter(([, value]) => value) as [string, string][];
     const search = new URLSearchParams(entries);
@@ -129,87 +149,60 @@ export class ApiClient {
     };
   }
 
-  getTask(taskId: string) {
-    return this.request<{ task: TaskDetail }>(`/api/tasks/${taskId}`);
-  }
-
+  /* --- tasks --- */
+  getTask(taskId: string) { return this.request<{ task: TaskDetail }>(`/api/tasks/${taskId}`); }
   createTask(payload: CreateTaskPayload) {
-    return this.request<{ task: Task }>("/api/tasks", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+    return this.request<{ task: Task }>("/api/tasks", { method: "POST", body: JSON.stringify(payload) });
   }
-
   updateTask(taskId: string, payload: UpdateTaskPayload) {
-    return this.request<{ task: Task }>(`/api/tasks/${taskId}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload)
-    });
+    return this.request<{ task: Task }>(`/api/tasks/${taskId}`, { method: "PATCH", body: JSON.stringify(payload) });
   }
+  deleteTask(taskId: string) { return this.request<void>(`/api/tasks/${taskId}`, { method: "DELETE" }); }
 
-  deleteTask(taskId: string) {
-    return this.request<void>(`/api/tasks/${taskId}`, { method: "DELETE" });
-  }
-
+  /* --- projects --- */
   createProject(payload: ProjectPayload) {
-    return this.request<{ project: Project }>("/api/projects", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+    return this.request<{ project: Project }>("/api/projects", { method: "POST", body: JSON.stringify(payload) });
   }
-
   updateProject(projectId: string, payload: Partial<ProjectPayload>) {
     return this.request<{ project: Project }>(`/api/projects/${projectId}`, {
-      method: "PATCH",
-      body: JSON.stringify(payload)
+      method: "PATCH", body: JSON.stringify(payload)
     });
   }
-
   deleteProject(projectId: string) {
     return this.request<void>(`/api/projects/${projectId}`, { method: "DELETE" });
   }
 
+  /* --- comments --- */
   addComment(taskId: string, body: string) {
     return this.request<{ comment: Comment }>(`/api/tasks/${taskId}/comments`, {
-      method: "POST",
-      body: JSON.stringify({ body })
+      method: "POST", body: JSON.stringify({ body })
     });
   }
-
   updateComment(commentId: string, body: string) {
     return this.request<{ comment: Comment }>(`/api/comments/${commentId}`, {
-      method: "PUT",
-      body: JSON.stringify({ body })
+      method: "PUT", body: JSON.stringify({ body })
     });
   }
-
   deleteComment(commentId: string) {
     return this.request<void>(`/api/comments/${commentId}`, { method: "DELETE" });
   }
 
+  /* --- teams / users admin --- */
   createTeam(name: string) {
-    return this.request<{ team: Team }>("/api/teams", {
-      method: "POST",
-      body: JSON.stringify({ name })
-    });
+    return this.request<{ team: Team }>("/api/teams", { method: "POST", body: JSON.stringify({ name }) });
   }
-
-  createUser(payload: { name: string; email: string; role: User["role"]; teamId?: string }) {
-    return this.request<{ user: User }>("/api/users", {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
+  createUser(payload: CreateUserPayload) {
+    return this.request<{ user: User }>("/api/users", { method: "POST", body: JSON.stringify(payload) });
   }
-
   updateUserTeam(userId: string, teamId: string | null) {
     return this.request<{ user: User }>(`/api/users/${userId}/team`, {
-      method: "PATCH",
-      body: JSON.stringify({ teamId })
+      method: "PATCH", body: JSON.stringify({ teamId })
     });
   }
 
-  async uploadAttachment(taskId: string, file: File) {
-    if (import.meta.env.VITE_BACKEND === "aws") {
+  /* --- attachments — upload mode chosen at runtime --- */
+  async uploadAttachment(taskId: string, file: File, uploadMode: "multipart" | "presigned") {
+    if (uploadMode === "presigned") {
       const presigned = await this.request<{
         presigned: { attachmentId: string; uploadUrl: string; key: string; headers?: Record<string, string> };
       }>(`/api/tasks/${taskId}/attachments/presign`, {
@@ -221,26 +214,28 @@ export class ApiClient {
         headers: presigned.presigned.headers ?? { "Content-Type": file.type },
         body: file
       });
-      if (!putRes.ok) throw new Error(`S3 upload failed (${putRes.status})`);
-      return this.request<{ attachment: AttachmentVersion; task: Task }>(`/api/tasks/${taskId}/attachments`, {
-        method: "POST",
-        body: JSON.stringify({
-          attachmentId: presigned.presigned.attachmentId,
-          key: presigned.presigned.key,
-          fileName: file.name,
-          mimeType: file.type,
-          size: file.size
-        })
-      });
+      if (!putRes.ok) throw new ApiError(putRes.status, `S3 upload failed (${putRes.status})`);
+      return this.request<{ attachment: AttachmentVersion; task: Task }>(
+        `/api/tasks/${taskId}/attachments`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            attachmentId: presigned.presigned.attachmentId,
+            key: presigned.presigned.key,
+            fileName: file.name,
+            mimeType: file.type,
+            size: file.size
+          })
+        }
+      );
     }
     const form = new FormData();
     form.append("file", file);
-    return this.request<{ attachment: AttachmentVersion; task: Task }>(`/api/tasks/${taskId}/attachments`, {
-      method: "POST",
-      body: form
-    });
+    return this.request<{ attachment: AttachmentVersion; task: Task }>(
+      `/api/tasks/${taskId}/attachments`,
+      { method: "POST", body: form }
+    );
   }
-
   deleteAttachment(taskId: string, attachmentId: string) {
     return this.request<void>(`/api/tasks/${taskId}/attachments/${attachmentId}`, { method: "DELETE" });
   }

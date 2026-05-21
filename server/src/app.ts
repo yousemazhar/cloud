@@ -25,7 +25,8 @@ import {
   patchTaskSchema,
   presignAttachmentSchema,
   updateCommentSchema,
-  updateUserTeamSchema
+  updateUserTeamSchema,
+  ValidationError
 } from "./validation/schemas.js";
 import type { Logger } from "./logger.js";
 
@@ -58,7 +59,7 @@ function activeAttachment(task: Task): AttachmentVersion | undefined {
 
 export function createApp(services: AppServices) {
   const app = express();
-  const { auth, tasks, projects, comments, audit, users, teams, storage, notifier, metrics, logger } = services;
+  const { auth, tasks, projects, comments, audit, users, teams, storage, notifier, metrics, userAdmin, logger } = services;
 
   app.use(
     pinoHttp({
@@ -95,6 +96,11 @@ export function createApp(services: AppServices) {
 
   app.get("/api/health", (_req, res) => {
     res.json({ ok: true });
+  });
+
+  // Runtime config so the SPA doesn't need build-time env vars to choose upload mode.
+  app.get("/api/config", (_req, res) => {
+    res.json({ uploadMode: storage.uploadMode, backend: auth.constructor.name === "CognitoAuth" ? "aws" : "local" });
   });
 
   // Auth verifier may register its own routes (local mode mounts /demo-login).
@@ -168,12 +174,13 @@ export function createApp(services: AppServices) {
         const team = await teams.get(body.teamId);
         if (!team) throw httpError(400, "teamId is invalid");
       }
-      const user = await users.create({
-        id: uid("user"),
+      // userAdmin handles Cognito creation in AWS mode, in-memory write in local mode.
+      const user = await userAdmin.createUser({
         name: body.name,
         email: body.email,
         role: body.role,
-        teamId: body.teamId
+        teamId: body.teamId,
+        password: body.password
       });
       res.status(201).json({ user });
     } catch (error) {
@@ -190,7 +197,7 @@ export function createApp(services: AppServices) {
         const team = await teams.get(body.teamId);
         if (!team) throw httpError(400, "teamId is invalid");
       }
-      const user = await users.updateTeam(req.params.userId, body.teamId);
+      const user = await userAdmin.updateUserTeam(req.params.userId, body.teamId);
       if (!user) throw httpError(404, "User not found");
       res.json({ user });
     } catch (error) {
@@ -629,7 +636,11 @@ export function createApp(services: AppServices) {
     else if (status === 500 && !error.status && /file/i.test(error.message)) status = 400;
     const log = req.log ?? logger;
     log.warn({ err: error, status }, "request failed");
-    res.status(status).json({ message: error.message || "Internal server error" });
+    const body: { message: string; errors?: { field: string; message: string }[] } = {
+      message: error.message || "Internal server error"
+    };
+    if (error instanceof ValidationError) body.errors = error.errors;
+    res.status(status).json(body);
   });
 
   return app;

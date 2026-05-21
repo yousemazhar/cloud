@@ -13,6 +13,7 @@ import {
 import { S3Storage } from "../src/services/aws/s3-storage.js";
 import { CloudWatchMetrics, NoopMetrics } from "../src/services/metrics.js";
 import { SnsNotifier } from "../src/services/notifications.js";
+import { CognitoUserAdmin } from "../src/services/aws/cognito-user-admin.js";
 import type { AppConfig } from "../src/config.js";
 
 function awsConfig(): AppConfig {
@@ -48,6 +49,7 @@ describe("buildAwsServices wiring", () => {
     expect(services.notifier).toBeInstanceOf(SnsNotifier);
     expect(services.metrics).toBeInstanceOf(CloudWatchMetrics);
     expect(services.metrics).not.toBeInstanceOf(NoopMetrics);
+    expect(services.userAdmin).toBeInstanceOf(CognitoUserAdmin);
   });
 
   it("throws when a required env var is missing", () => {

@@ -73,7 +73,9 @@ export const createUserSchema = z.object({
   name: trimmedString("name"),
   email: trimmedString("email").refine((v) => /.+@.+\..+/.test(v), "email is invalid"),
   role: roleSchema,
-  teamId: z.string().trim().min(1).optional()
+  teamId: z.string().trim().min(1).optional(),
+  // Required by Cognito (AWS mode); optional in local mode.
+  password: z.string().min(8, "password must be at least 8 characters").optional()
 });
 
 export const updateUserTeamSchema = z.object({
@@ -110,14 +112,29 @@ export type UpdateUserTeamInput = z.infer<typeof updateUserTeamSchema>;
 export type PresignAttachmentInput = z.infer<typeof presignAttachmentSchema>;
 export type ConfirmAttachmentInput = z.infer<typeof confirmAttachmentSchema>;
 
+export interface FieldError {
+  field: string;
+  message: string;
+}
+
+export class ValidationError extends Error {
+  status = 400;
+  errors: FieldError[];
+  constructor(errors: FieldError[]) {
+    super(errors[0]?.message ?? "Invalid request body");
+    this.errors = errors;
+  }
+}
+
 export function parseBody<T extends z.ZodType>(schema: T, body: unknown): z.infer<T> {
   const result = schema.safeParse(body);
   if (!result.success) {
-    const first = result.error.issues[0];
-    const message = first ? first.message : "Invalid request body";
-    const error = new Error(message) as Error & { status?: number };
-    error.status = 400;
-    throw error;
+    const errors: FieldError[] = result.error.issues.map((issue) => ({
+      field: issue.path.length ? issue.path.join(".") : "_root",
+      message: issue.message
+    }));
+    if (errors.length === 0) errors.push({ field: "_root", message: "Invalid request body" });
+    throw new ValidationError(errors);
   }
   return result.data;
 }

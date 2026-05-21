@@ -29,6 +29,9 @@ import {
 } from "./services/aws/dynamo-repos.js";
 import { NoopNotifier, SnsNotifier } from "./services/notifications.js";
 import { CloudWatchMetrics, NoopMetrics } from "./services/metrics.js";
+import { LocalUserAdmin } from "./services/local/user-admin.js";
+import { CognitoUserAdmin } from "./services/aws/cognito-user-admin.js";
+import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
 import type { AppServices } from "./services/index.js";
 
 /**
@@ -51,6 +54,7 @@ export function buildLocalServices(options: { logger?: Logger } = {}): AppServic
     storage: new LocalDiskStorage(),
     notifier: new NoopNotifier(logger),
     metrics: new NoopMetrics(logger),
+    userAdmin: new LocalUserAdmin(users),
     logger
   };
 }
@@ -67,18 +71,21 @@ export function buildAwsServices(config: AppConfig, options: { logger?: Logger }
   const s3 = new S3Client({ region: config.awsRegion });
   const sns = new SNSClient({ region: config.awsRegion });
   const cw = new CloudWatchClient({ region: config.awsRegion });
+  const cognitoIdp = new CognitoIdentityProviderClient({ region: config.awsRegion });
+  const dynamoUsers = new DynamoUserRepo(ctx);
 
   return {
-    auth: new CognitoAuth(cognito),
+    auth: new CognitoAuth({ ...cognito, region: config.awsRegion }),
     tasks: new DynamoTaskRepo(ctx),
     projects: new DynamoProjectRepo(ctx),
     comments: new DynamoCommentRepo(ctx),
     audit: new DynamoAuditRepo(ctx),
-    users: new DynamoUserRepo(ctx),
+    users: dynamoUsers,
     teams: new DynamoTeamRepo(ctx),
     storage: new S3Storage({ client: s3, originalsBucket: buckets.originalsBucket }),
     notifier: new SnsNotifier({ client: sns, topicArn: topic }, logger),
     metrics: new CloudWatchMetrics({ client: cw }, logger),
+    userAdmin: new CognitoUserAdmin({ cognito: cognitoIdp, userPoolId: cognito.userPoolId, users: dynamoUsers }),
     logger
   };
 }

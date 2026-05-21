@@ -82,9 +82,18 @@ export class ComputeStack extends Stack {
     props.resizedBucket.grantRead(instanceRole);
     props.artifactsBucket.grantRead(instanceRole);
     props.taskAssignedTopic.grantPublish(instanceRole);
-    // Cognito AdminInitiateAuth for the /api/auth/login server endpoint
+    // Cognito perms:
+    //  - AdminInitiateAuth + AdminGetUser for /api/auth/login
+    //  - AdminCreateUser + AdminSetUserPassword + AdminUpdateUserAttributes for admin user management
     instanceRole.addToPrincipalPolicy(new PolicyStatement({
-      actions: ["cognito-idp:AdminInitiateAuth", "cognito-idp:AdminGetUser"],
+      actions: [
+        "cognito-idp:AdminInitiateAuth",
+        "cognito-idp:AdminGetUser",
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminSetUserPassword",
+        "cognito-idp:AdminUpdateUserAttributes",
+        "cognito-idp:AdminDeleteUser"
+      ],
       resources: [props.userPool.userPoolArn]
     }));
 
