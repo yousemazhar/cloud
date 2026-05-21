@@ -132,7 +132,7 @@
     ],
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
-     "S3Key": "0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d.zip"
+     "S3Key": "292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c.zip"
     },
     "Environment": {
      "Variables": {
@@ -170,7 +170,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/Resource",
-    "aws:asset:path": "asset.0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d",
+    "aws:asset:path": "asset.292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }

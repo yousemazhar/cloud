@@ -1,0 +1,30 @@
+- generic [ref=e4]:
+  - img [ref=e6]
+  - heading "Sign in to Mini-Jira" [level=1] [ref=e9]
+  - generic [ref=e10]: Local development mode — pick a demo persona below.
+  - generic [ref=e11]:
+    - generic [ref=e12]: Demo personas
+    - generic [ref=e13] [cursor=pointer]:
+      - generic [ref=e14]: AH
+      - generic [ref=e15]:
+        - generic [ref=e16]: Ali Hassan
+        - generic [ref=e17]: Manager · all teams
+      - img [ref=e18]
+    - generic [ref=e20] [cursor=pointer]:
+      - generic [ref=e21]: SM
+      - generic [ref=e22]:
+        - generic [ref=e23]: Sara Mostafa
+        - generic [ref=e24]: Employee · Frontend
+      - img [ref=e25]
+    - generic [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]: OK
+      - generic [ref=e29]:
+        - generic [ref=e30]: Omar Khaled
+        - generic [ref=e31]: Employee · Backend
+      - img [ref=e32]
+    - generic [ref=e34] [cursor=pointer]:
+      - generic [ref=e35]: JA
+      - generic [ref=e36]:
+        - generic [ref=e37]: Jess Admin
+        - generic [ref=e38]: Admin
+      - img [ref=e39]

@@ -82,7 +82,7 @@ A polished diagram drawn with AWS standard icons (per spec) is committed at
 | **Lambda image-resize** | S3 PUT trigger on originals → 400px JPEG to resized bucket. |
 | **Lambda assignment-worker** | SQS event source → audit-log row + `MiniJira/TasksAssignedPerTeam` metric. |
 | **Lambda daily-digest** | EventBridge cron `0 9 * * ? *` → scans Tasks, emails assignees, emits `OverdueTasks` metric. |
-| **SNS `mini-jira-tasks-assigned`** | Fan-out: email subscription + SQS subscription. |
+| **SNS `mini-jira-tasks-assigned`** | Fan-out: dynamic filtered assignee email subscriptions + SQS subscription. |
 | **SNS `mini-jira-daily-digest`** | Daily digest emails. |
 | **SNS `mini-jira-alerts`** | CloudWatch alarm target. |
 | **SQS `mini-jira-assignment-events`** | Buffers SNS messages for the worker Lambda. DLQ after 5 retries. |
@@ -270,16 +270,41 @@ if desired by editing `scripts/seed-cognito.ts` and re-running).
 
 ## 6. Confirm SNS email subscriptions
 
-CDK subscribes `yousefmazhar121@gmail.com` to three topics:
-`mini-jira-tasks-assigned`, `mini-jira-daily-digest`, `mini-jira-alerts`.
+CDK subscribes `yousefmazhar121@gmail.com` to the operations topics:
+`mini-jira-daily-digest` and `mini-jira-alerts`.
 
 AWS sends a confirmation email per topic with a "Confirm subscription" link.
-**You must click all three** before any email-based assertions in the smoke test
-will work.
+The operations inbox must confirm both static topic subscriptions before daily
+digest or alarm email assertions will work.
 
 ```powershell
 aws sns list-subscriptions --profile mini-jira --region us-east-1
 # Look for SubscriptionArn: PendingConfirmation vs. an ARN.
+```
+
+Assignment emails are dynamic. The API creates one filtered SNS email subscription
+for the actual assignee the first time that employee is assigned a task. The first
+email from AWS is the subscription confirmation; task-assignment emails are only
+guaranteed after the assignee confirms that subscription.
+
+Before a demo, pre-create/repair the current employee subscriptions so each user
+can confirm once:
+
+```powershell
+npx ts-node scripts\sync-assignee-sns-subscriptions.ts `
+  --topic-arn  arn:aws:sns:us-east-1:839629614250:mini-jira-tasks-assigned `
+  --users-table MiniJira_Users `
+  --region     us-east-1
+```
+
+Then ask each assignee, for example `kareem.elfeel@gmail.com`, to click the AWS
+confirmation link. Re-check:
+
+```powershell
+aws sns list-subscriptions-by-topic `
+  --topic-arn arn:aws:sns:us-east-1:839629614250:mini-jira-tasks-assigned `
+  --profile mini-jira `
+  --region us-east-1
 ```
 
 ---

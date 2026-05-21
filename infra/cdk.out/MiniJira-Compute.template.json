@@ -201,7 +201,12 @@
        ]
       },
       {
-       "Action": "sns:Publish",
+       "Action": [
+        "sns:ListSubscriptionsByTopic",
+        "sns:Publish",
+        "sns:SetSubscriptionAttributes",
+        "sns:Subscribe"
+       ],
        "Effect": "Allow",
        "Resource": {
         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
@@ -209,8 +214,12 @@
       },
       {
        "Action": [
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:AdminDeleteUser",
         "cognito-idp:AdminGetUser",
-        "cognito-idp:AdminInitiateAuth"
+        "cognito-idp:AdminInitiateAuth",
+        "cognito-idp:AdminSetUserPassword",
+        "cognito-idp:AdminUpdateUserAttributes"
        ],
        "Effect": "Allow",
        "Resource": {

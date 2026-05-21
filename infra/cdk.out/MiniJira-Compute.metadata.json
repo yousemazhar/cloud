@@ -31,7 +31,7 @@
         "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\aws-autoscaling\\lib\\auto-scaling-group.js:1:26946)",
         "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\no-box-stack-traces.js:1:345)",
         "new AutoScalingGroup2 (P:\\uni_projects\\cloud\\node_modules\\aws-cdk-lib\\core\\lib\\prop-injectable.js:1:855)",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:170:16)",
         "Object.<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "Module._compile (node:internal/modules/cjs/loader:1812:14)",
         "Module.m._compile (P:\\uni_projects\\cloud\\node_modules\\ts-node\\src\\index.ts:1618:23)",
@@ -64,7 +64,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AutoScalingGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)"
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:170:16)"
       ]
     }
   ],
@@ -76,7 +76,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:199:5)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:216:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -90,7 +90,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:200:5)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:217:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -146,7 +146,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:92:19)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:109:19)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -161,7 +161,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new SecurityGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:99:24)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:116:24)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -176,7 +176,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:104:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:121:16)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -191,7 +191,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AutoScalingGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:170:16)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -206,7 +206,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AutoScalingGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:170:16)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -221,7 +221,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationLoadBalancer2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:169:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:186:16)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -236,7 +236,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new ApplicationTargetGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:176:25)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:193:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -303,7 +303,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new AutoScalingGroup2 in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:153:16)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:170:16)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals, ts-node..."
       ]
@@ -318,7 +318,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.<anonymous> in aws-cdk-lib...",
-        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:193:14)",
+        "new ComputeStack (P:\\uni_projects\\cloud\\infra\\lib\\compute-stack.ts:210:14)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:37:17)",
         "...node internals..."
       ]

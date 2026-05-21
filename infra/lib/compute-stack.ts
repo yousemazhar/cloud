@@ -82,6 +82,14 @@ export class ComputeStack extends Stack {
     props.resizedBucket.grantRead(instanceRole);
     props.artifactsBucket.grantRead(instanceRole);
     props.taskAssignedTopic.grantPublish(instanceRole);
+    instanceRole.addToPrincipalPolicy(new PolicyStatement({
+      actions: [
+        "sns:Subscribe",
+        "sns:ListSubscriptionsByTopic",
+        "sns:SetSubscriptionAttributes"
+      ],
+      resources: [props.taskAssignedTopic.topicArn]
+    }));
     // Cognito perms:
     //  - AdminInitiateAuth + AdminGetUser for /api/auth/login
     //  - AdminCreateUser + AdminSetUserPassword + AdminUpdateUserAttributes for admin user management

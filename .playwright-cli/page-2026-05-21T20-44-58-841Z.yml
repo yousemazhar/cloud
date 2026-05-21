@@ -1,0 +1,176 @@
+- generic [ref=e267]:
+  - banner [ref=e268]:
+    - button "Apps" [ref=e269] [cursor=pointer]:
+      - img [ref=e270]
+    - generic [ref=e280]:
+      - img [ref=e282]
+      - text: Mini-Jira
+    - navigation [ref=e285]:
+      - button "Your work" [ref=e286] [cursor=pointer]:
+        - text: Your work
+        - img [ref=e287]
+      - button "Projects" [ref=e289] [cursor=pointer]:
+        - text: Projects
+        - img [ref=e290]
+      - button "Board" [ref=e292] [cursor=pointer]:
+        - text: Board
+        - img [ref=e293]
+      - button "Teams & users" [ref=e295] [cursor=pointer]:
+        - text: Teams & users
+        - img [ref=e296]
+      - button "Create" [ref=e298] [cursor=pointer]
+    - generic [ref=e299]:
+      - generic [ref=e300]:
+        - img [ref=e301]
+        - textbox "Search" [ref=e304]
+      - button "Help" [ref=e305] [cursor=pointer]:
+        - img [ref=e306]
+      - button "Sign out" [ref=e309] [cursor=pointer]:
+        - img [ref=e310]
+      - button "SA" [ref=e313] [cursor=pointer]
+  - generic [ref=e314]:
+    - complementary [ref=e315]:
+      - generic [ref=e316]:
+        - generic [ref=e317]: FS
+        - generic [ref=e318]:
+          - generic [ref=e319]: Frontend Sprint
+          - generic [ref=e320]: Software project
+      - generic [ref=e321]:
+        - generic [ref=e322]: Planning
+        - button "Board" [ref=e323] [cursor=pointer]:
+          - img [ref=e325]
+          - text: Board
+        - button "Dashboard" [ref=e328] [cursor=pointer]:
+          - img [ref=e330]
+          - text: Dashboard
+        - button "Projects" [ref=e332] [cursor=pointer]:
+          - img [ref=e334]
+          - text: Projects
+        - button "Teams & users" [ref=e336] [cursor=pointer]:
+          - img [ref=e338]
+          - text: Teams & users
+      - generic [ref=e344]:
+        - text: Deployed on AWS
+        - text: EC2 · DynamoDB · S3 · SNS · CloudFront
+    - main [ref=e345]:
+      - generic [ref=e346]:
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - generic [ref=e349] [cursor=pointer]: Projects
+            - generic [ref=e350]: /
+            - generic [ref=e351]: Frontend Sprint
+          - heading "Board" [level=1] [ref=e352]
+        - button "Share" [ref=e354] [cursor=pointer]:
+          - img [ref=e355]
+          - text: Share
+      - generic [ref=e358]:
+        - generic [ref=e359]:
+          - img [ref=e360]
+          - textbox "Search" [ref=e363]
+        - combobox [ref=e364] [cursor=pointer]:
+          - option "All assignees" [selected]
+          - option "ChatGPT Frontend"
+          - option "Sara"
+        - combobox [ref=e365] [cursor=pointer]:
+          - option "Any priority" [selected]
+          - option "Urgent"
+          - option "High"
+          - option "Medium"
+          - option "Low"
+      - generic [ref=e367]:
+        - generic [ref=e368]:
+          - generic [ref=e369]:
+            - generic [ref=e370]: To Do
+            - generic [ref=e371]: "0"
+          - generic [ref=e373]: Drop tasks here
+        - generic [ref=e374]:
+          - generic [ref=e375]:
+            - generic [ref=e376]: In Progress
+            - generic [ref=e377]: "0"
+          - generic [ref=e379]: Drop tasks here
+        - generic [ref=e380]:
+          - generic [ref=e381]:
+            - generic [ref=e382]: In Review
+            - generic [ref=e383]: "1"
+          - generic [ref=e385] [cursor=pointer]:
+            - generic [ref=e386]: Task A - frontend
+            - generic [ref=e387]:
+              - generic [ref=e388]:
+                - img [ref=e390]
+                - text: task-7dc
+              - generic "Medium" [ref=e392]:
+                - img [ref=e393]
+              - generic [ref=e395]: SA
+        - generic [ref=e396]:
+          - generic [ref=e397]:
+            - generic [ref=e398]: Done
+            - generic [ref=e399]: "0"
+          - generic [ref=e401]: Drop tasks here
+  - generic [ref=e403]:
+    - generic [ref=e404]:
+      - generic [ref=e405]:
+        - img [ref=e407]
+        - generic [ref=e409]: Frontend Sprint /
+        - generic [ref=e410]: task-7dc1507
+      - button "Close" [ref=e411] [cursor=pointer]:
+        - img [ref=e412]
+    - generic [ref=e414]:
+      - generic [ref=e415]:
+        - heading "Task A - frontend" [level=2] [ref=e416]
+        - generic [ref=e417]: Description
+        - generic [ref=e418]: smoke
+        - generic [ref=e419]:
+          - button "Upload image" [ref=e420] [cursor=pointer]:
+            - img [ref=e421]
+            - text: Upload image
+          - generic [ref=e424]: JPEG/PNG only, max 5 MB. Older versions are retained in S3.
+        - generic [ref=e425]:
+          - button "Comments" [ref=e426] [cursor=pointer]
+          - button "History" [ref=e427] [cursor=pointer]
+        - generic [ref=e428]:
+          - generic [ref=e429]:
+            - generic [ref=e430]: SA
+            - generic [ref=e431]:
+              - textbox "Add a comment…" [ref=e432]
+              - button "Comment" [ref=e434] [cursor=pointer]
+          - generic [ref=e435]:
+            - generic [ref=e436]: SA
+            - generic [ref=e437]:
+              - generic [ref=e438]:
+                - generic [ref=e439]: Sara
+                - generic [ref=e440]: 5/21/2026, 10:18:28 PM
+                - button "Edit" [ref=e441] [cursor=pointer]
+                - button "Delete" [ref=e442] [cursor=pointer]
+              - generic [ref=e443]: Started working on UI.
+      - generic [ref=e444]:
+        - generic [ref=e447] [cursor=pointer]:
+          - text: In Review
+          - img [ref=e448]
+        - generic [ref=e450]: Details
+        - generic [ref=e451]:
+          - generic [ref=e452]: Assignee
+          - generic [ref=e453]:
+            - generic [ref=e454]: SA
+            - generic [ref=e455]: Sara
+        - generic [ref=e456]:
+          - generic [ref=e457]: Team
+          - generic [ref=e459]: Frontend
+        - generic [ref=e460]:
+          - generic [ref=e461]: Priority
+          - generic [ref=e462]:
+            - generic "Medium" [ref=e463]:
+              - img [ref=e464]
+            - generic [ref=e466]: Medium
+        - generic [ref=e467]:
+          - generic [ref=e468]: Deadline
+          - generic [ref=e469]:
+            - img [ref=e470]
+            - generic [ref=e473]: 5/20/2026
+        - generic [ref=e474]:
+          - generic [ref=e475]: Project
+          - generic [ref=e477]: Frontend Sprint
+        - generic [ref=e478]:
+          - generic [ref=e479]: Created
+          - generic [ref=e480]:
+            - text: 5/19/2026, 8:42:02 PM
+            - text: Updated 5/21/2026, 11:00:53 PM

@@ -79,13 +79,13 @@ if (existsSync("package-lock.json")) {
   cpSync("package-lock.json", join(stage, "package-lock.json"));
 }
 
-// Create the tarball — use --force-local because tar treats "P:" as a remote host on Windows
+// Create the tarball. On Windows, create by local filename so tar does not
+// misread a drive-qualified path like "P:" as a remote host.
 const tarName = "server-bundle.tgz";
 const tarFullPath = join(repoRoot, tarName);
 if (existsSync(tarFullPath)) rmSync(tarFullPath);
 console.log("==> Creating tarball");
-// cd into the stage and produce the tarball relative path, then move it
-run("tar", ["--force-local", "-czf", tarFullPath, "-C", stage, "."]);
+run("tar", ["-czf", process.platform === "win32" ? tarName : tarFullPath, "-C", stage, "."]);
 
 const size = statSync(tarFullPath).size;
 console.log(`==> Bundle: ${tarFullPath} (${(size / 1024 / 1024).toFixed(2)} MB)`);

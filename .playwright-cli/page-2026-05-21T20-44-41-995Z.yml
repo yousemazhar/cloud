@@ -1,0 +1,108 @@
+- generic [ref=e267]:
+  - banner [ref=e268]:
+    - button "Apps" [ref=e269] [cursor=pointer]:
+      - img [ref=e270]
+    - generic [ref=e280]:
+      - img [ref=e282]
+      - text: Mini-Jira
+    - navigation [ref=e285]:
+      - button "Your work" [ref=e286] [cursor=pointer]:
+        - text: Your work
+        - img [ref=e287]
+      - button "Projects" [ref=e289] [cursor=pointer]:
+        - text: Projects
+        - img [ref=e290]
+      - button "Board" [ref=e292] [cursor=pointer]:
+        - text: Board
+        - img [ref=e293]
+      - button "Teams & users" [ref=e295] [cursor=pointer]:
+        - text: Teams & users
+        - img [ref=e296]
+      - button "Create" [ref=e298] [cursor=pointer]
+    - generic [ref=e299]:
+      - generic [ref=e300]:
+        - img [ref=e301]
+        - textbox "Search" [ref=e304]
+      - button "Help" [ref=e305] [cursor=pointer]:
+        - img [ref=e306]
+      - button "Sign out" [ref=e309] [cursor=pointer]:
+        - img [ref=e310]
+      - button "SA" [ref=e313] [cursor=pointer]
+  - generic [ref=e314]:
+    - complementary [ref=e315]:
+      - generic [ref=e316]:
+        - generic [ref=e317]: FS
+        - generic [ref=e318]:
+          - generic [ref=e319]: Frontend Sprint
+          - generic [ref=e320]: Software project
+      - generic [ref=e321]:
+        - generic [ref=e322]: Planning
+        - button "Board" [ref=e323] [cursor=pointer]:
+          - img [ref=e325]
+          - text: Board
+        - button "Dashboard" [ref=e328] [cursor=pointer]:
+          - img [ref=e330]
+          - text: Dashboard
+        - button "Projects" [ref=e332] [cursor=pointer]:
+          - img [ref=e334]
+          - text: Projects
+        - button "Teams & users" [ref=e336] [cursor=pointer]:
+          - img [ref=e338]
+          - text: Teams & users
+      - generic [ref=e344]:
+        - text: Deployed on AWS
+        - text: EC2 · DynamoDB · S3 · SNS · CloudFront
+    - main [ref=e345]:
+      - generic [ref=e346]:
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - generic [ref=e349] [cursor=pointer]: Projects
+            - generic [ref=e350]: /
+            - generic [ref=e351]: Frontend Sprint
+          - heading "Board" [level=1] [ref=e352]
+        - button "Share" [ref=e354] [cursor=pointer]:
+          - img [ref=e355]
+          - text: Share
+      - generic [ref=e358]:
+        - generic [ref=e359]:
+          - img [ref=e360]
+          - textbox "Search" [ref=e363]
+        - combobox [ref=e364] [cursor=pointer]:
+          - option "All assignees" [selected]
+          - option "ChatGPT Frontend"
+          - option "Sara"
+        - combobox [ref=e365] [cursor=pointer]:
+          - option "Any priority" [selected]
+          - option "Urgent"
+          - option "High"
+          - option "Medium"
+          - option "Low"
+      - generic [ref=e367]:
+        - generic [ref=e368]:
+          - generic [ref=e369]:
+            - generic [ref=e370]: To Do
+            - generic [ref=e371]: "0"
+          - generic [ref=e373]: Drop tasks here
+        - generic [ref=e374]:
+          - generic [ref=e375]:
+            - generic [ref=e376]: In Progress
+            - generic [ref=e377]: "0"
+          - generic [ref=e379]: Drop tasks here
+        - generic [ref=e380]:
+          - generic [ref=e381]:
+            - generic [ref=e382]: In Review
+            - generic [ref=e383]: "1"
+          - generic [ref=e385] [cursor=pointer]:
+            - generic [ref=e386]: Task A - frontend
+            - generic [ref=e387]:
+              - generic [ref=e388]:
+                - img [ref=e390]
+                - text: task-7dc
+              - generic "Medium" [ref=e392]:
+                - img [ref=e393]
+              - generic [ref=e395]: SA
+        - generic [ref=e396]:
+          - generic [ref=e397]:
+            - generic [ref=e398]: Done
+            - generic [ref=e399]: "0"
+          - generic [ref=e401]: Drop tasks here

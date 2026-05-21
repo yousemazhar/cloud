@@ -1,16 +1,16 @@
 {
   "version": "53.0.0",
   "files": {
-    "cf961a74cff93cd854193f7fa63821606ff9cb48216ac492c4276fe44bc3bb5d": {
+    "fe9d8857a314c187e8a7217fe999dd5f936e40d8cb00080ccb82e72f342c454e": {
       "displayName": "MiniJira-Compute Template",
       "source": {
         "path": "MiniJira-Compute.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "839629614250-us-east-1-c37824d6": {
+        "839629614250-us-east-1-13c24ff0": {
           "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
-          "objectKey": "cf961a74cff93cd854193f7fa63821606ff9cb48216ac492c4276fe44bc3bb5d.json",
+          "objectKey": "fe9d8857a314c187e8a7217fe999dd5f936e40d8cb00080ccb82e72f342c454e.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
         }

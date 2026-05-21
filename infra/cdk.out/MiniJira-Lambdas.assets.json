@@ -1,16 +1,16 @@
 {
   "version": "53.0.0",
   "files": {
-    "0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d": {
+    "292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c": {
       "displayName": "ImageResizeFn/Code",
       "source": {
-        "path": "asset.0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d",
+        "path": "asset.292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c",
         "packaging": "zip"
       },
       "destinations": {
-        "839629614250-us-east-1-3c380b7a": {
+        "839629614250-us-east-1-934cca46": {
           "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
-          "objectKey": "0c07996936d23321ae23e476a1ffa697dfc95e31426b99423431e84e0613522d.zip",
+          "objectKey": "292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c.zip",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
         }
@@ -61,16 +61,16 @@
         }
       }
     },
-    "ce4f0e2fd103f961487b486d46fa0f8d6161391860b9c6ee5d04c02c74d4f34f": {
+    "55f4945928f16362fa082c6167da88321441353be1b3de824c109522d542ed11": {
       "displayName": "MiniJira-Lambdas Template",
       "source": {
         "path": "MiniJira-Lambdas.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "839629614250-us-east-1-283bc048": {
+        "839629614250-us-east-1-97a52e00": {
           "bucketName": "cdk-hnb659fds-assets-839629614250-us-east-1",
-          "objectKey": "ce4f0e2fd103f961487b486d46fa0f8d6161391860b9c6ee5d04c02c74d4f34f.json",
+          "objectKey": "55f4945928f16362fa082c6167da88321441353be1b3de824c109522d542ed11.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::839629614250:role/cdk-hnb659fds-file-publishing-role-839629614250-us-east-1"
         }

@@ -135,19 +135,6 @@
     "aws:cdk:path": "MiniJira-Messaging/TaskAssignedTopic/Resource"
    }
   },
-  "TaskAssignedTopicyousefmazhar121gmailcom304845F5": {
-   "Type": "AWS::SNS::Subscription",
-   "Properties": {
-    "Endpoint": "yousefmazhar121@gmail.com",
-    "Protocol": "email",
-    "TopicArn": {
-     "Ref": "TaskAssignedTopicDC76001C"
-    }
-   },
-   "Metadata": {
-    "aws:cdk:path": "MiniJira-Messaging/TaskAssignedTopic/yousefmazhar121@gmail.com/Resource"
-   }
-  },
   "DailyDigestTopicF5B539A4": {
    "Type": "AWS::SNS::Topic",
    "Properties": {

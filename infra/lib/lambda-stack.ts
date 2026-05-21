@@ -65,7 +65,7 @@ export class LambdaStack extends Stack {
         // sharp ships native binaries — let it resolve from node_modules at runtime via a layer.
         // For free-tier course demo, we bundle sharp with platform=linux,arch=arm64.
         nodeModules: ["sharp"],
-        forceDockerBundling: false
+        forceDockerBundling: true
       }
     });
     // Re-import the originals bucket by NAME (not by construct ref) to break

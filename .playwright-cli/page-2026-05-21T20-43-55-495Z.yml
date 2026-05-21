@@ -1,0 +1,164 @@
+- generic [ref=e48]:
+  - banner [ref=e49]:
+    - button "Apps" [ref=e50] [cursor=pointer]:
+      - img [ref=e51]
+    - generic [ref=e61]:
+      - img [ref=e63]
+      - text: Mini-Jira
+    - navigation [ref=e66]:
+      - button "Your work" [ref=e67] [cursor=pointer]:
+        - text: Your work
+        - img [ref=e68]
+      - button "Projects" [ref=e70] [cursor=pointer]:
+        - text: Projects
+        - img [ref=e71]
+      - button "Board" [ref=e73] [cursor=pointer]:
+        - text: Board
+        - img [ref=e74]
+      - button "Teams & users" [ref=e76] [cursor=pointer]:
+        - text: Teams & users
+        - img [ref=e77]
+      - button "Create" [ref=e79] [cursor=pointer]
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - img [ref=e82]
+        - textbox "Search" [ref=e85]
+      - button "Help" [ref=e86] [cursor=pointer]:
+        - img [ref=e87]
+      - button "Sign out" [ref=e90] [cursor=pointer]:
+        - img [ref=e91]
+      - button "OM" [ref=e94] [cursor=pointer]
+  - generic [ref=e95]:
+    - complementary [ref=e96]:
+      - generic [ref=e97]:
+        - generic [ref=e98]: BS
+        - generic [ref=e99]:
+          - generic [ref=e100]: Backend Sprint
+          - generic [ref=e101]: Software project
+      - generic [ref=e102]:
+        - generic [ref=e103]: Planning
+        - button "Board" [ref=e104] [cursor=pointer]:
+          - img [ref=e106]
+          - text: Board
+        - button "Dashboard" [ref=e109] [cursor=pointer]:
+          - img [ref=e111]
+          - text: Dashboard
+        - button "Projects" [ref=e113] [cursor=pointer]:
+          - img [ref=e115]
+          - text: Projects
+        - button "Teams & users" [ref=e117] [cursor=pointer]:
+          - img [ref=e119]
+          - text: Teams & users
+      - generic [ref=e125]:
+        - text: Deployed on AWS
+        - text: EC2 · DynamoDB · S3 · SNS · CloudFront
+    - main [ref=e126]:
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - generic [ref=e130] [cursor=pointer]: Projects
+            - generic [ref=e131]: /
+            - generic [ref=e132]: Backend Sprint
+          - heading "Board" [level=1] [ref=e133]
+        - button "Share" [ref=e135] [cursor=pointer]:
+          - img [ref=e136]
+          - text: Share
+      - generic [ref=e139]:
+        - generic [ref=e140]:
+          - img [ref=e141]
+          - textbox "Search" [ref=e144]
+        - combobox [ref=e145] [cursor=pointer]:
+          - option "All assignees" [selected]
+          - option "Smoke Test"
+          - option "kareem"
+          - option "yousef"
+          - option "ChatGPT Backend"
+          - option "Omar"
+        - combobox [ref=e146] [cursor=pointer]:
+          - option "Any priority" [selected]
+          - option "Urgent"
+          - option "High"
+          - option "Medium"
+          - option "Low"
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - generic [ref=e150]:
+            - generic [ref=e151]: To Do
+            - generic [ref=e152]: "5"
+          - generic [ref=e153]:
+            - generic [ref=e154] [cursor=pointer]:
+              - generic [ref=e155]: new
+              - generic [ref=e156]:
+                - generic [ref=e157]:
+                  - img [ref=e159]
+                  - text: task-6a1
+                - generic "Medium" [ref=e161]:
+                  - img [ref=e162]
+                - generic [ref=e164]: OM
+            - generic [ref=e165] [cursor=pointer]:
+              - generic [ref=e167]: ChatGPT Backend Task 0521
+              - generic [ref=e168]:
+                - generic [ref=e169]:
+                  - img [ref=e171]
+                  - text: task-ccc
+                - generic "High" [ref=e173]:
+                  - img [ref=e174]
+                - generic [ref=e177]: CB
+            - generic [ref=e178] [cursor=pointer]:
+              - generic [ref=e180]: test eda
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - img [ref=e184]
+                  - text: task-642
+                - generic "Medium" [ref=e186]:
+                  - img [ref=e187]
+                - generic [ref=e189]: KA
+            - generic [ref=e190] [cursor=pointer]:
+              - generic [ref=e191]: new2
+              - generic [ref=e192]:
+                - generic [ref=e193]:
+                  - img [ref=e195]
+                  - text: task-796
+                - generic "Medium" [ref=e197]:
+                  - img [ref=e198]
+                - generic [ref=e200]: OM
+            - generic [ref=e201] [cursor=pointer]:
+              - generic [ref=e202]: SNS SQS Kareem Test 0521-2311
+              - generic [ref=e203]:
+                - generic [ref=e204]:
+                  - img [ref=e206]
+                  - text: task-0a4
+                - generic "High" [ref=e208]:
+                  - img [ref=e209]
+                - generic [ref=e212]: KA
+        - generic [ref=e213]:
+          - generic [ref=e214]:
+            - generic [ref=e215]: In Progress
+            - generic [ref=e216]: "1"
+          - generic [ref=e218] [cursor=pointer]:
+            - generic [ref=e219]: new task backend gher omar
+            - generic [ref=e220]:
+              - generic [ref=e221]:
+                - img [ref=e223]
+                - text: task-990
+              - generic "Medium" [ref=e225]:
+                - img [ref=e226]
+              - generic [ref=e228]: YO
+        - generic [ref=e229]:
+          - generic [ref=e230]:
+            - generic [ref=e231]: In Review
+            - generic [ref=e232]: "1"
+          - generic [ref=e234] [cursor=pointer]:
+            - generic [ref=e235]: Task B - backend
+            - generic [ref=e236]:
+              - generic [ref=e237]:
+                - img [ref=e239]
+                - text: task-131
+              - generic "High" [ref=e241]:
+                - img [ref=e242]
+              - generic [ref=e245]: OM
+        - generic [ref=e246]:
+          - generic [ref=e247]:
+            - generic [ref=e248]: Done
+            - generic [ref=e249]: "0"
+          - generic [ref=e251]: Drop tasks here

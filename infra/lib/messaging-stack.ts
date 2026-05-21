@@ -45,9 +45,8 @@ export class MessagingStack extends Stack {
       topicName: "mini-jira-tasks-assigned",
       displayName: "Mini-Jira assignments"
     });
-    // Fan-out (a): notify assignee by email (course demo uses a single inbox).
-    this.taskAssignedTopic.addSubscription(new EmailSubscription(props.notifyEmail));
-    // Fan-out (b): drop into SQS for the assignment-worker Lambda.
+    // Fan-out (a) is dynamic: the API creates one filtered email subscription per assignee.
+    // Fan-out (b): drop every assignment event into SQS for the assignment-worker Lambda.
     this.taskAssignedTopic.addSubscription(new SqsSubscription(this.assignmentQueue));
 
     this.dailyDigestTopic = new Topic(this, "DailyDigestTopic", {

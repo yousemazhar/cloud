@@ -29,7 +29,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:65:5)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:64:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -43,7 +43,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:69:5)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:68:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -57,7 +57,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:70:5)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:69:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -71,7 +71,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:71:5)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:70:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -157,7 +157,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Topic2 in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:53:29)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:52:29)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -172,7 +172,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Topic2 in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:59:24)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:58:24)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -252,7 +252,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addSubscription in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:51:28)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:50:28)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node..."
       ]
@@ -267,22 +267,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addSubscription in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:51:28)",
-        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
-        "...node internals, ts-node, ts-node..."
-      ]
-    }
-  ],
-  "/MiniJira-Messaging/TaskAssignedTopic/yousefmazhar121@gmail.com/Resource": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "TaskAssignedTopicyousefmazhar121gmailcom304845F5"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...WrappedClass.addSubscription in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:49:28)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:50:28)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -297,7 +282,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addSubscription in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:57:27)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:56:27)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -312,7 +297,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addSubscription in aws-cdk-lib...",
-        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:63:22)",
+        "new MessagingStack (P:\\uni_projects\\cloud\\infra\\lib\\messaging-stack.ts:62:22)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:24:19)",
         "...node internals, ts-node, ts-node..."
       ]

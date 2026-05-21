@@ -1,15 +1,75 @@
 import request from "supertest";
 import { describe, expect, it } from "vitest";
 import type { Task, User } from "@mini-jira/shared";
+import {
+  ListSubscriptionsByTopicCommand,
+  PublishCommand,
+  SetSubscriptionAttributesCommand,
+  SubscribeCommand
+} from "@aws-sdk/client-sns";
 import { createApp } from "../src/app.js";
 import { buildServices } from "./helpers.js";
-import type { AssignmentNotifier } from "../src/services/notifications.js";
+import { SnsNotifier, type AssignmentNotifier } from "../src/services/notifications.js";
 
 class CapturingNotifier implements AssignmentNotifier {
   calls: Array<{ taskId: string; assigneeId: string }> = [];
   async publishAssignment(task: Task, assignee: User): Promise<void> {
     this.calls.push({ taskId: task.id, assigneeId: assignee.id });
   }
+}
+
+class FakeSnsClient {
+  calls: unknown[] = [];
+
+  constructor(
+    private readonly subscriptions: unknown[] = [],
+    private readonly failList = false
+  ) {}
+
+  async send(command: unknown): Promise<unknown> {
+    this.calls.push(command);
+    if (command instanceof ListSubscriptionsByTopicCommand) {
+      if (this.failList) throw new Error("list failed");
+      return { Subscriptions: this.subscriptions };
+    }
+    if (command instanceof SubscribeCommand) {
+      return { SubscriptionArn: "PendingConfirmation" };
+    }
+    if (command instanceof PublishCommand) {
+      return { MessageId: "message-1" };
+    }
+    if (command instanceof SetSubscriptionAttributesCommand) {
+      return {};
+    }
+    throw new Error(`unexpected SNS command ${command?.constructor?.name}`);
+  }
+}
+
+const task: Task = {
+  id: "task-1",
+  title: "Investigate notifications",
+  description: "SNS fanout",
+  status: "todo",
+  priority: "high",
+  deadline: "2026-06-01T00:00:00.000Z",
+  assigneeId: "user-kareem",
+  teamId: "team-backend",
+  projectId: "project-backend",
+  attachments: [],
+  createdAt: "2026-05-21T00:00:00.000Z",
+  updatedAt: "2026-05-21T00:00:00.000Z"
+};
+
+const kareem: User = {
+  id: "user-kareem",
+  name: "Kareem Elfeel",
+  email: "kareem.elfeel@gmail.com",
+  role: "employee",
+  teamId: "team-backend"
+};
+
+function inputOf<T>(command: unknown): T {
+  return (command as { input: T }).input;
 }
 
 describe("AssignmentNotifier wiring", () => {
@@ -56,5 +116,108 @@ describe("AssignmentNotifier wiring", () => {
       .expect(200);
     expect(notifier.calls).toHaveLength(2);
     expect(notifier.calls[1]).toMatchObject({ taskId, assigneeId: "user-omar" });
+  });
+});
+
+describe("SnsNotifier", () => {
+  it("creates a filtered email subscription for the actual assignee before publishing", async () => {
+    const client = new FakeSnsClient();
+    const notifier = new SnsNotifier({
+      client: client as never,
+      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+    });
+
+    await notifier.publishAssignment(task, kareem);
+
+    expect(client.calls[0]).toBeInstanceOf(ListSubscriptionsByTopicCommand);
+    expect(client.calls[1]).toBeInstanceOf(SubscribeCommand);
+    expect(client.calls[2]).toBeInstanceOf(PublishCommand);
+
+    const subscribe = inputOf<{
+      Protocol: string;
+      Endpoint: string;
+      Attributes: Record<string, string>;
+    }>(client.calls[1]);
+    expect(subscribe).toMatchObject({
+      Protocol: "email",
+      Endpoint: "kareem.elfeel@gmail.com",
+      Attributes: {
+        FilterPolicy: JSON.stringify({ assigneeEmail: ["kareem.elfeel@gmail.com"] }),
+        FilterPolicyScope: "MessageAttributes"
+      }
+    });
+  });
+
+  it("publishes the same assignment event payload with assigneeEmail attributes for SNS fanout", async () => {
+    const client = new FakeSnsClient();
+    const notifier = new SnsNotifier({
+      client: client as never,
+      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+    });
+
+    await notifier.publishAssignment(task, kareem);
+
+    const publish = inputOf<{
+      TopicArn: string;
+      Message: string;
+      MessageAttributes: Record<string, { DataType: string; StringValue: string }>;
+    }>(client.calls[2]);
+    expect(JSON.parse(publish.Message)).toMatchObject({
+      taskId: "task-1",
+      teamId: "team-backend",
+      assigneeId: "user-kareem",
+      assigneeEmail: "kareem.elfeel@gmail.com"
+    });
+    expect(publish.MessageAttributes).toMatchObject({
+      teamId: { DataType: "String", StringValue: "team-backend" },
+      assigneeId: { DataType: "String", StringValue: "user-kareem" },
+      assigneeEmail: { DataType: "String", StringValue: "kareem.elfeel@gmail.com" }
+    });
+  });
+
+  it("still publishes the assignment event when email subscription setup fails", async () => {
+    const client = new FakeSnsClient([], true);
+    const notifier = new SnsNotifier({
+      client: client as never,
+      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+    });
+
+    await notifier.publishAssignment(task, kareem);
+
+    expect(client.calls[0]).toBeInstanceOf(ListSubscriptionsByTopicCommand);
+    expect(client.calls[1]).toBeInstanceOf(PublishCommand);
+  });
+
+  it("repairs a confirmed email subscription filter and then publishes", async () => {
+    const client = new FakeSnsClient([
+      {
+        SubscriptionArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned:sub-1",
+        Protocol: "email",
+        Endpoint: "kareem.elfeel@gmail.com",
+        TopicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+      }
+    ]);
+    const notifier = new SnsNotifier({
+      client: client as never,
+      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+    });
+
+    await notifier.publishAssignment(task, kareem);
+
+    expect(client.calls[0]).toBeInstanceOf(ListSubscriptionsByTopicCommand);
+    expect(client.calls[1]).toBeInstanceOf(SetSubscriptionAttributesCommand);
+    expect(client.calls[2]).toBeInstanceOf(SetSubscriptionAttributesCommand);
+    expect(client.calls[3]).toBeInstanceOf(PublishCommand);
+
+    const filterPolicy = inputOf<{ AttributeName: string; AttributeValue: string }>(client.calls[1]);
+    const filterScope = inputOf<{ AttributeName: string; AttributeValue: string }>(client.calls[2]);
+    expect(filterPolicy).toMatchObject({
+      AttributeName: "FilterPolicy",
+      AttributeValue: JSON.stringify({ assigneeEmail: ["kareem.elfeel@gmail.com"] })
+    });
+    expect(filterScope).toMatchObject({
+      AttributeName: "FilterPolicyScope",
+      AttributeValue: "MessageAttributes"
+    });
   });
 });
