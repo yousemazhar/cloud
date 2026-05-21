@@ -91,21 +91,23 @@ export function LoginPage() {
           </>
         )}
 
-        <div className="login-personas">
-          <div className="login-personas-title">
-            {isAws ? "— or use a demo persona —" : "Demo personas"}
-          </div>
-          {DEMO_PERSONAS.map((u) => (
-            <div key={u.id} className="persona-row" onClick={() => !busy && demo(u.id)}>
-              <Avatar user={u}/>
-              <div className="persona-info">
-                <div className="persona-name">{u.name}</div>
-                <div className="persona-meta">{u.role}</div>
+        {/* Demo personas hit /api/auth/demo-login, which only exists in local mode.
+            Hide them in AWS so we don't dangle dead buttons in front of real users. */}
+        {!isAws && (
+          <div className="login-personas">
+            <div className="login-personas-title">Demo personas</div>
+            {DEMO_PERSONAS.map((u) => (
+              <div key={u.id} className="persona-row" onClick={() => !busy && demo(u.id)}>
+                <Avatar user={u}/>
+                <div className="persona-info">
+                  <div className="persona-name">{u.name}</div>
+                  <div className="persona-meta">{u.role}</div>
+                </div>
+                <Icon name="chevron-right" size={14}/>
               </div>
-              <Icon name="chevron-right" size={14}/>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
       <Toast message={toast.message} variant={toast.variant}/>
     </div>
