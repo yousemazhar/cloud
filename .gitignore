@@ -6,3 +6,5 @@ server/uploads
 server/data
 *.log
 .design-fetch/
+server-bundle.tgz
+build-bundle/
