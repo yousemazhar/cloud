@@ -63,7 +63,8 @@ const TEAMS: SeedTeam[] = [
 const USERS: SeedUser[] = [
   { id: "user-ali", email: "ali@minijira.test", name: "Ali", role: "manager", teamId: "" },
   { id: "user-sara", email: "sara@minijira.test", name: "Sara", role: "employee", teamId: "team-frontend" },
-  { id: "user-omar", email: "omar@minijira.test", name: "Omar", role: "employee", teamId: "team-backend" }
+  { id: "user-omar", email: "omar@minijira.test", name: "Omar", role: "employee", teamId: "team-backend" },
+  { id: "user-jess", email: "jess@minijira.test", name: "Jess", role: "admin", teamId: "" }
 ];
 
 async function upsertCognitoUser(cog: CognitoIdentityProviderClient, args: Args, user: SeedUser): Promise<string> {

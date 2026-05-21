@@ -8,3 +8,4 @@ server/data
 .design-fetch/
 server-bundle.tgz
 build-bundle/
+.claude/scheduled_tasks.lock
