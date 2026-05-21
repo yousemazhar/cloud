@@ -25,6 +25,7 @@ export function auth(app: App, token: string) {
   return {
     get: (path: string) => request(app).get(path).set("Authorization", `Bearer ${token}`),
     post: (path: string) => request(app).post(path).set("Authorization", `Bearer ${token}`),
+    put: (path: string) => request(app).put(path).set("Authorization", `Bearer ${token}`),
     patch: (path: string) => request(app).patch(path).set("Authorization", `Bearer ${token}`),
     delete: (path: string) => request(app).delete(path).set("Authorization", `Bearer ${token}`)
   };

@@ -73,6 +73,7 @@ export interface Comment {
   authorId: string;
   body: string;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface AuditLog {

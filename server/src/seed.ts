@@ -10,7 +10,8 @@ export const users: User[] = [
   { id: "user-ali", name: "Ali", email: "ali@company.test", role: "manager" },
   { id: "user-sara", name: "Sara", email: "sara@company.test", role: "employee", teamId: "team-frontend" },
   { id: "user-omar", name: "Omar", email: "omar@company.test", role: "employee", teamId: "team-backend" },
-  { id: "user-mona", name: "Mona", email: "mona@company.test", role: "employee", teamId: "team-qa" }
+  { id: "user-mona", name: "Mona", email: "mona@company.test", role: "employee", teamId: "team-qa" },
+  { id: "user-jess", name: "Jess", email: "jess@company.test", role: "admin" }
 ];
 
 const now = new Date("2026-05-05T20:00:00.000Z").toISOString();

@@ -4,6 +4,10 @@ export function isManager(user: User): boolean {
   return user.role === "manager" || user.role === "admin";
 }
 
+export function isAdmin(user: User): boolean {
+  return user.role === "admin";
+}
+
 export function canSeeTask(user: User, task: Pick<Task, "teamId">): boolean {
   return isManager(user) || (!!user.teamId && user.teamId === task.teamId);
 }

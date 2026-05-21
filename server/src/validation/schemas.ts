@@ -59,6 +59,27 @@ export const createCommentSchema = z.object({
   body: trimmedString("body")
 });
 
+export const updateCommentSchema = z.object({
+  body: trimmedString("body")
+});
+
+export const createTeamSchema = z.object({
+  name: trimmedString("name")
+});
+
+export const roleSchema = z.enum(["manager", "employee", "admin"], { message: "role is invalid" });
+
+export const createUserSchema = z.object({
+  name: trimmedString("name"),
+  email: trimmedString("email").refine((v) => /.+@.+\..+/.test(v), "email is invalid"),
+  role: roleSchema,
+  teamId: z.string().trim().min(1).optional()
+});
+
+export const updateUserTeamSchema = z.object({
+  teamId: z.string().trim().nullable()
+});
+
 export const presignAttachmentSchema = z.object({
   fileName: trimmedString("fileName"),
   mimeType: trimmedString("mimeType").refine((value) => value.startsWith("image/"), "Only image uploads are allowed"),
@@ -82,6 +103,10 @@ export type PatchTaskInput = z.infer<typeof patchTaskSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type PatchProjectInput = z.infer<typeof patchProjectSchema>;
 export type CreateCommentInput = z.infer<typeof createCommentSchema>;
+export type UpdateCommentInput = z.infer<typeof updateCommentSchema>;
+export type CreateTeamInput = z.infer<typeof createTeamSchema>;
+export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type UpdateUserTeamInput = z.infer<typeof updateUserTeamSchema>;
 export type PresignAttachmentInput = z.infer<typeof presignAttachmentSchema>;
 export type ConfirmAttachmentInput = z.infer<typeof confirmAttachmentSchema>;
 

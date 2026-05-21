@@ -10,7 +10,7 @@ if (!(globalThis as any).crypto?.randomUUID) {
   (globalThis as any).crypto = { ...((globalThis as any).crypto ?? {}), randomUUID };
 }
 import { STATUS_LABELS, type AttachmentVersion, type Task, type User } from "@mini-jira/shared";
-import { canSeeTask, canWriteTask, isManager } from "./auth/policy.js";
+import { canSeeTask, canWriteTask, isAdmin, isManager } from "./auth/policy.js";
 import type { AppServices } from "./services/index.js";
 import { LocalDiskStorage } from "./services/local/storage.js";
 import {
@@ -18,10 +18,14 @@ import {
   createCommentSchema,
   createProjectSchema,
   createTaskSchema,
+  createTeamSchema,
+  createUserSchema,
   parseBody,
   patchProjectSchema,
   patchTaskSchema,
-  presignAttachmentSchema
+  presignAttachmentSchema,
+  updateCommentSchema,
+  updateUserTeamSchema
 } from "./validation/schemas.js";
 import type { Logger } from "./logger.js";
 
@@ -130,6 +134,18 @@ export function createApp(services: AppServices) {
     }
   });
 
+  app.post("/api/teams", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      if (!isManager(authed.user)) throw httpError(403, "Only managers or admins can create teams");
+      const body = parseBody(createTeamSchema, req.body);
+      const team = await teams.create({ id: uid("team"), name: body.name });
+      res.status(201).json({ team });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/users", async (req, res, next) => {
     try {
       const authed = authedRequest(req);
@@ -138,6 +154,45 @@ export function createApp(services: AppServices) {
         ? all
         : all.filter((user) => user.teamId === authed.user.teamId || user.id === authed.user.id);
       res.json({ users: visible });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/users", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      if (!isAdmin(authed.user)) throw httpError(403, "Only admins can create users");
+      const body = parseBody(createUserSchema, req.body);
+      if (body.teamId) {
+        const team = await teams.get(body.teamId);
+        if (!team) throw httpError(400, "teamId is invalid");
+      }
+      const user = await users.create({
+        id: uid("user"),
+        name: body.name,
+        email: body.email,
+        role: body.role,
+        teamId: body.teamId
+      });
+      res.status(201).json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/users/:userId/team", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      if (!isAdmin(authed.user)) throw httpError(403, "Only admins can move users between teams");
+      const body = parseBody(updateUserTeamSchema, req.body);
+      if (body.teamId) {
+        const team = await teams.get(body.teamId);
+        if (!team) throw httpError(400, "teamId is invalid");
+      }
+      const user = await users.updateTeam(req.params.userId, body.teamId);
+      if (!user) throw httpError(404, "User not found");
+      res.json({ user });
     } catch (error) {
       next(error);
     }
@@ -398,6 +453,42 @@ export function createApp(services: AppServices) {
         createdAt: nowIso()
       });
       res.status(201).json({ comment });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Author-or-manager can edit; team-isolation check uses the parent task.
+  app.put("/api/comments/:commentId", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      const existing = await comments.get(req.params.commentId);
+      if (!existing) throw httpError(404, "Comment not found");
+      await getVisibleTask(authed, existing.taskId);
+      if (existing.authorId !== authed.user.id && !isManager(authed.user)) {
+        throw httpError(403, "You cannot edit this comment");
+      }
+      const body = parseBody(updateCommentSchema, req.body);
+      const updated = await comments.update(existing.id, { body: body.body, updatedAt: nowIso() });
+      if (!updated) throw httpError(404, "Comment not found");
+      res.json({ comment: updated });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/comments/:commentId", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      const existing = await comments.get(req.params.commentId);
+      if (!existing) throw httpError(404, "Comment not found");
+      await getVisibleTask(authed, existing.taskId);
+      if (existing.authorId !== authed.user.id && !isManager(authed.user)) {
+        throw httpError(403, "You cannot delete this comment");
+      }
+      const removed = await comments.delete(existing.id);
+      if (!removed) throw httpError(404, "Comment not found");
+      res.status(204).end();
     } catch (error) {
       next(error);
     }

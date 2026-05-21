@@ -22,6 +22,7 @@ import type {
   CreateCommentInput,
   CreateProjectInput,
   CreateTaskInput,
+  CreateTeamInput,
   ProjectRepo,
   TaskListFilters,
   TaskRepo,
@@ -163,10 +164,28 @@ export class InMemoryCommentRepo implements CommentRepo {
     return this.state.comments.filter((comment) => comment.taskId === taskId);
   }
 
+  async get(commentId: string): Promise<Comment | undefined> {
+    return this.state.comments.find((comment) => comment.id === commentId);
+  }
+
   async create(input: CreateCommentInput): Promise<Comment> {
     const comment: Comment = { ...input };
     this.state.comments.push(comment);
     return comment;
+  }
+
+  async update(commentId: string, patch: { body: string; updatedAt: string }): Promise<Comment | undefined> {
+    const comment = this.state.comments.find((entry) => entry.id === commentId);
+    if (!comment) return undefined;
+    comment.body = patch.body;
+    comment.updatedAt = patch.updatedAt;
+    return comment;
+  }
+
+  async delete(commentId: string): Promise<boolean> {
+    const before = this.state.comments.length;
+    this.state.comments = this.state.comments.filter((comment) => comment.id !== commentId);
+    return this.state.comments.length !== before;
   }
 
   async deleteForTask(taskId: string): Promise<void> {
@@ -206,6 +225,25 @@ export class InMemoryUserRepo implements UserRepo {
   async listByTeam(teamId: string): Promise<User[]> {
     return this.state.users.filter((user) => user.teamId === teamId);
   }
+
+  async create(input: { id: string; name: string; email: string; role: User["role"]; teamId?: string }): Promise<User> {
+    const user: User = {
+      id: input.id,
+      name: input.name,
+      email: input.email,
+      role: input.role,
+      teamId: input.teamId
+    };
+    this.state.users.push(user);
+    return user;
+  }
+
+  async updateTeam(userId: string, teamId: string | null): Promise<User | undefined> {
+    const user = this.state.users.find((entry) => entry.id === userId);
+    if (!user) return undefined;
+    user.teamId = teamId ?? undefined;
+    return user;
+  }
 }
 
 export class InMemoryTeamRepo implements TeamRepo {
@@ -217,5 +255,11 @@ export class InMemoryTeamRepo implements TeamRepo {
 
   async get(id: string): Promise<Team | undefined> {
     return this.state.teams.find((team) => team.id === id);
+  }
+
+  async create(input: CreateTeamInput): Promise<Team> {
+    const team: Team = { id: input.id, name: input.name };
+    this.state.teams.push(team);
+    return team;
   }
 }

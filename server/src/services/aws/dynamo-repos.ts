@@ -23,6 +23,7 @@ import type {
   CreateCommentInput,
   CreateProjectInput,
   CreateTaskInput,
+  CreateTeamInput,
   ProjectRepo,
   TaskListFilters,
   TaskRepo,
@@ -313,6 +314,22 @@ export class DynamoCommentRepo implements CommentRepo {
     return (result.Items ?? []).map(stripSortKey) as Comment[];
   }
 
+  // Comments are stored under PK=taskId + SK=createdAt#id. Looking one up by id alone
+  // requires either a GSI on id or a scan. We scan because the volume per task is small
+  // and global comment-by-id lookups happen rarely (only on edit/delete).
+  async get(commentId: string): Promise<Comment | undefined> {
+    const result = await this.ctx.client.send(
+      new ScanCommand({
+        TableName: this.ctx.tables.comments,
+        FilterExpression: "id = :id",
+        ExpressionAttributeValues: { ":id": commentId },
+        Limit: 1
+      })
+    );
+    const item = (result.Items ?? [])[0];
+    return item ? (stripSortKey(item) as Comment) : undefined;
+  }
+
   async create(input: CreateCommentInput): Promise<Comment> {
     const comment: Comment = { ...input };
     await this.ctx.client.send(
@@ -322,6 +339,31 @@ export class DynamoCommentRepo implements CommentRepo {
       })
     );
     return comment;
+  }
+
+  async update(commentId: string, patch: { body: string; updatedAt: string }): Promise<Comment | undefined> {
+    const existing = await this.get(commentId);
+    if (!existing) return undefined;
+    const updated: Comment = { ...existing, body: patch.body, updatedAt: patch.updatedAt };
+    await this.ctx.client.send(
+      new PutCommand({
+        TableName: this.ctx.tables.comments,
+        Item: { ...updated, [SORT_KEY]: sortKey(existing.createdAt, existing.id) }
+      })
+    );
+    return updated;
+  }
+
+  async delete(commentId: string): Promise<boolean> {
+    const existing = await this.get(commentId);
+    if (!existing) return false;
+    await this.ctx.client.send(
+      new DeleteCommand({
+        TableName: this.ctx.tables.comments,
+        Key: { taskId: existing.taskId, [SORT_KEY]: sortKey(existing.createdAt, existing.id) }
+      })
+    );
+    return true;
   }
 
   async deleteForTask(taskId: string): Promise<void> {
@@ -411,6 +453,40 @@ export class DynamoUserRepo implements UserRepo {
     const all = await this.list();
     return all.filter((user) => user.teamId === teamId);
   }
+
+  async create(input: { id: string; name: string; email: string; role: User["role"]; teamId?: string }): Promise<User> {
+    const user: User = {
+      id: input.id,
+      name: input.name,
+      email: input.email,
+      role: input.role,
+      teamId: input.teamId
+    };
+    await this.ctx.client.send(new PutCommand({ TableName: this.ctx.tables.users, Item: user }));
+    return user;
+  }
+
+  async updateTeam(userId: string, teamId: string | null): Promise<User | undefined> {
+    const expression = teamId === null
+      ? "REMOVE teamId"
+      : "SET teamId = :teamId";
+    const values = teamId === null ? undefined : { ":teamId": teamId };
+    try {
+      const result = await this.ctx.client.send(
+        new UpdateCommand({
+          TableName: this.ctx.tables.users,
+          Key: { id: userId },
+          UpdateExpression: expression,
+          ExpressionAttributeValues: values,
+          ConditionExpression: "attribute_exists(id)",
+          ReturnValues: "ALL_NEW"
+        })
+      );
+      return (result.Attributes as User | undefined) ?? undefined;
+    } catch {
+      return undefined;
+    }
+  }
 }
 
 export class DynamoTeamRepo implements TeamRepo {
@@ -426,6 +502,12 @@ export class DynamoTeamRepo implements TeamRepo {
       new GetCommand({ TableName: this.ctx.tables.teams, Key: { id } })
     );
     return (result.Item as Team | undefined) ?? undefined;
+  }
+
+  async create(input: CreateTeamInput): Promise<Team> {
+    const team: Team = { id: input.id, name: input.name };
+    await this.ctx.client.send(new PutCommand({ TableName: this.ctx.tables.teams, Item: team }));
+    return team;
   }
 }
 

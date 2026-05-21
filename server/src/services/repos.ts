@@ -95,7 +95,10 @@ export interface CreateCommentInput {
 
 export interface CommentRepo {
   listForTask(taskId: string): Promise<Comment[]>;
+  get(commentId: string): Promise<Comment | undefined>;
   create(input: CreateCommentInput): Promise<Comment>;
+  update(commentId: string, patch: { body: string; updatedAt: string }): Promise<Comment | undefined>;
+  delete(commentId: string): Promise<boolean>;
   deleteForTask(taskId: string): Promise<void>;
 }
 
@@ -114,13 +117,29 @@ export interface AuditRepo {
   deleteForTask(taskId: string): Promise<void>;
 }
 
+export interface CreateUserInput {
+  id: string;
+  name: string;
+  email: string;
+  role: User["role"];
+  teamId?: string;
+}
+
 export interface UserRepo {
   list(): Promise<User[]>;
   get(id: string): Promise<User | undefined>;
   listByTeam(teamId: string): Promise<User[]>;
+  create(input: CreateUserInput): Promise<User>;
+  updateTeam(userId: string, teamId: string | null): Promise<User | undefined>;
+}
+
+export interface CreateTeamInput {
+  id: string;
+  name: string;
 }
 
 export interface TeamRepo {
   list(): Promise<Team[]>;
   get(id: string): Promise<Team | undefined>;
+  create(input: CreateTeamInput): Promise<Team>;
 }
