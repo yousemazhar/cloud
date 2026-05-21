@@ -10,7 +10,7 @@
     "infra"
   ],
   "scripts": {
-    "dev": "npm-run-all --parallel dev:server dev:client",
+    "dev": "npm run build -w shared && npm-run-all --parallel dev:server dev:client",
     "dev:client": "npm --workspace client run dev",
     "dev:server": "npm --workspace server run dev",
     "build": "npm --workspace shared run build && npm --workspace server run build && npm --workspace client run build",

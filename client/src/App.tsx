@@ -11,6 +11,7 @@ import { BoardPage } from "./pages/BoardPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
 import { AdminPage } from "./pages/AdminPage";
+import { ProfilePage } from "./pages/ProfilePage";
 import { TopNav } from "./components/TopNav";
 import { Sidebar } from "./components/Sidebar";
 import { Toast } from "./components/Toast";
@@ -42,17 +43,21 @@ function Shell() {
   const [screen, setScreen] = useState<Screen>("board");
   const [creating, setCreating] = useState(false);
   const [selected, setSelected] = useState<TaskDetail | null>(null);
+  // null = "all projects" view. The board renders every task visible to the
+  // current user when nothing specific is picked.
   const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
 
-  // First project becomes the default once data loads.
+  // Employees should never land on the admin page even if a stale screen state
+  // says they should — gate it after auth resolves.
   useEffect(() => {
-    if (!currentProjectId && data.projects.length) setCurrentProjectId(data.projects[0]!.id);
-  }, [data.projects, currentProjectId]);
+    if (!user) return;
+    if (screen === "admin" && user.role === "employee") setScreen("board");
+  }, [user, screen]);
 
   if (authLoading) return <FullPageLoader/>;
   if (!user) return <LoginPage/>;
 
-  const currentProject = data.projects.find((p) => p.id === currentProjectId) ?? data.projects[0] ?? null;
+  const currentProject = data.projects.find((p) => p.id === currentProjectId) ?? null;
 
   async function openTask(taskId: string) {
     try {
@@ -72,6 +77,8 @@ function Shell() {
     content = (
       <ProjectsPage onOpenProject={(p) => { setCurrentProjectId(p.id); setScreen("board"); }}/>
     );
+  } else if (screen === "profile") {
+    content = <ProfilePage/>;
   } else {
     content = <AdminPage/>;
   }

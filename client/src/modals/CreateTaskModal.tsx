@@ -96,7 +96,9 @@ export function CreateTaskModal({
                         onChange={(e) => setForm({ ...form, assigneeId: e.target.value })}
                         disabled={!form.teamId}>
                   <option value="">{form.teamId ? "Pick an employee" : "Pick a team first"}</option>
-                  {teamUsers.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+                  {teamUsers.map((u) => (
+                    <option key={u.id} value={u.id}>{u.name} &lt;{u.email}&gt;</option>
+                  ))}
                 </select>
               </FormField>
             </div>

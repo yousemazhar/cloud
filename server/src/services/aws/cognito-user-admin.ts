@@ -1,16 +1,23 @@
 import type { User } from "@mini-jira/shared";
 import {
   AdminCreateUserCommand,
+  AdminInitiateAuthCommand,
   AdminSetUserPasswordCommand,
   AdminUpdateUserAttributesCommand,
   CognitoIdentityProviderClient
 } from "@aws-sdk/client-cognito-identity-provider";
+import { assertPasswordPolicy } from "../../auth/password.js";
 import type { UserRepo } from "../repos.js";
-import type { CreateUserParams, UserAdmin } from "../user-admin.js";
+import type {
+  CreateUserParams,
+  UpdateUserParams,
+  UserAdmin
+} from "../user-admin.js";
 
 interface Deps {
   cognito: CognitoIdentityProviderClient;
   userPoolId: string;
+  clientId?: string;
   users: UserRepo;
 }
 
@@ -31,6 +38,7 @@ export class CognitoUserAdmin implements UserAdmin {
 
   async createUser(params: CreateUserParams): Promise<User> {
     if (!params.password) throw httpError(400, "password is required when creating Cognito users");
+    assertPasswordPolicy(params.password);
 
     const attrs = [
       { Name: "email", Value: params.email },
@@ -76,23 +84,55 @@ export class CognitoUserAdmin implements UserAdmin {
   }
 
   async updateUserTeam(userId: string, teamId: string | null): Promise<User | undefined> {
-    // Resolve email to use as the Cognito Username. Sub is the Dynamo id; Cognito
-    // accepts sub or email as Username only when the pool was created with usernames
-    // disabled (email aliases). Our pool was created exactly that way, so the
-    // Dynamo row's email works as Username.
+    return this.updateUser(userId, { teamId });
+  }
+
+  async updateUser(userId: string, params: UpdateUserParams): Promise<User | undefined> {
     const existing = await this.deps.users.get(userId);
     if (!existing) return undefined;
 
-    const attrs = teamId
-      ? [{ Name: "custom:teamId", Value: teamId }]
-      : [{ Name: "custom:teamId", Value: "" }];
+    const attrs: { Name: string; Value: string }[] = [];
+    if (params.name !== undefined) attrs.push({ Name: "name", Value: params.name });
+    if (params.role !== undefined) attrs.push({ Name: "custom:role", Value: params.role });
+    if (params.teamId !== undefined) {
+      attrs.push({ Name: "custom:teamId", Value: params.teamId ?? "" });
+    }
 
-    await this.deps.cognito.send(new AdminUpdateUserAttributesCommand({
+    if (attrs.length) {
+      await this.deps.cognito.send(new AdminUpdateUserAttributesCommand({
+        UserPoolId: this.deps.userPoolId,
+        Username: existing.email,
+        UserAttributes: attrs
+      }));
+    }
+
+    return this.deps.users.update(userId, params);
+  }
+
+  async setUserPassword(userId: string, newPassword: string): Promise<void> {
+    assertPasswordPolicy(newPassword);
+    const existing = await this.deps.users.get(userId);
+    if (!existing) throw httpError(404, "User not found");
+    await this.deps.cognito.send(new AdminSetUserPasswordCommand({
       UserPoolId: this.deps.userPoolId,
       Username: existing.email,
-      UserAttributes: attrs
+      Password: newPassword,
+      Permanent: true
     }));
+  }
 
-    return this.deps.users.updateTeam(userId, teamId);
+  async verifyPassword(email: string, password: string): Promise<boolean> {
+    if (!this.deps.clientId) throw httpError(500, "clientId required to verify passwords");
+    try {
+      await this.deps.cognito.send(new AdminInitiateAuthCommand({
+        AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
+        UserPoolId: this.deps.userPoolId,
+        ClientId: this.deps.clientId,
+        AuthParameters: { USERNAME: email, PASSWORD: password }
+      }));
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

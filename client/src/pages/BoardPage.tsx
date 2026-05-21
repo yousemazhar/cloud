@@ -42,10 +42,8 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
         <div>
           <div className="crumbs">
             <a>Projects</a>
-            {project && <>
-              <span style={{ color: "var(--text-4)" }}>/</span>
-              <span style={{ color: "var(--text-2)" }}>{project.name}</span>
-            </>}
+            <span style={{ color: "var(--text-4)" }}>/</span>
+            <span style={{ color: "var(--text-2)" }}>{project ? project.name : "All tasks"}</span>
           </div>
           <h1 className="page-title">Board</h1>
         </div>
@@ -69,7 +67,9 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
         <select className="dropdown" value={filters.assigneeId ?? ""}
                 onChange={(e) => changeFilter({ ...filters, assigneeId: e.target.value || undefined })}>
           <option value="">All assignees</option>
-          {data.users.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
+          {data.users.map((u) => (
+            <option key={u.id} value={u.id}>{u.name} &lt;{u.email}&gt;</option>
+          ))}
         </select>
         <select className="dropdown" value={filters.priority ?? ""}
                 onChange={(e) => changeFilter({

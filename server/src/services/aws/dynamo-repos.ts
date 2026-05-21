@@ -487,6 +487,56 @@ export class DynamoUserRepo implements UserRepo {
       return undefined;
     }
   }
+
+  async update(
+    userId: string,
+    patch: { name?: string; role?: User["role"]; teamId?: string | null }
+  ): Promise<User | undefined> {
+    const sets: string[] = [];
+    const removes: string[] = [];
+    const values: Record<string, unknown> = {};
+    const names: Record<string, string> = {};
+    if (patch.name !== undefined) {
+      names["#name"] = "name";
+      values[":name"] = patch.name;
+      sets.push("#name = :name");
+    }
+    if (patch.role !== undefined) {
+      names["#role"] = "role";
+      values[":role"] = patch.role;
+      sets.push("#role = :role");
+    }
+    if (patch.teamId !== undefined) {
+      if (patch.teamId === null || patch.teamId === "") {
+        removes.push("teamId");
+      } else {
+        values[":teamId"] = patch.teamId;
+        sets.push("teamId = :teamId");
+      }
+    }
+    if (sets.length === 0 && removes.length === 0) {
+      return this.get(userId);
+    }
+    let expression = "";
+    if (sets.length) expression += `SET ${sets.join(", ")}`;
+    if (removes.length) expression += `${expression ? " " : ""}REMOVE ${removes.join(", ")}`;
+    try {
+      const result = await this.ctx.client.send(
+        new UpdateCommand({
+          TableName: this.ctx.tables.users,
+          Key: { id: userId },
+          UpdateExpression: expression,
+          ExpressionAttributeValues: Object.keys(values).length ? values : undefined,
+          ExpressionAttributeNames: Object.keys(names).length ? names : undefined,
+          ConditionExpression: "attribute_exists(id)",
+          ReturnValues: "ALL_NEW"
+        })
+      );
+      return (result.Attributes as User | undefined) ?? undefined;
+    } catch {
+      return undefined;
+    }
+  }
 }
 
 export class DynamoTeamRepo implements TeamRepo {

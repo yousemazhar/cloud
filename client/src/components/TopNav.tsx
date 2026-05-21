@@ -13,6 +13,11 @@ interface TopNavProps {
 }
 
 export function TopNav({ user, screen, onNav, onCreate, onLogout }: TopNavProps) {
+  const isManager = user.role === "manager" || user.role === "admin";
+  const isAdmin = user.role === "admin";
+  // Admins see "Users & Teams" (they can edit users); managers see "Teams"
+  // (they can only create teams). Employees don't get either link.
+  const adminLabel = isAdmin ? "Users & Teams" : "Teams";
   return (
     <header className="topnav">
       <button className="topnav-apps" title="Apps"><Icon name="apps" size={20}/></button>
@@ -24,8 +29,12 @@ export function TopNav({ user, screen, onNav, onCreate, onLogout }: TopNavProps)
         <TopTab label="Your work" active={screen === "dashboard"} onClick={() => onNav("dashboard")}/>
         <TopTab label="Projects" active={screen === "projects" || screen === "board"} onClick={() => onNav("projects")}/>
         <TopTab label="Board" active={screen === "board"} onClick={() => onNav("board")}/>
-        <TopTab label="Teams &amp; users" active={screen === "admin"} onClick={() => onNav("admin")}/>
-        <button className="topnav-create" onClick={onCreate}>Create</button>
+        {isManager && (
+          <TopTab label={adminLabel} active={screen === "admin"} onClick={() => onNav("admin")}/>
+        )}
+        {isManager && (
+          <button className="topnav-create" onClick={onCreate}>Create</button>
+        )}
       </nav>
       <div className="topnav-right">
         <div className="topnav-search">
@@ -34,7 +43,9 @@ export function TopNav({ user, screen, onNav, onCreate, onLogout }: TopNavProps)
         </div>
         <button className="topnav-iconbtn" title="Help"><Icon name="help" size={18}/></button>
         <button className="topnav-iconbtn" title="Sign out" onClick={onLogout}><Icon name="logout" size={18}/></button>
-        <button className="topnav-avatar" title={user.name} style={{ background: colorFor(user.id) }}>
+        <button className="topnav-avatar" title={`${user.name} — profile`}
+                style={{ background: colorFor(user.id), cursor: "pointer" }}
+                onClick={() => onNav("profile")}>
           {initials(user.name)}
         </button>
       </div>

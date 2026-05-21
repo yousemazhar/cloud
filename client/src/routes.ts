@@ -1,1 +1,1 @@
-export type Screen = "board" | "dashboard" | "projects" | "admin";
+export type Screen = "board" | "dashboard" | "projects" | "admin" | "profile";

@@ -80,6 +80,9 @@ export interface AuditLog {
   id: string;
   taskId: string;
   actorId: string;
+  /** Snapshot of the actor's display name when the entry was written, so that
+   *  history still renders even after the user has been deleted or renamed. */
+  actorName?: string;
   fromStatus: TaskStatus;
   toStatus: TaskStatus;
   createdAt: string;

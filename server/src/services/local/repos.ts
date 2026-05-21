@@ -244,6 +244,18 @@ export class InMemoryUserRepo implements UserRepo {
     user.teamId = teamId ?? undefined;
     return user;
   }
+
+  async update(
+    userId: string,
+    patch: { name?: string; role?: User["role"]; teamId?: string | null }
+  ): Promise<User | undefined> {
+    const user = this.state.users.find((entry) => entry.id === userId);
+    if (!user) return undefined;
+    if (patch.name !== undefined) user.name = patch.name;
+    if (patch.role !== undefined) user.role = patch.role;
+    if (patch.teamId !== undefined) user.teamId = patch.teamId ?? undefined;
+    return user;
+  }
 }
 
 export class InMemoryTeamRepo implements TeamRepo {

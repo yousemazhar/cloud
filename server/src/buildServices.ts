@@ -83,9 +83,24 @@ export function buildAwsServices(config: AppConfig, options: { logger?: Logger }
     users: dynamoUsers,
     teams: new DynamoTeamRepo(ctx),
     storage: new S3Storage({ client: s3, originalsBucket: buckets.originalsBucket }),
-    notifier: new SnsNotifier({ client: sns, topicArn: topic }, logger),
+    notifier: new SnsNotifier(
+      {
+        client: sns,
+        topics: {
+          tasksAssigned: topic,
+          dailyDigest: config.sns.dailyDigestTopicArn,
+          alerts: config.sns.alertsTopicArn
+        }
+      },
+      logger
+    ),
     metrics: new CloudWatchMetrics({ client: cw }, logger),
-    userAdmin: new CognitoUserAdmin({ cognito: cognitoIdp, userPoolId: cognito.userPoolId, users: dynamoUsers }),
+    userAdmin: new CognitoUserAdmin({
+      cognito: cognitoIdp,
+      userPoolId: cognito.userPoolId,
+      clientId: cognito.clientId,
+      users: dynamoUsers
+    }),
     logger
   };
 }

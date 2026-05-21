@@ -9,6 +9,7 @@ interface AuthApi {
   loginDemo: (userId: string) => Promise<void>;
   loginCognito: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthApi | null>(null);
@@ -50,7 +51,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const value = useMemo<AuthApi>(() => ({ user, loading, loginDemo, loginCognito, logout }), [user, loading, loginDemo, loginCognito, logout]);
+  const refreshUser = useCallback(async () => {
+    if (!api.token) return;
+    try {
+      const res = await api.me();
+      setUser(res.user);
+    } catch { /* the 401 hook will null it out */ }
+  }, []);
+
+  const value = useMemo<AuthApi>(
+    () => ({ user, loading, loginDemo, loginCognito, logout, refreshUser }),
+    [user, loading, loginDemo, loginCognito, logout, refreshUser]
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

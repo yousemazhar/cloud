@@ -48,7 +48,9 @@ const compute = new ComputeStack(app, "MiniJira-Compute", {
   artifactsBucket: data.artifactsBucket,
   userPool: auth.userPool,
   userPoolClient: auth.userPoolClient,
-  taskAssignedTopic: messaging.taskAssignedTopic
+  taskAssignedTopic: messaging.taskAssignedTopic,
+  dailyDigestTopic: messaging.dailyDigestTopic,
+  alertsTopic: messaging.alertsTopic
 });
 
 const edge = new EdgeStack(app, "MiniJira-Edge", {

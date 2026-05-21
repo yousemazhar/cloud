@@ -62,8 +62,19 @@ export class CognitoAuth implements AuthVerifier {
         res.json({ token: idToken, user });
       } catch (err) {
         const status = (err as Error & { status?: number }).status;
-        if (status) next(err);
-        else next(httpError(401, "Invalid credentials"));
+        if (status) {
+          next(err);
+          return;
+        }
+        const name = (err as Error & { name?: string }).name;
+        // Cognito returns NotAuthorizedException for both wrong password and
+        // disabled accounts, and UserNotFoundException for unknown emails. Surface
+        // a single uniform message so we don't leak which one it was.
+        if (name === "NotAuthorizedException" || name === "UserNotFoundException") {
+          next(httpError(401, "Wrong username or password."));
+          return;
+        }
+        next(httpError(401, "Wrong username or password."));
       }
     });
   }

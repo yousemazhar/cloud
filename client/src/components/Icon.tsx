@@ -6,7 +6,7 @@ export type IconName =
   | "star" | "share" | "filter" | "calendar" | "user" | "users"
   | "board" | "timeline" | "backlog" | "reports" | "issues"
   | "code" | "rocket" | "page" | "link" | "attach" | "image"
-  | "upload" | "check" | "eye" | "trend-up" | "logout" | "alert" | "trash";
+  | "upload" | "check" | "eye" | "trend-up" | "logout" | "alert" | "trash" | "edit";
 
 interface IconProps {
   name: IconName;
@@ -61,6 +61,7 @@ export function Icon({ name, size = 16, strokeWidth = 1.7, className, style }: I
     case "logout": return <svg {...p}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><path d="M21 12H9"/></svg>;
     case "alert": return <svg {...p}><path d="M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17v.01"/></svg>;
     case "trash": return <svg {...p}><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M6 6l1 14a2 2 0 002 2h6a2 2 0 002-2l1-14"/></svg>;
+    case "edit": return <svg {...p}><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>;
     default: return <svg {...p}/>;
   }
 }

@@ -21,11 +21,20 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  ListSubscriptionsByTopicCommand,
+  SNSClient,
+  SubscribeCommand,
+  type Subscription
+} from "@aws-sdk/client-sns";
 
 interface Args {
   userPoolId: string;
   clientId: string;
   region: string;
+  tasksAssignedTopicArn?: string;
+  dailyDigestTopicArn?: string;
+  alertsTopicArn?: string;
 }
 
 function parseArgs(): Args {
@@ -37,7 +46,14 @@ function parseArgs(): Args {
   if (!out.userPoolId || !out.clientId) {
     throw new Error("Usage: seed-cognito.ts --user-pool-id <id> --client-id <id> [--region us-east-1]");
   }
-  return { userPoolId: out.userPoolId, clientId: out.clientId, region: out.region ?? "us-east-1" };
+  return {
+    userPoolId: out.userPoolId,
+    clientId: out.clientId,
+    region: out.region ?? "us-east-1",
+    tasksAssignedTopicArn: out.snsTopicTasksAssigned ?? process.env.SNS_TOPIC_TASKS_ASSIGNED,
+    dailyDigestTopicArn: out.snsTopicDailyDigest ?? process.env.SNS_TOPIC_DAILY_DIGEST,
+    alertsTopicArn: out.snsTopicAlerts ?? process.env.SNS_TOPIC_ALERTS
+  };
 }
 
 const DEFAULT_PASSWORD = "MiniJira#2026";
@@ -156,11 +172,71 @@ async function main(): Promise<void> {
     subsByEmail[user.email] = sub;
     console.log(`seeded user ${user.id} sub=${sub} (${user.role}${user.teamId ? `/${user.teamId}` : ""})`);
   }
+
+  if (args.tasksAssignedTopicArn) {
+    const sns = new SNSClient({ region: args.region });
+    const topics: { arn: string; filter?: boolean }[] = [
+      { arn: args.tasksAssignedTopicArn, filter: true }
+    ];
+    if (args.dailyDigestTopicArn) topics.push({ arn: args.dailyDigestTopicArn });
+    if (args.alertsTopicArn) topics.push({ arn: args.alertsTopicArn });
+
+    for (const user of USERS) {
+      for (const topic of topics) {
+        try {
+          await ensureEmailSubscription(sns, topic.arn, user.email, topic.filter ?? false);
+          console.log(`subscribed ${user.email} -> ${topic.arn} (confirmation pending)`);
+        } catch (err) {
+          console.error(`subscribeUser failed for ${user.email} @ ${topic.arn}`, err);
+        }
+      }
+    }
+  } else {
+    console.log("(no --sns-topic-tasks-assigned passed; skipping SNS subscriptions)");
+  }
   console.log("\nCognito sub -> email mapping:");
   for (const [email, sub] of Object.entries(subsByEmail)) console.log(`  ${email} = ${sub}`);
 
   console.log("\nDemo password for all three accounts:", DEFAULT_PASSWORD);
   console.log("Sign in at the CloudFront URL using the emails above.");
+}
+
+async function ensureEmailSubscription(
+  sns: SNSClient,
+  topicArn: string,
+  email: string,
+  filterByAssigneeEmail: boolean
+): Promise<void> {
+  const normalized = email.trim().toLowerCase();
+  const existing = await listSubs(sns, topicArn);
+  const match = existing.find(
+    (s) => s.Protocol === "email" && (s.Endpoint ?? "").toLowerCase() === normalized
+  );
+  if (match && match.SubscriptionArn && match.SubscriptionArn !== "PendingConfirmation") return;
+  if (match && match.SubscriptionArn === "PendingConfirmation") return;
+  await sns.send(new SubscribeCommand({
+    TopicArn: topicArn,
+    Protocol: "email",
+    Endpoint: normalized,
+    ReturnSubscriptionArn: true,
+    Attributes: filterByAssigneeEmail
+      ? {
+          FilterPolicy: JSON.stringify({ assigneeEmail: [normalized] }),
+          FilterPolicyScope: "MessageAttributes"
+        }
+      : undefined
+  }));
+}
+
+async function listSubs(sns: SNSClient, topicArn: string): Promise<Subscription[]> {
+  const out: Subscription[] = [];
+  let nextToken: string | undefined;
+  do {
+    const page = await sns.send(new ListSubscriptionsByTopicCommand({ TopicArn: topicArn, NextToken: nextToken }));
+    out.push(...(page.Subscriptions ?? []));
+    nextToken = page.NextToken;
+  } while (nextToken);
+  return out;
 }
 
 main().catch((err) => {

@@ -201,16 +201,30 @@
        ]
       },
       {
-       "Action": [
-        "sns:ListSubscriptionsByTopic",
-        "sns:Publish",
-        "sns:SetSubscriptionAttributes",
-        "sns:Subscribe"
-       ],
+       "Action": "sns:Publish",
        "Effect": "Allow",
        "Resource": {
         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
        }
+      },
+      {
+       "Action": [
+        "sns:ListSubscriptionsByTopic",
+        "sns:SetSubscriptionAttributes",
+        "sns:Subscribe"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+        },
+        {
+         "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+        }
+       ]
       },
       {
        "Action": [
@@ -465,6 +479,14 @@
          "\nSNS_TOPIC_TASKS_ASSIGNED=",
          {
           "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefTaskAssignedTopicDC76001C2318C272"
+         },
+         "\nSNS_TOPIC_DAILY_DIGEST=",
+         {
+          "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
+         },
+         "\nSNS_TOPIC_ALERTS=",
+         {
+          "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefAlertsTopic3414BE910C2DFF03"
          },
          "\nEOF\ncat > /etc/systemd/system/mini-jira.service <<'EOF'\n[Unit]\nDescription=Mini-Jira server\nAfter=network.target\n[Service]\nType=simple\nEnvironmentFile=/etc/mini-jira.env\nWorkingDirectory=/opt/app\nExecStart=/usr/bin/node /opt/app/server/dist/src/index.js\nRestart=always\nRestartSec=5\nUser=ec2-user\n[Install]\nWantedBy=multi-user.target\nEOF\nchown -R ec2-user:ec2-user /opt/app\nsystemctl daemon-reload\nsystemctl enable mini-jira.service\nsystemctl start mini-jira.service"
         ]

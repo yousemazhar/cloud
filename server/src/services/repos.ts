@@ -106,6 +106,7 @@ export interface CreateAuditInput {
   id: string;
   taskId: string;
   actorId: string;
+  actorName?: string;
   fromStatus: Task["status"];
   toStatus: Task["status"];
   createdAt: string;
@@ -125,12 +126,19 @@ export interface CreateUserInput {
   teamId?: string;
 }
 
+export interface UpdateUserPatch {
+  name?: string;
+  role?: User["role"];
+  teamId?: string | null;
+}
+
 export interface UserRepo {
   list(): Promise<User[]>;
   get(id: string): Promise<User | undefined>;
   listByTeam(teamId: string): Promise<User[]>;
   create(input: CreateUserInput): Promise<User>;
   updateTeam(userId: string, teamId: string | null): Promise<User | undefined>;
+  update(userId: string, patch: UpdateUserPatch): Promise<User | undefined>;
 }
 
 export interface CreateTeamInput {

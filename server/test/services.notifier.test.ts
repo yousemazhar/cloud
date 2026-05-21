@@ -13,8 +13,12 @@ import { SnsNotifier, type AssignmentNotifier } from "../src/services/notificati
 
 class CapturingNotifier implements AssignmentNotifier {
   calls: Array<{ taskId: string; assigneeId: string }> = [];
+  subscribed: string[] = [];
   async publishAssignment(task: Task, assignee: User): Promise<void> {
     this.calls.push({ taskId: task.id, assigneeId: assignee.id });
+  }
+  async subscribeUser(email: string): Promise<void> {
+    this.subscribed.push(email);
   }
 }
 
@@ -124,7 +128,7 @@ describe("SnsNotifier", () => {
     const client = new FakeSnsClient();
     const notifier = new SnsNotifier({
       client: client as never,
-      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+      topics: { tasksAssigned: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned" }
     });
 
     await notifier.publishAssignment(task, kareem);
@@ -152,7 +156,7 @@ describe("SnsNotifier", () => {
     const client = new FakeSnsClient();
     const notifier = new SnsNotifier({
       client: client as never,
-      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+      topics: { tasksAssigned: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned" }
     });
 
     await notifier.publishAssignment(task, kareem);
@@ -160,9 +164,16 @@ describe("SnsNotifier", () => {
     const publish = inputOf<{
       TopicArn: string;
       Message: string;
+      MessageStructure?: string;
       MessageAttributes: Record<string, { DataType: string; StringValue: string }>;
     }>(client.calls[2]);
-    expect(JSON.parse(publish.Message)).toMatchObject({
+    expect(publish.MessageStructure).toBe("json");
+    const envelope = JSON.parse(publish.Message) as { default: string; email: string; sqs: string };
+    // Default/email body is human-readable; sqs body is the machine JSON parsed
+    // by assignment-worker.ts (we keep the same fields it relies on).
+    expect(envelope.default).toContain("Investigate notifications");
+    expect(envelope.email).toEqual(envelope.default);
+    expect(JSON.parse(envelope.sqs)).toMatchObject({
       taskId: "task-1",
       teamId: "team-backend",
       assigneeId: "user-kareem",
@@ -179,7 +190,7 @@ describe("SnsNotifier", () => {
     const client = new FakeSnsClient([], true);
     const notifier = new SnsNotifier({
       client: client as never,
-      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+      topics: { tasksAssigned: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned" }
     });
 
     await notifier.publishAssignment(task, kareem);
@@ -199,7 +210,7 @@ describe("SnsNotifier", () => {
     ]);
     const notifier = new SnsNotifier({
       client: client as never,
-      topicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned"
+      topics: { tasksAssigned: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned" }
     });
 
     await notifier.publishAssignment(task, kareem);

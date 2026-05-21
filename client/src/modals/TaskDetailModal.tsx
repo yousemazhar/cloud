@@ -269,11 +269,15 @@ export function TaskDetailModal(p: Props) {
                 )}
                 {task.auditLogs.map((entry) => {
                   const actor = data.users.find((u) => u.id === entry.actorId);
+                  // Persisted actorName takes precedence so renamed/deleted users
+                  // still render correctly. The actorId lookup is the fallback for
+                  // pre-fix entries in the audit log.
+                  const actorName = entry.actorName ?? actor?.name ?? "Unknown user";
                   return (
                     <div key={entry.id} style={{ display: "flex", gap: 12, padding: "8px 0", fontSize: 13 }}>
-                      <Avatar user={actor} size="sm"/>
+                      <Avatar user={actor ?? { id: entry.actorId, name: actorName }} size="sm"/>
                       <div style={{ color: "var(--text-2)" }}>
-                        <b style={{ color: "var(--text)" }}>{actor?.name ?? "?"}</b>{" "}
+                        <b style={{ color: "var(--text)" }}>{actorName}</b>{" "}
                         changed status from <b>{STATUS_LABELS[entry.fromStatus]}</b> to <b>{STATUS_LABELS[entry.toStatus]}</b>
                         <span style={{ color: "var(--text-3)", marginLeft: 8 }}>· {new Date(entry.createdAt).toLocaleString()}</span>
                       </div>

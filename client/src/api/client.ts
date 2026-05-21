@@ -70,33 +70,47 @@ export interface RuntimeConfig {
   backend: "local" | "aws";
 }
 
+const TOKEN_KEY = "mini-jira-token";
+
 export class ApiClient {
-  token = localStorage.getItem("mini-jira-token") ?? "";
+  // Token lives in memory + sessionStorage (cleared on tab close, not shared with
+  // other tabs). Avoids the XSS surface area of localStorage for a long-lived
+  // bearer token.
+  token = readSessionToken();
   private onUnauthorized: (() => void) | null = null;
 
   setToken(token: string) {
     this.token = token;
-    localStorage.setItem("mini-jira-token", token);
+    try { sessionStorage.setItem(TOKEN_KEY, token); } catch { /* ignore */ }
   }
 
   clearToken() {
     this.token = "";
-    localStorage.removeItem("mini-jira-token");
+    try { sessionStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ }
+    // Clean up the legacy localStorage key so old sessions don't linger.
+    try { localStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ }
   }
 
   setUnauthorizedHandler(handler: () => void) {
     this.onUnauthorized = handler;
   }
 
-  async request<T>(path: string, options: RequestInit = {}): Promise<T> {
-    const headers = new Headers(options.headers);
-    if (!(options.body instanceof FormData)) headers.set("Content-Type", "application/json");
+  async request<T>(path: string, options: RequestInit & { suppressUnauthorizedHook?: boolean } = {}): Promise<T> {
+    const { suppressUnauthorizedHook, ...init } = options;
+    const headers = new Headers(init.headers);
+    if (!(init.body instanceof FormData)) headers.set("Content-Type", "application/json");
     if (this.token) headers.set("Authorization", `Bearer ${this.token}`);
-    const response = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    const response = await fetch(`${API_BASE}${path}`, { ...init, headers });
     if (response.status === 401) {
+      const payload = (await response.json().catch(() => ({}))) as { message?: string };
+      // During login the 401 means "wrong credentials" — don't wipe state and
+      // don't show the generic session-expired toast.
+      if (suppressUnauthorizedHook) {
+        throw new ApiError(401, payload.message ?? "Wrong username or password.");
+      }
       this.clearToken();
       this.onUnauthorized?.();
-      throw new ApiError(401, "Your session has expired. Please sign in again.");
+      throw new ApiError(401, payload.message ?? "Your session has expired. Please sign in again.");
     }
     if (!response.ok) {
       const payload = (await response.json().catch(() => ({}))) as {
@@ -119,12 +133,37 @@ export class ApiClient {
   config() { return this.request<RuntimeConfig>("/api/config"); }
   demoLogin(userId: string) {
     return this.request<{ token: string; user: User }>("/api/auth/demo-login", {
-      method: "POST", body: JSON.stringify({ userId })
+      method: "POST", body: JSON.stringify({ userId }), suppressUnauthorizedHook: true
     });
   }
   cognitoLogin(email: string, password: string) {
     return this.request<{ token: string; user: User }>("/api/auth/login", {
-      method: "POST", body: JSON.stringify({ email, password })
+      method: "POST", body: JSON.stringify({ email, password }), suppressUnauthorizedHook: true
+    });
+  }
+  signup(name: string, email: string, password: string) {
+    return this.request<{ user: User }>("/api/auth/signup", {
+      method: "POST", body: JSON.stringify({ name, email, password }), suppressUnauthorizedHook: true
+    });
+  }
+  updateMe(payload: { name?: string }) {
+    return this.request<{ user: User }>("/api/me", {
+      method: "PATCH", body: JSON.stringify(payload)
+    });
+  }
+  changeMyPassword(currentPassword: string, newPassword: string) {
+    return this.request<void>("/api/me/password", {
+      method: "POST", body: JSON.stringify({ currentPassword, newPassword })
+    });
+  }
+  updateUser(userId: string, payload: { name?: string; role?: User["role"]; teamId?: string | null }) {
+    return this.request<{ user: User }>(`/api/users/${userId}`, {
+      method: "PATCH", body: JSON.stringify(payload)
+    });
+  }
+  resetUserPassword(userId: string, newPassword: string) {
+    return this.request<void>(`/api/users/${userId}/password`, {
+      method: "POST", body: JSON.stringify({ newPassword })
     });
   }
   me() { return this.request<{ user: User }>("/api/me"); }
@@ -241,4 +280,14 @@ export class ApiClient {
   }
 }
 
+function readSessionToken(): string {
+  try {
+    const stored = sessionStorage.getItem(TOKEN_KEY);
+    if (stored) return stored;
+  } catch { /* ignore */ }
+  return "";
+}
+
 export const api = new ApiClient();
+// Best-effort cleanup of the pre-fix localStorage token from older releases.
+try { localStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ }

@@ -8,6 +8,7 @@ import { Icon } from "../components/Icon";
 import { MJLogo } from "../components/MJLogo";
 import { FormField } from "../components/FormField";
 import { Toast } from "../components/Toast";
+import { SignupModal } from "../modals/SignupModal";
 
 const DEMO_PERSONAS = [
   { id: "user-ali", name: "Ali Hassan", role: "Manager · all teams" },
@@ -25,6 +26,7 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [busy, setBusy] = useState(false);
+  const [signingUp, setSigningUp] = useState(false);
 
   const isAws = config?.backend === "aws";
 
@@ -88,7 +90,17 @@ export function LoginPage() {
             <button className="login-btn" onClick={submitCognito} disabled={busy}>
               {busy ? "Signing in…" : "Continue"}
             </button>
+            <div style={{ marginTop: 12, textAlign: "center", fontSize: 13, color: "var(--text-3)" }}>
+              No account yet?{" "}
+              <a style={{ cursor: "pointer", color: "var(--brand-2)" }} onClick={() => setSigningUp(true)}>
+                Sign up
+              </a>
+            </div>
           </>
+        )}
+
+        {signingUp && (
+          <SignupModal onClose={() => setSigningUp(false)} onSignedUp={() => setSigningUp(false)}/>
         )}
 
         {/* Demo personas hit /api/auth/demo-login, which only exists in local mode.

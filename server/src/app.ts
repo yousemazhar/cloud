@@ -14,6 +14,7 @@ import { canSeeTask, canWriteTask, isAdmin, isManager } from "./auth/policy.js";
 import type { AppServices } from "./services/index.js";
 import { LocalDiskStorage } from "./services/local/storage.js";
 import {
+  changeMyPasswordSchema,
   confirmAttachmentSchema,
   createCommentSchema,
   createProjectSchema,
@@ -24,10 +25,15 @@ import {
   patchProjectSchema,
   patchTaskSchema,
   presignAttachmentSchema,
+  resetUserPasswordSchema,
+  signupSchema,
   updateCommentSchema,
+  updateMeSchema,
+  updateUserSchema,
   updateUserTeamSchema,
   ValidationError
 } from "./validation/schemas.js";
+import { assertPasswordPolicy } from "./auth/password.js";
 import type { Logger } from "./logger.js";
 
 interface AuthedRequest extends Request {
@@ -106,6 +112,33 @@ export function createApp(services: AppServices) {
   // Auth verifier may register its own routes (local mode mounts /demo-login).
   auth.mountRoutes?.(app as unknown as Router);
 
+  // Public signup: anyone can create an employee account with no team. Admins are
+  // still responsible for assigning the new user to a team afterwards. Password
+  // policy is enforced here so we fail fast before hitting Cognito.
+  app.post("/api/auth/signup", async (req, res, next) => {
+    try {
+      const body = parseBody(signupSchema, req.body);
+      assertPasswordPolicy(body.password);
+      const user = await userAdmin.createUser({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+        role: "employee",
+        teamId: undefined
+      });
+      // Subscribe to SNS topics so the new user gets task / digest / alert emails
+      // once they confirm. Failures are logged inside the notifier; never block signup.
+      try {
+        await notifier.subscribeUser(user.email);
+      } catch (error) {
+        logger.warn({ err: error, userId: user.id }, "subscribeUser failed during signup");
+      }
+      res.status(201).json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use("/api", async (req, _res, next) => {
     try {
       const user = await auth.authenticate(req);
@@ -174,6 +207,7 @@ export function createApp(services: AppServices) {
         const team = await teams.get(body.teamId);
         if (!team) throw httpError(400, "teamId is invalid");
       }
+      if (body.password) assertPasswordPolicy(body.password);
       // userAdmin handles Cognito creation in AWS mode, in-memory write in local mode.
       const user = await userAdmin.createUser({
         name: body.name,
@@ -182,7 +216,72 @@ export function createApp(services: AppServices) {
         teamId: body.teamId,
         password: body.password
       });
+      try {
+        await notifier.subscribeUser(user.email);
+      } catch (error) {
+        req.log.warn({ err: error, userId: user.id }, "subscribeUser failed on admin createUser");
+      }
       res.status(201).json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/me", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      const body = parseBody(updateMeSchema, req.body);
+      const user = await userAdmin.updateUser(authed.user.id, { name: body.name });
+      if (!user) throw httpError(404, "User not found");
+      res.json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/me/password", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      const body = parseBody(changeMyPasswordSchema, req.body);
+      assertPasswordPolicy(body.newPassword);
+      const ok = await userAdmin.verifyPassword(authed.user.email, body.currentPassword);
+      if (!ok) throw httpError(400, "Current password is incorrect");
+      await userAdmin.setUserPassword(authed.user.id, body.newPassword);
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/users/:userId", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      if (!isAdmin(authed.user)) throw httpError(403, "Only admins can update users");
+      const body = parseBody(updateUserSchema, req.body);
+      if (body.teamId) {
+        const team = await teams.get(body.teamId);
+        if (!team) throw httpError(400, "teamId is invalid");
+      }
+      const user = await userAdmin.updateUser(req.params.userId, {
+        name: body.name,
+        role: body.role,
+        teamId: body.teamId === undefined ? undefined : body.teamId
+      });
+      if (!user) throw httpError(404, "User not found");
+      res.json({ user });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/users/:userId/password", async (req, res, next) => {
+    try {
+      const authed = authedRequest(req);
+      if (!isAdmin(authed.user)) throw httpError(403, "Only admins can reset user passwords");
+      const body = parseBody(resetUserPasswordSchema, req.body);
+      assertPasswordPolicy(body.newPassword);
+      await userAdmin.setUserPassword(req.params.userId, body.newPassword);
+      res.status(204).end();
     } catch (error) {
       next(error);
     }
@@ -404,6 +503,7 @@ export function createApp(services: AppServices) {
           id: uid("audit"),
           taskId: updated.id,
           actorId: authed.user.id,
+          actorName: authed.user.name,
           fromStatus: wasStatus,
           toStatus: nextStatus,
           createdAt: updatedAt
@@ -640,6 +740,9 @@ export function createApp(services: AppServices) {
       message: error.message || "Internal server error"
     };
     if (error instanceof ValidationError) body.errors = error.errors;
+    else if (Array.isArray((error as unknown as { errors?: unknown }).errors)) {
+      body.errors = (error as unknown as { errors: { field: string; message: string }[] }).errors;
+    }
     res.status(status).json(body);
   });
 

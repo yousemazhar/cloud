@@ -6,10 +6,12 @@ import { useAppData } from "../contexts/AppDataContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useConfig } from "../contexts/ConfigContext";
 import { useToast } from "../contexts/ToastContext";
+import type { User } from "@mini-jira/shared";
 import { Icon } from "../components/Icon";
 import { Avatar } from "../components/Avatar";
 import { FormField } from "../components/FormField";
 import { colorFor, initials } from "../utils/colors";
+import { EditUserModal } from "../modals/EditUserModal";
 
 const EMPTY_USER = { name: "", email: "", role: "employee" as Role, teamId: "", password: "" };
 
@@ -28,6 +30,7 @@ export function AdminPage() {
   const [newUser, setNewUser] = useState(EMPTY_USER);
   const [userErrors, setUserErrors] = useState<Map<string, string>>(new Map());
   const [submitting, setSubmitting] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   async function createTeam() {
     if (!teamName.trim()) { setTeamError("Team name is required."); return; }
@@ -158,11 +161,17 @@ export function AdminPage() {
                 <div style={{ fontSize: 12, color: "var(--text-3)" }}>{u.email} · {u.role}</div>
               </div>
               {canManageUsers ? (
-                <select className="dropdown" value={u.teamId ?? ""}
-                        onChange={(e) => moveUser(u.id, e.target.value)}>
-                  <option value="">No team</option>
-                  {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-                </select>
+                <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+                  <select className="dropdown" value={u.teamId ?? ""}
+                          onChange={(e) => moveUser(u.id, e.target.value)}>
+                    <option value="">No team</option>
+                    {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                  <button className="btn btn-ghost sm" title="Edit user / reset password"
+                          onClick={() => setEditingUser(u)}>
+                    <Icon name="edit" size={14}/>
+                  </button>
+                </span>
               ) : (
                 <span className="label-chip">{data.teams.find((t) => t.id === u.teamId)?.name ?? "—"}</span>
               )}
@@ -215,6 +224,14 @@ export function AdminPage() {
           )}
         </div>
       </div>
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          teams={data.teams}
+          onClose={() => setEditingUser(null)}
+          onSaved={async () => { setEditingUser(null); await refresh(); }}
+        />
+      )}
     </div>
   );
 }

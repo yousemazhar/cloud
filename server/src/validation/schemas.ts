@@ -82,6 +82,35 @@ export const updateUserTeamSchema = z.object({
   teamId: z.string().trim().nullable()
 });
 
+export const signupSchema = z.object({
+  name: trimmedString("name"),
+  email: trimmedString("email").refine((v) => /.+@.+\..+/.test(v), "email is invalid"),
+  password: trimmedString("password")
+});
+
+export const updateMeSchema = z
+  .object({
+    name: trimmedString("name").optional()
+  })
+  .refine((value) => Object.keys(value).length > 0, "at least one field is required");
+
+export const updateUserSchema = z
+  .object({
+    name: trimmedString("name").optional(),
+    role: roleSchema.optional(),
+    teamId: z.string().trim().nullable().optional()
+  })
+  .refine((value) => Object.keys(value).length > 0, "at least one field is required");
+
+export const changeMyPasswordSchema = z.object({
+  currentPassword: trimmedString("currentPassword"),
+  newPassword: trimmedString("newPassword")
+});
+
+export const resetUserPasswordSchema = z.object({
+  newPassword: trimmedString("newPassword")
+});
+
 export const presignAttachmentSchema = z.object({
   fileName: trimmedString("fileName"),
   mimeType: trimmedString("mimeType").refine((value) => value.startsWith("image/"), "Only image uploads are allowed"),

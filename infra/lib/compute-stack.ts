@@ -50,6 +50,8 @@ interface ComputeStackProps extends StackProps {
   userPool: UserPool;
   userPoolClient: UserPoolClient;
   taskAssignedTopic: Topic;
+  dailyDigestTopic: Topic;
+  alertsTopic: Topic;
 }
 
 /**
@@ -88,7 +90,12 @@ export class ComputeStack extends Stack {
         "sns:ListSubscriptionsByTopic",
         "sns:SetSubscriptionAttributes"
       ],
-      resources: [props.taskAssignedTopic.topicArn]
+      // EC2 subscribes new users to all three topics during signup / admin create.
+      resources: [
+        props.taskAssignedTopic.topicArn,
+        props.dailyDigestTopic.topicArn,
+        props.alertsTopic.topicArn
+      ]
     }));
     // Cognito perms:
     //  - AdminInitiateAuth + AdminGetUser for /api/auth/login
@@ -144,6 +151,8 @@ export class ComputeStack extends Stack {
       `S3_ORIGINALS_BUCKET=${props.originalsBucket.bucketName}`,
       `S3_RESIZED_BUCKET=${props.resizedBucket.bucketName}`,
       `SNS_TOPIC_TASKS_ASSIGNED=${props.taskAssignedTopic.topicArn}`,
+      `SNS_TOPIC_DAILY_DIGEST=${props.dailyDigestTopic.topicArn}`,
+      `SNS_TOPIC_ALERTS=${props.alertsTopic.topicArn}`,
       "EOF",
       "cat > /etc/systemd/system/mini-jira.service <<'EOF'",
       "[Unit]",

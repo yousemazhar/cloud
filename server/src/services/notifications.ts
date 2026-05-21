@@ -11,13 +11,16 @@ import type { Logger } from "../logger.js";
 
 /**
  * Producer-side seam for the spec's SNS fan-out:
- *   Manager assigns task -> publish to SNS -> (a) email to assignee, (b) SQS to worker Lambda.
+ *   Manager assigns task -> publish to tasks-assigned topic -> (a) email to assignee, (b) SQS to worker Lambda.
  *
- * Routes call publishAssignment() on task create and on task reassignment. Local mode
- * uses NoopNotifier (logs only). AWS mode uses SnsNotifier.
+ * subscribeUser is called when a user signs up / is created so they receive task
+ * assignments, daily digests, and operational alerts. The email subscription
+ * requires a one-time confirmation click — AWS sends an automatic Subscription
+ * Confirmation email per topic.
  */
 export interface AssignmentNotifier {
   publishAssignment(task: Task, assignee: User): Promise<void>;
+  subscribeUser(email: string): Promise<void>;
 }
 
 export class NoopNotifier implements AssignmentNotifier {
@@ -29,26 +32,39 @@ export class NoopNotifier implements AssignmentNotifier {
       "notifier:noop assignment"
     );
   }
+
+  async subscribeUser(email: string): Promise<void> {
+    this.logger?.info({ email }, "notifier:noop subscribeUser");
+  }
+}
+
+export interface SnsTopicArns {
+  /** Per-assignee filtered topic — published to on task assignment. */
+  tasksAssigned: string;
+  /** Optional: daily-digest topic. New users get subscribed if provided. */
+  dailyDigest?: string;
+  /** Optional: alerts topic. New users get subscribed if provided. */
+  alerts?: string;
 }
 
 export interface SnsNotifierConfig {
   client: SNSClient;
-  topicArn: string;
+  topics: SnsTopicArns;
 }
 
 export class SnsNotifier implements AssignmentNotifier {
   private readonly client: SNSClient;
-  private readonly topicArn: string;
+  private readonly topics: SnsTopicArns;
 
   constructor(config: SnsNotifierConfig, private readonly logger?: Logger) {
     this.client = config.client;
-    this.topicArn = config.topicArn;
+    this.topics = config.topics;
   }
 
   async publishAssignment(task: Task, assignee: User): Promise<void> {
     const assigneeEmail = normalizeEmail(assignee.email);
     try {
-      await this.ensureEmailSubscription(assigneeEmail);
+      await this.ensureSubscription(this.topics.tasksAssigned, "email", assigneeEmail, emailFilterAttributes(assigneeEmail));
     } catch (error) {
       this.logger?.error(
         { err: error, taskId: task.id, assigneeEmail },
@@ -56,20 +72,29 @@ export class SnsNotifier implements AssignmentNotifier {
       );
     }
 
+    const subject = `New task assigned: ${task.title}`.slice(0, 100);
+    const readable = formatAssignmentEmail(task, assignee);
+    const machine = JSON.stringify({
+      taskId: task.id,
+      teamId: task.teamId,
+      assigneeId: assignee.id,
+      assigneeEmail,
+      deadline: task.deadline,
+      priority: task.priority,
+      title: task.title
+    });
+    // MessageStructure=json lets us send different bodies per protocol:
+    //  - `default` and `email` get the human-readable text the assignee opens.
+    //  - `sqs` gets the JSON the assignment-worker Lambda parses.
+    const message = JSON.stringify({ default: readable, email: readable, sqs: machine });
+
     try {
       await this.client.send(
         new PublishCommand({
-          TopicArn: this.topicArn,
-          Subject: `New task assigned: ${task.title}`.slice(0, 100),
-          Message: JSON.stringify({
-            taskId: task.id,
-            teamId: task.teamId,
-            assigneeId: assignee.id,
-            assigneeEmail,
-            deadline: task.deadline,
-            priority: task.priority,
-            title: task.title
-          }),
+          TopicArn: this.topics.tasksAssigned,
+          Subject: subject,
+          MessageStructure: "json",
+          Message: message,
           MessageAttributes: {
             teamId: { DataType: "String", StringValue: task.teamId },
             assigneeId: { DataType: "String", StringValue: assignee.id },
@@ -83,48 +108,72 @@ export class SnsNotifier implements AssignmentNotifier {
     }
   }
 
-  private async ensureEmailSubscription(assigneeEmail: string): Promise<void> {
-    const subscriptions = await this.listSubscriptions();
-    const emailSubscriptions = subscriptions.filter((subscription) =>
-      subscription.Protocol === "email" && normalizeEmail(subscription.Endpoint) === assigneeEmail
+  async subscribeUser(email: string): Promise<void> {
+    const normalized = normalizeEmail(email);
+    const targets: { arn: string; attributes?: Record<string, string> }[] = [
+      // tasks-assigned uses a filter policy so users only receive their own
+      // assignments (set by ensureSubscription on first publish if it's missing).
+      { arn: this.topics.tasksAssigned, attributes: emailFilterAttributes(normalized) }
+    ];
+    if (this.topics.dailyDigest) targets.push({ arn: this.topics.dailyDigest });
+    if (this.topics.alerts) targets.push({ arn: this.topics.alerts });
+    for (const target of targets) {
+      try {
+        await this.ensureSubscription(target.arn, "email", normalized, target.attributes);
+      } catch (error) {
+        this.logger?.error({ err: error, email: normalized, topicArn: target.arn }, "sns subscribeUser failed");
+      }
+    }
+  }
+
+  private async ensureSubscription(
+    topicArn: string,
+    protocol: "email",
+    endpoint: string,
+    attributes?: Record<string, string>
+  ): Promise<void> {
+    const subscriptions = await this.listSubscriptions(topicArn);
+    const matching = subscriptions.filter(
+      (subscription) =>
+        subscription.Protocol === protocol && normalizeEmail(subscription.Endpoint) === endpoint
     );
-    const confirmed = emailSubscriptions.find((subscription) => isConfirmedArn(subscription.SubscriptionArn));
+    const confirmed = matching.find((subscription) => isConfirmedArn(subscription.SubscriptionArn));
     if (confirmed?.SubscriptionArn) {
-      await this.applyAssigneeFilter(confirmed.SubscriptionArn, assigneeEmail);
+      if (attributes) await this.applyAttributes(confirmed.SubscriptionArn, attributes);
       return;
     }
 
-    const pending = emailSubscriptions.find((subscription) => subscription.SubscriptionArn === "PendingConfirmation");
+    const pending = matching.find((subscription) => subscription.SubscriptionArn === "PendingConfirmation");
     if (pending) {
       this.logger?.warn(
-        { assigneeEmail, topicArn: this.topicArn },
-        "sns email subscription is pending confirmation; assignee must confirm before task emails are delivered"
+        { endpoint, topicArn },
+        "sns email subscription pending confirmation"
       );
       return;
     }
 
     await this.client.send(
       new SubscribeCommand({
-        TopicArn: this.topicArn,
-        Protocol: "email",
-        Endpoint: assigneeEmail,
+        TopicArn: topicArn,
+        Protocol: protocol,
+        Endpoint: endpoint,
         ReturnSubscriptionArn: true,
-        Attributes: emailFilterAttributes(assigneeEmail)
+        Attributes: attributes
       })
     );
-    this.logger?.warn(
-      { assigneeEmail, topicArn: this.topicArn },
-      "created sns email subscription; assignee must confirm before task emails are delivered"
+    this.logger?.info(
+      { endpoint, topicArn },
+      "created sns email subscription; user must confirm before delivery"
     );
   }
 
-  private async listSubscriptions(): Promise<Subscription[]> {
+  private async listSubscriptions(topicArn: string): Promise<Subscription[]> {
     const subscriptions: Subscription[] = [];
     let nextToken: string | undefined;
     do {
       const page = await this.client.send(
         new ListSubscriptionsByTopicCommand({
-          TopicArn: this.topicArn,
+          TopicArn: topicArn,
           NextToken: nextToken
         })
       );
@@ -134,22 +183,16 @@ export class SnsNotifier implements AssignmentNotifier {
     return subscriptions;
   }
 
-  private async applyAssigneeFilter(subscriptionArn: string, assigneeEmail: string): Promise<void> {
-    const attributes = emailFilterAttributes(assigneeEmail);
-    await this.client.send(
-      new SetSubscriptionAttributesCommand({
-        SubscriptionArn: subscriptionArn,
-        AttributeName: "FilterPolicy",
-        AttributeValue: attributes.FilterPolicy
-      })
-    );
-    await this.client.send(
-      new SetSubscriptionAttributesCommand({
-        SubscriptionArn: subscriptionArn,
-        AttributeName: "FilterPolicyScope",
-        AttributeValue: attributes.FilterPolicyScope
-      })
-    );
+  private async applyAttributes(subscriptionArn: string, attributes: Record<string, string>): Promise<void> {
+    for (const [name, value] of Object.entries(attributes)) {
+      await this.client.send(
+        new SetSubscriptionAttributesCommand({
+          SubscriptionArn: subscriptionArn,
+          AttributeName: name,
+          AttributeValue: value
+        })
+      );
+    }
   }
 }
 
@@ -165,5 +208,26 @@ function normalizeEmail(email: string | undefined): string {
 }
 
 function isConfirmedArn(subscriptionArn: string | undefined): boolean {
-  return subscriptionArn?.startsWith("arn:") ?? false;
+  if (!subscriptionArn) return false;
+  if (subscriptionArn === "PendingConfirmation") return false;
+  return subscriptionArn.startsWith("arn:");
+}
+
+export function formatAssignmentEmail(task: Task, assignee: User): string {
+  const deadline = task.deadline ? new Date(task.deadline).toLocaleString() : "(no deadline set)";
+  const lines = [
+    `Hi ${assignee.name || assignee.email},`,
+    "",
+    `You have been assigned a new task in Mini-Jira:`,
+    "",
+    `Title:    ${task.title}`,
+    `Priority: ${task.priority}`,
+    `Deadline: ${deadline}`,
+    `Task ID:  ${task.id}`,
+    "",
+    `Open Mini-Jira to view the full details and start working on it.`,
+    "",
+    `— The Mini-Jira team`
+  ];
+  return lines.join("\n");
 }

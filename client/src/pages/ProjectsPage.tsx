@@ -8,6 +8,7 @@ import { useToast } from "../contexts/ToastContext";
 import { Icon } from "../components/Icon";
 import { FormField } from "../components/FormField";
 import { colorFor, initials } from "../utils/colors";
+import { EditProjectModal } from "../modals/EditProjectModal";
 
 export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) => void }) {
   const { data, refresh } = useAppData();
@@ -19,6 +20,7 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
   const [form, setForm] = useState({ name: "", description: "", teamId: "" });
   const [errors, setErrors] = useState<Map<string, string>>(new Map());
   const [submitting, setSubmitting] = useState(false);
+  const [editing, setEditing] = useState<Project | null>(null);
 
   async function submit() {
     setErrors(new Map());
@@ -131,15 +133,28 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
               }}>
                 <span style={{ color: "var(--text-3)", fontSize: 12 }}>{done}/{pTasks.length} done</span>
                 {isManager && (
-                  <button className="btn btn-ghost sm" onClick={() => remove(p)} title="Delete">
-                    <Icon name="trash" size={14}/>
-                  </button>
+                  <span style={{ display: "inline-flex", gap: 4 }}>
+                    <button className="btn btn-ghost sm" onClick={() => setEditing(p)} title="Edit">
+                      <Icon name="edit" size={14}/>
+                    </button>
+                    <button className="btn btn-ghost sm" onClick={() => remove(p)} title="Delete">
+                      <Icon name="trash" size={14}/>
+                    </button>
+                  </span>
                 )}
               </div>
             </div>
           );
         })}
       </div>
+      {editing && (
+        <EditProjectModal
+          project={editing}
+          teams={data.teams}
+          onClose={() => setEditing(null)}
+          onSaved={async () => { setEditing(null); await refresh(); }}
+        />
+      )}
     </>
   );
 }

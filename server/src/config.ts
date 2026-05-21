@@ -8,7 +8,7 @@ export interface AppConfig {
   cognito: { userPoolId?: string; clientId?: string };
   dynamo: { tasksTable?: string; projectsTable?: string; commentsTable?: string; auditLogsTable?: string; teamsTable?: string; usersTable?: string };
   s3: { originalsBucket?: string; resizedBucket?: string };
-  sns: { taskAssignedTopicArn?: string };
+  sns: { taskAssignedTopicArn?: string; dailyDigestTopicArn?: string; alertsTopicArn?: string };
 }
 
 export function loadConfig(): AppConfig {
@@ -34,7 +34,9 @@ export function loadConfig(): AppConfig {
       resizedBucket: process.env.S3_RESIZED_BUCKET
     },
     sns: {
-      taskAssignedTopicArn: process.env.SNS_TOPIC_TASKS_ASSIGNED
+      taskAssignedTopicArn: process.env.SNS_TOPIC_TASKS_ASSIGNED,
+      dailyDigestTopicArn: process.env.SNS_TOPIC_DAILY_DIGEST,
+      alertsTopicArn: process.env.SNS_TOPIC_ALERTS
     }
   };
 }

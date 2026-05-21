@@ -17,7 +17,18 @@ export interface CreateUserParams {
   password?: string;
 }
 
+export interface UpdateUserParams {
+  name?: string;
+  role?: Role;
+  /** undefined = leave alone, null = clear, string = set */
+  teamId?: string | null;
+}
+
 export interface UserAdmin {
   createUser(params: CreateUserParams): Promise<User>;
   updateUserTeam(userId: string, teamId: string | null): Promise<User | undefined>;
+  updateUser(userId: string, params: UpdateUserParams): Promise<User | undefined>;
+  setUserPassword(userId: string, newPassword: string): Promise<void>;
+  /** Verify the user's current password (used for self-service password change). */
+  verifyPassword(email: string, password: string): Promise<boolean>;
 }
