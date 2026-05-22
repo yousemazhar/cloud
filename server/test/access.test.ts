@@ -53,4 +53,30 @@ describe("team-scoped API access", () => {
 
     await request(app).get("/api/tasks/task-b/comments").set("Authorization", `Bearer ${sara}`).expect(404);
   });
+
+  it("hides admin users from a manager's user directory but keeps admins visible to admins", async () => {
+    const ali = await login(app, "user-ali"); // manager
+    const jess = await login(app, "user-jess"); // admin
+
+    const asManager = await request(app).get("/api/users").set("Authorization", `Bearer ${ali}`).expect(200);
+    const asAdmin = await request(app).get("/api/users").set("Authorization", `Bearer ${jess}`).expect(200);
+
+    const managerIds = asManager.body.users.map((u: { id: string }) => u.id);
+    expect(managerIds).toContain("user-ali");
+    expect(managerIds).toContain("user-sara");
+    expect(managerIds).not.toContain("user-jess");
+
+    const adminIds = asAdmin.body.users.map((u: { id: string }) => u.id);
+    expect(adminIds).toContain("user-jess");
+  });
+
+  it("limits employees' user directory to teammates", async () => {
+    const sara = await login(app, "user-sara"); // frontend employee
+
+    const response = await request(app).get("/api/users").set("Authorization", `Bearer ${sara}`).expect(200);
+    const ids = response.body.users.map((u: { id: string }) => u.id);
+    expect(ids).toContain("user-sara");
+    expect(ids).not.toContain("user-omar");
+    expect(ids).not.toContain("user-jess");
+  });
 });

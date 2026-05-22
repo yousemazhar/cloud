@@ -76,6 +76,8 @@ export interface Comment {
   updatedAt?: string;
 }
 
+export type AuditEventType = "created" | "status_changed";
+
 export interface AuditLog {
   id: string;
   taskId: string;
@@ -83,8 +85,11 @@ export interface AuditLog {
   /** Snapshot of the actor's display name when the entry was written, so that
    *  history still renders even after the user has been deleted or renamed. */
   actorName?: string;
-  fromStatus: TaskStatus;
-  toStatus: TaskStatus;
+  /** Event kind. Older rows without this field are treated as "status_changed". */
+  type?: AuditEventType;
+  /** Optional — absent on "created" entries. */
+  fromStatus?: TaskStatus;
+  toStatus?: TaskStatus;
   createdAt: string;
 }
 

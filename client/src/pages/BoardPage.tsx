@@ -22,7 +22,19 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
   const { user } = useAuth();
   const { show } = useToast();
   const isManager = user?.role === "manager" || user?.role === "admin";
-  const tasks = project ? data.tasks.filter((t) => t.projectId === project.id) : data.tasks;
+  const [search, setSearch] = useState("");
+  const projectScopedTasks = project
+    ? data.tasks.filter((t) => t.projectId === project.id)
+    : filters.projectId
+      ? data.tasks.filter((t) => t.projectId === filters.projectId)
+      : data.tasks;
+  const needle = search.trim().toLowerCase();
+  const tasks = needle
+    ? projectScopedTasks.filter((t) =>
+        t.title.toLowerCase().includes(needle) ||
+        t.description.toLowerCase().includes(needle) ||
+        t.id.toLowerCase().includes(needle))
+    : projectScopedTasks;
 
   const [drag, setDrag] = useState<string | null>(null);
   const [over, setOver] = useState<TaskStatus | null>(null);
@@ -57,8 +69,18 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
       <div className="filters">
         <div className="filter-search">
           <Icon name="search" size={14}/>
-          <Input placeholder="Search" readOnly className="border-0 bg-transparent shadow-none h-7 px-1 focus-visible:ring-0"/>
+          <Input placeholder="Search title, description or id"
+                 value={search}
+                 onChange={(e) => setSearch(e.target.value)}
+                 className="border-0 bg-transparent shadow-none h-7 px-1 focus-visible:ring-0"/>
         </div>
+        {!project && (
+          <select className="dropdown" value={filters.projectId ?? ""}
+                  onChange={(e) => changeFilter({ ...filters, projectId: e.target.value || undefined })}>
+            <option value="">All projects</option>
+            {data.projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+        )}
         {isManager && (
           <select className="dropdown" value={filters.teamId ?? ""}
                   onChange={(e) => changeFilter({ ...filters, teamId: e.target.value || undefined })}>
@@ -66,13 +88,15 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
             {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
         )}
-        <select className="dropdown" value={filters.assigneeId ?? ""}
-                onChange={(e) => changeFilter({ ...filters, assigneeId: e.target.value || undefined })}>
-          <option value="">All assignees</option>
-          {data.users.map((u) => (
-            <option key={u.id} value={u.id}>{u.name} &lt;{u.email}&gt;</option>
-          ))}
-        </select>
+        {isManager && (
+          <select className="dropdown" value={filters.assigneeId ?? ""}
+                  onChange={(e) => changeFilter({ ...filters, assigneeId: e.target.value || undefined })}>
+            <option value="">All assignees</option>
+            {data.users.map((u) => (
+              <option key={u.id} value={u.id}>{u.name} &lt;{u.email}&gt;</option>
+            ))}
+          </select>
+        )}
         <select className="dropdown" value={filters.priority ?? ""}
                 onChange={(e) => changeFilter({
                   ...filters,

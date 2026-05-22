@@ -121,6 +121,41 @@ describe("AssignmentNotifier wiring", () => {
     expect(notifier.calls).toHaveLength(2);
     expect(notifier.calls[1]).toMatchObject({ taskId, assigneeId: "user-omar" });
   });
+
+  it("fires exactly once when a manager edits title+assignee in a single PATCH", async () => {
+    const services = buildServices();
+    const notifier = new CapturingNotifier();
+    services.notifier = notifier;
+    const app = createApp(services);
+
+    const login = await request(app).post("/api/auth/demo-login").send({ userId: "user-ali" }).expect(200);
+    const token = login.body.token as string;
+    const authHeader = { Authorization: `Bearer ${token}` };
+
+    const create = await request(app)
+      .post("/api/tasks")
+      .set(authHeader)
+      .send({
+        title: "Edit-title-and-assignee",
+        description: "Should notify once on reassignment",
+        priority: "medium",
+        deadline: new Date("2026-06-01T00:00:00.000Z").toISOString(),
+        teamId: "team-frontend",
+        assigneeId: "user-sara",
+        projectId: "project-portal"
+      })
+      .expect(201);
+    const taskId = create.body.task.id as string;
+    expect(notifier.calls).toHaveLength(1);
+
+    await request(app)
+      .patch(`/api/tasks/${taskId}`)
+      .set(authHeader)
+      .send({ title: "Renamed", assigneeId: "user-omar", teamId: "team-backend" })
+      .expect(200);
+    expect(notifier.calls).toHaveLength(2);
+    expect(notifier.calls[1]).toMatchObject({ taskId, assigneeId: "user-omar" });
+  });
 });
 
 describe("SnsNotifier", () => {

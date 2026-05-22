@@ -91,7 +91,7 @@ function Shell() {
       <TopNav user={user} screen={screen} onNav={setScreen}
               onCreate={() => setCreating(true)} onLogout={logout}/>
       <div className="app-body">
-        <Sidebar project={currentProject} screen={screen} onNav={setScreen}/>
+        <Sidebar project={currentProject} screen={screen} role={user.role} onNav={setScreen}/>
         <main className="main">{content}</main>
       </div>
 

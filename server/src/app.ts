@@ -189,9 +189,19 @@ export function createApp(services: AppServices) {
     try {
       const authed = authedRequest(req);
       const all = await users.list();
-      const visible = isManager(authed.user)
-        ? all
-        : all.filter((user) => user.teamId === authed.user.teamId || user.id === authed.user.id);
+      let visible: User[];
+      if (authed.user.role === "admin") {
+        visible = all;
+      } else if (authed.user.role === "manager") {
+        // Managers see everyone except other admins.
+        visible = all.filter((user) => user.role !== "admin");
+      } else {
+        // Employees see teammates and themselves only — used to render assignee
+        // names/avatars on cards. The UI hides the Teams & Users page for them.
+        visible = all.filter(
+          (user) => user.teamId === authed.user.teamId || user.id === authed.user.id
+        );
+      }
       res.json({ users: visible });
     } catch (error) {
       next(error);
@@ -423,6 +433,14 @@ export function createApp(services: AppServices) {
         createdAt: timestamp,
         updatedAt: timestamp
       });
+      await audit.create({
+        id: uid("audit"),
+        taskId: task.id,
+        actorId: authed.user.id,
+        actorName: authed.user.name,
+        type: "created",
+        createdAt: timestamp
+      });
       await notifier.publishAssignment(task, assignee);
       metrics.taskCreated(task.teamId);
       res.status(201).json({ task });
@@ -504,6 +522,7 @@ export function createApp(services: AppServices) {
           taskId: updated.id,
           actorId: authed.user.id,
           actorName: authed.user.name,
+          type: "status_changed",
           fromStatus: wasStatus,
           toStatus: nextStatus,
           createdAt: updatedAt

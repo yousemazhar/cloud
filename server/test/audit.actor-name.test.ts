@@ -27,8 +27,18 @@ describe("Audit log persists actorName", () => {
     await auth(app, ali).patch(`/api/tasks/${taskId}`).send({ status: "in_progress" }).expect(200);
 
     const detail = await auth(app, ali).get(`/api/tasks/${taskId}`).expect(200);
-    const entry = detail.body.task.auditLogs[0];
-    expect(entry.actorId).toBe("user-ali");
-    expect(entry.actorName).toBeTruthy();
+    const entries = detail.body.task.auditLogs as Array<{
+      actorId: string;
+      actorName?: string;
+      type?: string;
+      fromStatus?: string;
+      toStatus?: string;
+    }>;
+    expect(entries.some((e) => e.type === "created" && e.actorId === "user-ali")).toBe(true);
+    const statusChange = entries.find((e) => e.type === "status_changed");
+    expect(statusChange?.actorId).toBe("user-ali");
+    expect(statusChange?.actorName).toBeTruthy();
+    expect(statusChange?.fromStatus).toBe("todo");
+    expect(statusChange?.toStatus).toBe("in_progress");
   });
 });

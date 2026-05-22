@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import type { Comment, TaskDetail, TaskStatus, User } from "@mini-jira/shared";
+import type { Comment, Priority, TaskDetail, TaskStatus, User } from "@mini-jira/shared";
 import { PRIORITY_LABELS, STATUS_LABELS } from "@mini-jira/shared";
-import { api, type AppData } from "../api/client";
+import { api, type AppData, type UpdateTaskPayload } from "../api/client";
 import { ApiError, asApiError } from "../api/errors";
 import { useToast } from "../contexts/ToastContext";
 import { useConfig } from "../contexts/ConfigContext";
@@ -11,7 +11,9 @@ import { StatusMenu, STATUS_CLASS } from "../components/StatusMenu";
 import { PriorityChip } from "../components/PriorityChip";
 import { colorFor } from "../utils/colors";
 import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import { Textarea } from "../components/ui/Textarea";
+import { FormField } from "../components/FormField";
 
 interface Props {
   task: TaskDetail;
@@ -36,6 +38,20 @@ export function TaskDetailModal(p: Props) {
   const [editingDraft, setEditingDraft] = useState("");
   const [editingError, setEditingError] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [editingTask, setEditingTask] = useState(false);
+  const [taskDraft, setTaskDraft] = useState({
+    title: task.title,
+    description: task.description,
+    priority: task.priority,
+    deadline: task.deadline.slice(0, 10),
+    projectId: task.projectId,
+    teamId: task.teamId,
+    assigneeId: task.assigneeId
+  });
+  const [taskErrors, setTaskErrors] = useState<Map<string, string>>(new Map());
+  const [savingTask, setSavingTask] = useState(false);
+  const teamUsers = data.users.filter((u) => u.teamId === taskDraft.teamId);
 
   const assignee = data.users.find((u) => u.id === task.assigneeId);
   const team = data.teams.find((t) => t.id === task.teamId);
@@ -116,6 +132,54 @@ export function TaskDetailModal(p: Props) {
     }
   }
 
+  function beginEdit() {
+    setTaskDraft({
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      deadline: task.deadline.slice(0, 10),
+      projectId: task.projectId,
+      teamId: task.teamId,
+      assigneeId: task.assigneeId
+    });
+    setTaskErrors(new Map());
+    setEditingTask(true);
+  }
+
+  async function saveTask() {
+    const patch: UpdateTaskPayload = {};
+    if (taskDraft.title !== task.title) patch.title = taskDraft.title;
+    if (taskDraft.description !== task.description) patch.description = taskDraft.description;
+    if (taskDraft.priority !== task.priority) patch.priority = taskDraft.priority;
+    const nextDeadline = new Date(taskDraft.deadline).toISOString();
+    if (nextDeadline !== task.deadline) patch.deadline = nextDeadline;
+    if (taskDraft.projectId !== task.projectId) patch.projectId = taskDraft.projectId;
+    if (taskDraft.teamId !== task.teamId) patch.teamId = taskDraft.teamId;
+    if (taskDraft.assigneeId !== task.assigneeId) patch.assigneeId = taskDraft.assigneeId;
+    if (Object.keys(patch).length === 0) {
+      setEditingTask(false);
+      return;
+    }
+    setSavingTask(true);
+    setTaskErrors(new Map());
+    try {
+      await api.updateTask(task.id, patch);
+      show("Task updated.", "success");
+      setEditingTask(false);
+      onChanged();
+    } catch (err) {
+      const e = err instanceof ApiError ? err : asApiError(err);
+      if (e.hasFieldErrors) {
+        setTaskErrors(e.fieldErrors);
+        show("Please fix the highlighted fields.", "error");
+      } else {
+        show(e.message, "error");
+      }
+    } finally {
+      setSavingTask(false);
+    }
+  }
+
   async function deleteTask() {
     if (!confirm("Delete this task? This can't be undone.")) return;
     try {
@@ -137,6 +201,11 @@ export function TaskDetailModal(p: Props) {
             <span style={{ color: "var(--text-2)", fontWeight: 600 }}>{task.id.slice(0, 12)}</span>
           </span>
           <span style={{ flex: 1 }}/>
+          {isManager && !editingTask && (
+            <Button variant="ghost" size="sm" title="Edit task" onClick={beginEdit}>
+              <Icon name="edit" size={14}/>
+            </Button>
+          )}
           {isManager && (
             <Button variant="ghost" size="sm" title="Delete task" onClick={deleteTask}>
               <Icon name="trash" size={14}/>
@@ -147,12 +216,26 @@ export function TaskDetailModal(p: Props) {
 
         <div className="modal-body">
           <div className="modal-main">
-            <h2 className="modal-task-title">{task.title}</h2>
-
-            <div className="section-label">Description</div>
-            <div style={{ color: "var(--text-2)", lineHeight: 1.55 }}>
-              {task.description || <span style={{ color: "var(--text-4)" }}>No description.</span>}
-            </div>
+            {editingTask ? (
+              <>
+                <FormField label="Title" required error={taskErrors.get("title")}>
+                  <Input value={taskDraft.title}
+                         onChange={(e) => setTaskDraft({ ...taskDraft, title: e.target.value })}/>
+                </FormField>
+                <FormField label="Description" required error={taskErrors.get("description")}>
+                  <Textarea rows={3} value={taskDraft.description}
+                            onChange={(e) => setTaskDraft({ ...taskDraft, description: e.target.value })}/>
+                </FormField>
+              </>
+            ) : (
+              <>
+                <h2 className="modal-task-title">{task.title}</h2>
+                <div className="section-label">Description</div>
+                <div style={{ color: "var(--text-2)", lineHeight: 1.55 }}>
+                  {task.description || <span style={{ color: "var(--text-4)" }}>No description.</span>}
+                </div>
+              </>
+            )}
 
             {active && (
               <>
@@ -275,12 +358,20 @@ export function TaskDetailModal(p: Props) {
                   // still render correctly. The actorId lookup is the fallback for
                   // pre-fix entries in the audit log.
                   const actorName = entry.actorName ?? actor?.name ?? "Unknown user";
+                  const hasStatusPair =
+                    entry.fromStatus && entry.toStatus &&
+                    entry.fromStatus in STATUS_LABELS && entry.toStatus in STATUS_LABELS;
+                  const isCreated = entry.type === "created" || (!hasStatusPair && !entry.type);
                   return (
                     <div key={entry.id} style={{ display: "flex", gap: 12, padding: "8px 0", fontSize: 13 }}>
                       <Avatar user={actor ?? { id: entry.actorId, name: actorName }} size="sm"/>
                       <div style={{ color: "var(--text-2)" }}>
                         <b style={{ color: "var(--text)" }}>{actorName}</b>{" "}
-                        changed status from <b>{STATUS_LABELS[entry.fromStatus]}</b> to <b>{STATUS_LABELS[entry.toStatus]}</b>
+                        {isCreated
+                          ? <>created this task</>
+                          : hasStatusPair
+                            ? <>changed status from <b>{STATUS_LABELS[entry.fromStatus!]}</b> to <b>{STATUS_LABELS[entry.toStatus!]}</b></>
+                            : <>updated this task</>}
                         <span style={{ color: "var(--text-3)", marginLeft: 8 }}>· {new Date(entry.createdAt).toLocaleString()}</span>
                       </div>
                     </div>
@@ -295,25 +386,75 @@ export function TaskDetailModal(p: Props) {
               <StatusMenu value={task.status} onChange={changeStatus}/>
             </div>
             <div className="section-label" style={{ margin: "0 0 4px" }}>Details</div>
-            <Row label="Assignee">
-              <Avatar user={assignee} size="sm"/><span>{assignee?.name ?? "—"}</span>
-            </Row>
-            <Row label="Team">
-              <span className="label-chip" style={{
-                background: (team ? colorFor(team.id) : "#666") + "26",
-                color: team ? colorFor(team.id) : "var(--text)"
-              }}>{team?.name ?? "—"}</span>
-            </Row>
-            <Row label="Priority">
-              <PriorityChip priority={task.priority}/>
-              <span style={{ textTransform: "capitalize" }}>{PRIORITY_LABELS[task.priority]}</span>
-            </Row>
-            <Row label="Deadline">
-              <Icon name="calendar" size={14}/>
-              <span>{new Date(task.deadline).toLocaleDateString()}</span>
-            </Row>
-            <Row label="Project"><span>{project?.name ?? "—"}</span></Row>
-            <Row label={`Status pill ${STATUS_CLASS[task.status]}`} hide>{null}</Row>
+            {editingTask ? (
+              <>
+                <FormField label="Project" required error={taskErrors.get("projectId")}>
+                  <select className="input" value={taskDraft.projectId}
+                          onChange={(e) => setTaskDraft({ ...taskDraft, projectId: e.target.value })}>
+                    <option value="">Pick a project</option>
+                    {data.projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                  </select>
+                </FormField>
+                <FormField label="Team" required error={taskErrors.get("teamId")}>
+                  <select className="input" value={taskDraft.teamId}
+                          onChange={(e) => setTaskDraft({ ...taskDraft, teamId: e.target.value, assigneeId: "" })}>
+                    <option value="">Pick a team</option>
+                    {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                  </select>
+                </FormField>
+                <FormField label="Assignee" required error={taskErrors.get("assigneeId")}>
+                  <select className="input" value={taskDraft.assigneeId}
+                          onChange={(e) => setTaskDraft({ ...taskDraft, assigneeId: e.target.value })}
+                          disabled={!taskDraft.teamId}>
+                    <option value="">{taskDraft.teamId ? "Pick an employee" : "Pick a team first"}</option>
+                    {teamUsers.map((u) => (
+                      <option key={u.id} value={u.id}>{u.name} &lt;{u.email}&gt;</option>
+                    ))}
+                  </select>
+                </FormField>
+                <FormField label="Priority" required error={taskErrors.get("priority")}>
+                  <select className="input" value={taskDraft.priority}
+                          onChange={(e) => setTaskDraft({ ...taskDraft, priority: e.target.value as Priority })}>
+                    {(["urgent", "high", "medium", "low"] as Priority[]).map((p) =>
+                      <option key={p} value={p}>{PRIORITY_LABELS[p]}</option>)}
+                  </select>
+                </FormField>
+                <FormField label="Deadline" required error={taskErrors.get("deadline")}>
+                  <Input type="date" value={taskDraft.deadline}
+                         onChange={(e) => setTaskDraft({ ...taskDraft, deadline: e.target.value })}/>
+                </FormField>
+                <div className="mt-2 flex gap-2">
+                  <Button size="sm" onClick={saveTask} disabled={savingTask}>
+                    {savingTask ? "Saving…" : "Save"}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setEditingTask(false)} disabled={savingTask}>
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Row label="Assignee">
+                  <Avatar user={assignee} size="sm"/><span>{assignee?.name ?? "—"}</span>
+                </Row>
+                <Row label="Team">
+                  <span className="label-chip" style={{
+                    background: (team ? colorFor(team.id) : "#666") + "26",
+                    color: team ? colorFor(team.id) : "var(--text)"
+                  }}>{team?.name ?? "—"}</span>
+                </Row>
+                <Row label="Priority">
+                  <PriorityChip priority={task.priority}/>
+                  <span style={{ textTransform: "capitalize" }}>{PRIORITY_LABELS[task.priority]}</span>
+                </Row>
+                <Row label="Deadline">
+                  <Icon name="calendar" size={14}/>
+                  <span>{new Date(task.deadline).toLocaleDateString()}</span>
+                </Row>
+                <Row label="Project"><span>{project?.name ?? "—"}</span></Row>
+                <Row label={`Status pill ${STATUS_CLASS[task.status]}`} hide>{null}</Row>
+              </>
+            )}
             <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--border)" }}>
               <div className="section-label" style={{ marginTop: 0 }}>Created</div>
               <div style={{ fontSize: 12, color: "var(--text-3)" }}>

@@ -107,8 +107,9 @@ export interface CreateAuditInput {
   taskId: string;
   actorId: string;
   actorName?: string;
-  fromStatus: Task["status"];
-  toStatus: Task["status"];
+  type?: "created" | "status_changed";
+  fromStatus?: Task["status"];
+  toStatus?: Task["status"];
   createdAt: string;
 }
 

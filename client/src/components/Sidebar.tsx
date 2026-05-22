@@ -1,4 +1,4 @@
-import type { Project } from "@mini-jira/shared";
+import type { Project, Role } from "@mini-jira/shared";
 import { Icon, type IconName } from "./Icon";
 import { colorFor, initials } from "../utils/colors";
 import type { Screen } from "../routes";
@@ -6,8 +6,10 @@ import type { Screen } from "../routes";
 export function Sidebar({
   project,
   screen,
+  role,
   onNav
-}: { project: Project | null; screen: Screen; onNav: (s: Screen) => void }) {
+}: { project: Project | null; screen: Screen; role: Role; onNav: (s: Screen) => void }) {
+  const showAdmin = role !== "employee";
   return (
     <aside className="sidebar">
       <div className="sb-project">
@@ -24,7 +26,9 @@ export function Sidebar({
         <SbItem icon="board" label="Board" active={screen === "board"} onClick={() => onNav("board")}/>
         <SbItem icon="reports" label="Dashboard" active={screen === "dashboard"} onClick={() => onNav("dashboard")}/>
         <SbItem icon="backlog" label="Projects" active={screen === "projects"} onClick={() => onNav("projects")}/>
-        <SbItem icon="users" label="Teams &amp; users" active={screen === "admin"} onClick={() => onNav("admin")}/>
+        {showAdmin && (
+          <SbItem icon="users" label="Teams &amp; users" active={screen === "admin"} onClick={() => onNav("admin")}/>
+        )}
       </div>
       <div className="sb-divider"/>
       <div className="sb-footer">

@@ -118,17 +118,25 @@ describe("demo scenario (Ali / Sara / Omar)", () => {
     }
 
     const detail = await auth(app, sara).get(`/api/tasks/${taskAId}`).expect(200);
-    const audit = detail.body.task.auditLogs;
-    expect(audit).toHaveLength(3);
-    const transitions = audit
-      .map((entry: { fromStatus: string; toStatus: string }) => [entry.fromStatus, entry.toStatus])
+    const audit = detail.body.task.auditLogs as Array<{
+      actorId: string;
+      type?: string;
+      fromStatus?: string;
+      toStatus?: string;
+    }>;
+    const statusChanges = audit.filter((entry) => entry.type === "status_changed");
+    expect(statusChanges).toHaveLength(3);
+    const transitions = statusChanges
+      .map((entry) => [entry.fromStatus, entry.toStatus])
       .sort();
     expect(transitions).toEqual([
       ["in_progress", "in_review"],
       ["in_review", "done"],
       ["todo", "in_progress"]
     ]);
-    expect(audit.every((entry: { actorId: string }) => entry.actorId === "user-sara")).toBe(true);
+    expect(statusChanges.every((entry) => entry.actorId === "user-sara")).toBe(true);
+    // The "created" audit entry is by Ali (the manager who created Task A).
+    expect(audit.some((entry) => entry.type === "created" && entry.actorId === "user-ali")).toBe(true);
   });
 
   it("Sara cannot change Task B's status (still 404)", async () => {
