@@ -7,6 +7,8 @@ import { useToast } from "../contexts/ToastContext";
 import { Avatar } from "../components/Avatar";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 export function ProfilePage() {
   const { user, refreshUser } = useAuth();
@@ -85,11 +87,11 @@ export function ProfilePage() {
             </div>
           </div>
           <FormField label="Display name" required>
-            <input className="input" value={name} onChange={(e) => setName(e.target.value)}/>
+            <Input value={name} onChange={(e) => setName(e.target.value)}/>
           </FormField>
-          <button className="btn btn-primary" onClick={saveName} disabled={savingName}>
+          <Button onClick={saveName} disabled={savingName}>
             <Icon name="check" size={14}/> {savingName ? "Saving…" : "Save name"}
-          </button>
+          </Button>
         </div>
 
         <div className="panel">
@@ -100,21 +102,21 @@ export function ProfilePage() {
             </div>
           </div>
           <FormField label="Current password" required error={pwErrors.get("currentPassword")}>
-            <input className="input" type="password" value={currentPassword}
+            <Input type="password" value={currentPassword}
                    onChange={(e) => setCurrent(e.target.value)}/>
           </FormField>
           <FormField label="New password" required error={pwErrors.get("newPassword") ?? pwErrors.get("password")}>
-            <input className="input" type="password" value={newPassword}
+            <Input type="password" value={newPassword}
                    onChange={(e) => setNew(e.target.value)}/>
           </FormField>
           <FormField label="Confirm new password" required error={pwErrors.get("confirmPassword")}>
-            <input className="input" type="password" value={confirmPassword}
+            <Input type="password" value={confirmPassword}
                    onChange={(e) => setConfirm(e.target.value)}/>
           </FormField>
-          <button className="btn btn-primary" onClick={changePassword}
+          <Button onClick={changePassword}
                   disabled={savingPw || !currentPassword || !newPassword}>
             {savingPw ? "Updating…" : "Update password"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

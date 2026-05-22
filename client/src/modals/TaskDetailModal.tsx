@@ -10,6 +10,8 @@ import { Avatar } from "../components/Avatar";
 import { StatusMenu, STATUS_CLASS } from "../components/StatusMenu";
 import { PriorityChip } from "../components/PriorityChip";
 import { colorFor } from "../utils/colors";
+import { Button } from "../components/ui/Button";
+import { Textarea } from "../components/ui/Textarea";
 
 interface Props {
   task: TaskDetail;
@@ -136,11 +138,11 @@ export function TaskDetailModal(p: Props) {
           </span>
           <span style={{ flex: 1 }}/>
           {isManager && (
-            <button className="btn btn-ghost sm" title="Delete task" onClick={deleteTask}>
+            <Button variant="ghost" size="sm" title="Delete task" onClick={deleteTask}>
               <Icon name="trash" size={14}/>
-            </button>
+            </Button>
           )}
-          <button className="btn btn-ghost sm" onClick={onClose} title="Close"><Icon name="x" size={16}/></button>
+          <Button variant="ghost" size="sm" onClick={onClose} title="Close"><Icon name="x" size={16}/></Button>
         </div>
 
         <div className="modal-body">
@@ -169,17 +171,17 @@ export function TaskDetailModal(p: Props) {
                       {olderVersions.length > 0 && " · prior versions retained in S3"}
                     </div>
                   </div>
-                  <button className="btn btn-ghost sm" onClick={() => deleteAttachment(active.id)} title="Delete">
+                  <Button variant="ghost" size="sm" onClick={() => deleteAttachment(active.id)} title="Delete">
                     <Icon name="trash" size={14}/>
-                  </button>
+                  </Button>
                 </div>
               </>
             )}
 
             <div style={{ marginTop: 12 }}>
-              <button className="btn sm" onClick={() => fileInputRef.current?.click()} disabled={busy || !config}>
+              <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()} disabled={busy || !config}>
                 <Icon name="upload" size={14}/> {active ? "Replace image" : "Upload image"}
-              </button>
+              </Button>
               <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }}
                      onChange={(e) => {
                        const file = e.target.files?.[0];
@@ -201,17 +203,17 @@ export function TaskDetailModal(p: Props) {
                 <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
                   <Avatar user={currentUser}/>
                   <div style={{ flex: 1 }}>
-                    <textarea
-                      className={`comment-input ${draftError ? "has-error" : ""}`}
+                    <Textarea
                       rows={2}
                       value={draft}
                       onChange={(e) => { setDraft(e.target.value); if (draftError) setDraftError(""); }}
                       placeholder="Add a comment…"
                       aria-invalid={!!draftError}
+                      className={draftError ? "border-priority-high" : ""}
                     />
                     {draftError && <div className="field-error" role="alert">{draftError}</div>}
-                    <div style={{ marginTop: 6 }}>
-                      <button className="btn btn-primary sm" onClick={addComment} disabled={busy}>Comment</button>
+                    <div className="mt-1.5">
+                      <Button size="sm" onClick={addComment} disabled={busy}>Comment</Button>
                     </div>
                   </div>
                 </div>
@@ -232,26 +234,26 @@ export function TaskDetailModal(p: Props) {
                           <span style={{ flex: 1 }}/>
                           {canEdit && editingId !== c.id && (
                             <>
-                              <button className="btn btn-ghost sm"
+                              <Button variant="ghost" size="sm"
                                       onClick={() => { setEditingId(c.id); setEditingDraft(c.body); setEditingError(""); }}>
                                 Edit
-                              </button>
-                              <button className="btn btn-ghost sm" onClick={() => deleteComment(c.id)}>Delete</button>
+                              </Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteComment(c.id)}>Delete</Button>
                             </>
                           )}
                         </div>
                         {editingId === c.id ? (
                           <>
-                            <textarea
-                              className={`comment-input ${editingError ? "has-error" : ""}`}
+                            <Textarea
                               rows={2}
                               value={editingDraft}
                               onChange={(e) => { setEditingDraft(e.target.value); if (editingError) setEditingError(""); }}
+                              className={editingError ? "border-priority-high" : ""}
                             />
                             {editingError && <div className="field-error" role="alert">{editingError}</div>}
-                            <div style={{ marginTop: 6, display: "flex", gap: 8 }}>
-                              <button className="btn btn-primary sm" onClick={() => saveEdit(c.id)}>Save</button>
-                              <button className="btn btn-ghost sm" onClick={() => setEditingId(null)}>Cancel</button>
+                            <div className="mt-1.5 flex gap-2">
+                              <Button size="sm" onClick={() => saveEdit(c.id)}>Save</Button>
+                              <Button variant="ghost" size="sm" onClick={() => setEditingId(null)}>Cancel</Button>
                             </div>
                           </>
                         ) : (

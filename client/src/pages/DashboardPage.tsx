@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Icon } from "../components/Icon";
 import { Avatar } from "../components/Avatar";
 import { STATUS_CLASS } from "../components/StatusMenu";
+import { Button } from "../components/ui/Button";
 
 export function DashboardPage({ onOpenTask, onGoBoard }: {
   onOpenTask: (taskId: string) => void;
@@ -52,9 +53,9 @@ export function DashboardPage({ onOpenTask, onGoBoard }: {
               <div className="panel-title">{isManager ? "All tasks" : "Assigned to you"}</div>
               <div className="panel-sub">Most recent activity</div>
             </div>
-            <button className="btn sm" onClick={onGoBoard}>
+            <Button variant="secondary" size="sm" onClick={onGoBoard}>
               Open board <Icon name="chevron-right" size={14}/>
-            </button>
+            </Button>
           </div>
           {list.slice(0, 7).map((t) => {
             const assignee = data.users.find((u) => u.id === t.assigneeId);

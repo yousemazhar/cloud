@@ -377,17 +377,11 @@
      "Monitoring": {
       "Enabled": false
      },
-     "NetworkInterfaces": [
+     "SecurityGroupIds": [
       {
-       "AssociatePublicIpAddress": true,
-       "DeviceIndex": 0,
-       "Groups": [
-        {
-         "Fn::GetAtt": [
-          "InstanceSg4966687D",
-          "GroupId"
-         ]
-        }
+       "Fn::GetAtt": [
+        "InstanceSg4966687D",
+        "GroupId"
        ]
       }
      ],
@@ -565,10 +559,10 @@
     ],
     "VPCZoneIdentifier": [
      {
-      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet1SubnetAE489B2F386690C8"
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
      },
      {
-      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcappSubnet2Subnet2449FB56F27A422B"
+      "Fn::ImportValue": "MiniJira-Network:ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
      }
     ]
    },

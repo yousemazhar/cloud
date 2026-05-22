@@ -6,6 +6,9 @@ import { api, type AppData, type CreateTaskPayload } from "../api/client";
 import { useToast } from "../contexts/ToastContext";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Textarea } from "../components/ui/Textarea";
 
 const empty: CreateTaskPayload = {
   title: "", description: "", priority: "medium",
@@ -51,16 +54,16 @@ export function CreateTaskModal({
         <div className="modal-head">
           <span style={{ color: "var(--text-2)", fontWeight: 600 }}>Create task</span>
           <span style={{ flex: 1 }}/>
-          <button className="btn btn-ghost sm" onClick={onClose}><Icon name="x" size={16}/></button>
+          <Button variant="ghost" size="sm" onClick={onClose}><Icon name="x" size={16}/></Button>
         </div>
         <div className="modal-body" style={{ gridTemplateColumns: "1fr" }}>
           <div className="modal-main">
             <FormField label="Title" required error={errors.get("title")}>
-              <input className="input" value={form.title}
+              <Input value={form.title}
                      onChange={(e) => setForm({ ...form, title: e.target.value })}/>
             </FormField>
             <FormField label="Description" required error={errors.get("description")}>
-              <textarea className="comment-input" rows={3} value={form.description}
+              <Textarea rows={3} value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}/>
             </FormField>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -72,7 +75,7 @@ export function CreateTaskModal({
                 </select>
               </FormField>
               <FormField label="Deadline" required error={errors.get("deadline")}>
-                <input className="input" type="date" value={form.deadline}
+                <Input type="date" value={form.deadline}
                        onChange={(e) => setForm({ ...form, deadline: e.target.value })}/>
               </FormField>
             </div>
@@ -102,11 +105,11 @@ export function CreateTaskModal({
                 </select>
               </FormField>
             </div>
-            <div style={{ marginTop: 16, display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button className="btn btn-ghost" onClick={onClose} disabled={submitting}>Cancel</button>
-              <button className="btn btn-primary" onClick={submit} disabled={submitting}>
+            <div className="mt-4 flex gap-2 justify-end">
+              <Button variant="ghost" onClick={onClose} disabled={submitting}>Cancel</Button>
+              <Button onClick={submit} disabled={submitting}>
                 {submitting ? "Creating…" : "Create"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

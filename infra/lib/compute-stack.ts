@@ -56,7 +56,8 @@ interface ComputeStackProps extends StackProps {
 
 /**
  * ALB-fronted Auto Scaling Group of 2 EC2 instances across 2 AZs.
- * EC2 in public subnets (no NAT — free-tier compromise).
+ * ALB lives in public subnets; EC2 lives in private subnets and reaches
+ * S3 / Cognito / Dynamo / SNS through the VPC's NAT gateway.
  * User-data installs Node, pulls server bundle from artifacts S3, runs systemd unit on :4000.
  */
 export class ComputeStack extends Stack {
@@ -178,7 +179,7 @@ export class ComputeStack extends Stack {
     // -------- Auto Scaling Group --------
     this.asg = new AutoScalingGroup(this, "AppAsg", {
       vpc: props.vpc,
-      vpcSubnets: { subnetType: SubnetType.PUBLIC },
+      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
       instanceType: InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
       machineImage: MachineImage.latestAmazonLinux2023({ cpuType: AmazonLinuxCpuType.X86_64 }),
       minCapacity: 2,
@@ -187,8 +188,7 @@ export class ComputeStack extends Stack {
       role: instanceRole,
       securityGroup: instanceSg,
       userData,
-      healthCheck: HealthCheck.elb({ grace: Duration.minutes(5) }),
-      associatePublicIpAddress: true
+      healthCheck: HealthCheck.elb({ grace: Duration.minutes(5) })
     });
 
     // -------- ALB --------

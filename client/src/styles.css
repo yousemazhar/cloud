@@ -1,6 +1,37 @@
 /* ============================================================
    Mini-Jira — Atlassian-refresh dark theme
+   Tailwind v4 utility layer is enabled below; existing CSS
+   classes coexist with utilities during the staged migration.
    ============================================================ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-canvas: #0b1018;
+  --color-surface: #11161f;
+  --color-surface-2: #161c27;
+  --color-surface-3: #1d2533;
+  --color-elev: #222b3a;
+  --color-border: rgba(255,255,255,0.07);
+  --color-border-strong: rgba(255,255,255,0.12);
+  --color-text: #e6edf3;
+  --color-text-2: #b6c2cf;
+  --color-text-3: #8590a2;
+  --color-brand: #4c9aff;
+  --color-brand-2: #85b8ff;
+  --color-brand-strong: #2684ff;
+  --color-status-todo: #c1c8d4;
+  --color-status-progress: #85b8ff;
+  --color-status-review: #f5cd47;
+  --color-status-done: #4bce97;
+  --color-priority-high: #f15b50;
+  --color-priority-medium: #e2a000;
+  --color-priority-low: #4bce97;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
 
 :root {
   /* surfaces */

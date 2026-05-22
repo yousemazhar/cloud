@@ -5,6 +5,8 @@ import { asApiError } from "../api/errors";
 import { useToast } from "../contexts/ToastContext";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 export function EditProjectModal({
   project,
@@ -43,17 +45,17 @@ export function EditProjectModal({
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" style={{ width: "min(520px, 96vw)" }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <span style={{ color: "var(--text-2)", fontWeight: 600 }}>Edit project</span>
-          <span style={{ flex: 1 }}/>
-          <button className="btn btn-ghost sm" onClick={onClose}><Icon name="x" size={16}/></button>
+          <span className="text-text-2 font-semibold">Edit project</span>
+          <span className="flex-1"/>
+          <Button variant="ghost" size="sm" onClick={onClose}><Icon name="x" size={16}/></Button>
         </div>
         <div className="modal-body" style={{ gridTemplateColumns: "1fr" }}>
           <div className="modal-main">
             <FormField label="Name" required error={errors.get("name")}>
-              <input className="input" value={name} onChange={(e) => setName(e.target.value)}/>
+              <Input value={name} onChange={(e) => setName(e.target.value)}/>
             </FormField>
             <FormField label="Description" required error={errors.get("description")}>
-              <input className="input" value={description} onChange={(e) => setDescription(e.target.value)}/>
+              <Input value={description} onChange={(e) => setDescription(e.target.value)}/>
             </FormField>
             <FormField label="Team (optional)" error={errors.get("teamId")}>
               <select className="input" value={teamId} onChange={(e) => setTeamId(e.target.value)}>
@@ -61,11 +63,11 @@ export function EditProjectModal({
                 {teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
             </FormField>
-            <div style={{ marginTop: 12, display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
-              <button className="btn btn-primary" onClick={submit} disabled={busy}>
+            <div className="mt-3 flex gap-2 justify-end">
+              <Button variant="ghost" onClick={onClose} disabled={busy}>Cancel</Button>
+              <Button onClick={submit} disabled={busy}>
                 {busy ? "Saving…" : "Save changes"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

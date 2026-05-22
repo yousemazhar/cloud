@@ -7,6 +7,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import { Icon } from "../components/Icon";
 import { FormField } from "../components/FormField";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import { colorFor, initials } from "../utils/colors";
 import { EditProjectModal } from "../modals/EditProjectModal";
 
@@ -68,9 +70,9 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
         </div>
         <div className="page-head-actions">
           {isManager && (
-            <button className="btn btn-primary" onClick={() => setCreating((c) => !c)}>
+            <Button onClick={() => setCreating((c) => !c)}>
               <Icon name="plus" size={14}/> {creating ? "Cancel" : "Create project"}
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -85,11 +87,11 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
               </div>
             </div>
             <FormField label="Name" required error={errors.get("name")}>
-              <input className="input" value={form.name}
+              <Input value={form.name}
                      onChange={(e) => setForm({ ...form, name: e.target.value })}/>
             </FormField>
             <FormField label="Description" required error={errors.get("description")}>
-              <input className="input" value={form.description}
+              <Input value={form.description}
                      onChange={(e) => setForm({ ...form, description: e.target.value })}/>
             </FormField>
             <FormField label="Team (optional)" error={errors.get("teamId")}>
@@ -99,9 +101,9 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
                 {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
             </FormField>
-            <button className="btn btn-primary" onClick={submit} disabled={submitting}>
+            <Button onClick={submit} disabled={submitting}>
               {submitting ? "Creating…" : "Create"}
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -134,12 +136,12 @@ export function ProjectsPage({ onOpenProject }: { onOpenProject: (p: Project) =>
                 <span style={{ color: "var(--text-3)", fontSize: 12 }}>{done}/{pTasks.length} done</span>
                 {isManager && (
                   <span style={{ display: "inline-flex", gap: 4 }}>
-                    <button className="btn btn-ghost sm" onClick={() => setEditing(p)} title="Edit">
+                    <Button variant="ghost" size="sm" onClick={() => setEditing(p)} title="Edit">
                       <Icon name="edit" size={14}/>
-                    </button>
-                    <button className="btn btn-ghost sm" onClick={() => remove(p)} title="Delete">
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => remove(p)} title="Delete">
                       <Icon name="trash" size={14}/>
-                    </button>
+                    </Button>
                   </span>
                 )}
               </div>

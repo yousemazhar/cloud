@@ -5,6 +5,8 @@ import { asApiError } from "./api/errors";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { ConfigProvider } from "./contexts/ConfigContext";
 import { ToastProvider, useToast } from "./contexts/ToastContext";
+// Sonner renders toasts from inside ToastProvider; the legacy <Toast/>
+// component is now a no-op.
 import { AppDataProvider, useAppData } from "./contexts/AppDataContext";
 import { LoginPage } from "./pages/LoginPage";
 import { BoardPage } from "./pages/BoardPage";
@@ -14,7 +16,6 @@ import { AdminPage } from "./pages/AdminPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { TopNav } from "./components/TopNav";
 import { Sidebar } from "./components/Sidebar";
-import { Toast } from "./components/Toast";
 import { TaskDetailModal } from "./modals/TaskDetailModal";
 import { CreateTaskModal } from "./modals/CreateTaskModal";
 import type { Screen } from "./routes";
@@ -39,7 +40,7 @@ export function Root() {
 function Shell() {
   const { user, loading: authLoading, logout } = useAuth();
   const { data, refresh } = useAppData();
-  const { toast, show } = useToast();
+  const { show } = useToast();
   const [screen, setScreen] = useState<Screen>("board");
   const [creating, setCreating] = useState(false);
   const [selected, setSelected] = useState<TaskDetail | null>(null);
@@ -114,7 +115,6 @@ function Shell() {
         />
       )}
 
-      <Toast message={toast.message} variant={toast.variant}/>
     </div>
   );
 }

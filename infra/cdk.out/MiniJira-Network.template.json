@@ -119,6 +119,64 @@
     "aws:cdk:path": "MiniJira-Network/Vpc/appSubnet1/DefaultRoute"
    }
   },
+  "VpcappSubnet1EIP459E774A": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/appSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/appSubnet1/EIP"
+   }
+  },
+  "VpcappSubnet1NATGateway743C4A9E": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "VpcappSubnet1EIP459E774A",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "VpcappSubnet1SubnetAE489B2F"
+    },
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/appSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ]
+   },
+   "DependsOn": [
+    "VpcappSubnet1DefaultRoute64294A8F",
+    "VpcappSubnet1RouteTableAssociation168BF781"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/appSubnet1/NATGateway"
+   }
+  },
   "VpcappSubnet2Subnet2449FB56": {
    "Type": "AWS::EC2::Subnet",
    "Properties": {
@@ -210,6 +268,186 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MiniJira-Network/Vpc/appSubnet2/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet1SubnetCEAD3716": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.20.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/privateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet1/Subnet"
+   }
+  },
+  "VpcprivateSubnet1RouteTable1979EACB": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/privateSubnet1"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet1/RouteTable"
+   }
+  },
+  "VpcprivateSubnet1RouteTableAssociationEEBD93CE": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet1DefaultRouteB506891A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcappSubnet1NATGateway743C4A9E"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet1RouteTable1979EACB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet1/DefaultRoute"
+   }
+  },
+  "VpcprivateSubnet2Subnet2DE7549C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.20.3.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/privateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet2/Subnet"
+   }
+  },
+  "VpcprivateSubnet2RouteTable4D0FFC8C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Course",
+      "Value": "cloud-computing-s26"
+     },
+     {
+      "Key": "Name",
+      "Value": "MiniJira-Network/Vpc/privateSubnet2"
+     },
+     {
+      "Key": "Project",
+      "Value": "mini-jira"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet2/RouteTable"
+   }
+  },
+  "VpcprivateSubnet2RouteTableAssociationB691E645": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcprivateSubnet2DefaultRouteBAC3C1C3": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "VpcappSubnet1NATGateway743C4A9E"
+    },
+    "RouteTableId": {
+     "Ref": "VpcprivateSubnet2RouteTable4D0FFC8C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MiniJira-Network/Vpc/privateSubnet2/DefaultRoute"
    }
   },
   "VpcIGWD7BA715C": {
@@ -362,7 +600,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/3WNwQ6CQAxEv8X7sirRD0AOxpMEjFdTlqpV6JptV2KM/26IRk6eZua1k0ltulza2QR6SVxzTVqq7bNScFcDvRzQpfa5vzmTH3lf5KaIdUuuijWjDmx0pY+KO6hbHPnIMhHvCJQ8/54Hs2HFwKhrUOzh8Z35pkwV3LlD1pcpUXwMDk0eRX03xiP/ORXB36nBsAJBk4mgVgon4tPQ2Ua9RX0Z9g3ai0zv6cLOF3Y+uQhREiIrdWjLj74BbPegMiQBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/3WOwW7CQAxEv4X7Zlsi+IA0qiou7SqpuFbOxlBD4kVrb6IK8e9VRMWeepqZ57Hl0pbbrX1ewSyF78/FQJ29tgr+bGCWL/Slve4v3tQH3rvauNQN5NvUMerCsmtCUvyEbsDMM6tEgidQCvwoL+Z15xZ5B30DxRl+jIs0gWI+vGPFyPgo3D/5S5Uq+O8RWW+mQQkpejR1Eg1jjgf+Z+RimKjH+AKCphJBbRWOxMdl5yPpJenNcOjRnuRpKjd2vbHr1UmIiphYaUTb3PUXu68UvUcBAAA="
    },
    "Metadata": {
     "aws:cdk:path": "MiniJira-Network/CDKMetadata/Default"
@@ -384,6 +622,22 @@
    },
    "Export": {
     "Name": "MiniJira-Network:ExportsOutputRefVpc8378EB38272D6E3A"
+   }
+  },
+  "ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373": {
+   "Value": {
+    "Ref": "VpcprivateSubnet1SubnetCEAD3716"
+   },
+   "Export": {
+    "Name": "MiniJira-Network:ExportsOutputRefVpcprivateSubnet1SubnetCEAD37168693D373"
+   }
+  },
+  "ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D": {
+   "Value": {
+    "Ref": "VpcprivateSubnet2Subnet2DE7549C"
+   },
+   "Export": {
+    "Name": "MiniJira-Network:ExportsOutputRefVpcprivateSubnet2Subnet2DE7549CDF5ACE3D"
    }
   },
   "ExportsOutputRefVpcappSubnet1SubnetAE489B2F386690C8": {

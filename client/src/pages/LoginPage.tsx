@@ -7,7 +7,8 @@ import { Avatar } from "../components/Avatar";
 import { Icon } from "../components/Icon";
 import { MJLogo } from "../components/MJLogo";
 import { FormField } from "../components/FormField";
-import { Toast } from "../components/Toast";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import { SignupModal } from "../modals/SignupModal";
 
 const DEMO_PERSONAS = [
@@ -20,7 +21,7 @@ const DEMO_PERSONAS = [
 export function LoginPage() {
   const { loginDemo, loginCognito } = useAuth();
   const { config } = useConfig();
-  const { toast, show } = useToast();
+  const { show } = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,21 +79,21 @@ export function LoginPage() {
         {isAws && (
           <>
             <FormField label="Email" required error={errors.email}>
-              <input className="input" type="email" placeholder="you@minijira.io" value={email}
+              <Input type="email" placeholder="you@minijira.io" value={email}
                      onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: undefined }); }}
                      disabled={busy}/>
             </FormField>
             <FormField label="Password" required error={errors.password}>
-              <input className="input" type="password" placeholder="••••••••" value={password}
+              <Input type="password" placeholder="••••••••" value={password}
                      onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors({ ...errors, password: undefined }); }}
                      disabled={busy}/>
             </FormField>
-            <button className="login-btn" onClick={submitCognito} disabled={busy}>
+            <Button className="w-full mt-2" size="lg" onClick={submitCognito} disabled={busy}>
               {busy ? "Signing in…" : "Continue"}
-            </button>
-            <div style={{ marginTop: 12, textAlign: "center", fontSize: 13, color: "var(--text-3)" }}>
+            </Button>
+            <div className="mt-3 text-center text-[13px] text-text-3">
               No account yet?{" "}
-              <a style={{ cursor: "pointer", color: "var(--brand-2)" }} onClick={() => setSigningUp(true)}>
+              <a className="cursor-pointer text-brand-2 hover:underline" onClick={() => setSigningUp(true)}>
                 Sign up
               </a>
             </div>
@@ -121,7 +122,6 @@ export function LoginPage() {
           </div>
         )}
       </div>
-      <Toast message={toast.message} variant={toast.variant}/>
     </div>
   );
 }

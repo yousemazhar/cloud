@@ -5,6 +5,8 @@ import { asApiError } from "../api/errors";
 import { useToast } from "../contexts/ToastContext";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 export function EditUserModal({
   user,
@@ -47,17 +49,17 @@ export function EditUserModal({
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" style={{ width: "min(520px, 96vw)" }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <span style={{ color: "var(--text-2)", fontWeight: 600 }}>Edit user</span>
-          <span style={{ flex: 1 }}/>
-          <button className="btn btn-ghost sm" onClick={onClose}><Icon name="x" size={16}/></button>
+          <span className="text-text-2 font-semibold">Edit user</span>
+          <span className="flex-1"/>
+          <Button variant="ghost" size="sm" onClick={onClose}><Icon name="x" size={16}/></Button>
         </div>
         <div className="modal-body" style={{ gridTemplateColumns: "1fr" }}>
           <div className="modal-main">
             <FormField label="Name" required error={errors.get("name")}>
-              <input className="input" value={name} onChange={(e) => setName(e.target.value)}/>
+              <Input value={name} onChange={(e) => setName(e.target.value)}/>
             </FormField>
             <FormField label="Email">
-              <input className="input" value={user.email} disabled/>
+              <Input value={user.email} disabled/>
             </FormField>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <FormField label="Role" required error={errors.get("role")}>
@@ -77,14 +79,14 @@ export function EditUserModal({
             <FormField label="Reset password (optional)"
                        hint="Leave blank to keep the current password. Otherwise must meet the policy (min 8, mixed case, digit, symbol)."
                        error={errors.get("password") ?? errors.get("newPassword")}>
-              <input className="input" type="password" value={resetPassword}
+              <Input type="password" value={resetPassword}
                      onChange={(e) => setResetPassword(e.target.value)}/>
             </FormField>
-            <div style={{ marginTop: 12, display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
-              <button className="btn btn-primary" onClick={save} disabled={busy}>
+            <div className="mt-3 flex gap-2 justify-end">
+              <Button variant="ghost" onClick={onClose} disabled={busy}>Cancel</Button>
+              <Button onClick={save} disabled={busy}>
                 {busy ? "Saving…" : "Save changes"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -1,10 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
+import { Toaster, toast as sonnerToast } from "sonner";
 
 type Variant = "info" | "error" | "success";
-interface ToastState { message: string; variant: Variant }
 
 interface ToastApi {
-  toast: ToastState;
+  // `toast` is kept for backwards compatibility with any caller that still
+  // reads the current message; with sonner we no longer maintain explicit
+  // state, so the field is a no-op snapshot.
+  toast: { message: string; variant: Variant };
   show: (message: string, variant?: Variant) => void;
   clear: () => void;
 }
@@ -12,21 +15,35 @@ interface ToastApi {
 const ToastContext = createContext<ToastApi | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [toast, setToast] = useState<ToastState>({ message: "", variant: "info" });
-
   const show = useCallback((message: string, variant: Variant = "info") => {
-    setToast({ message, variant });
+    if (variant === "error") sonnerToast.error(message);
+    else if (variant === "success") sonnerToast.success(message);
+    else sonnerToast(message);
   }, []);
-  const clear = useCallback(() => setToast({ message: "", variant: "info" }), []);
 
-  useEffect(() => {
-    if (!toast.message) return;
-    const id = setTimeout(() => setToast({ message: "", variant: "info" }), 4500);
-    return () => clearTimeout(id);
-  }, [toast.message]);
+  const clear = useCallback(() => sonnerToast.dismiss(), []);
 
-  const value = useMemo(() => ({ toast, show, clear }), [toast, show, clear]);
-  return <ToastContext.Provider value={value}>{children}</ToastContext.Provider>;
+  const value = useMemo<ToastApi>(
+    () => ({ toast: { message: "", variant: "info" }, show, clear }),
+    [show, clear]
+  );
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      <Toaster
+        theme="dark"
+        position="bottom-right"
+        toastOptions={{
+          classNames: {
+            toast: "!bg-surface-2 !border !border-border-strong !text-text !rounded-md",
+            error: "!bg-priority-high !text-white",
+            success: "!bg-status-done !text-white"
+          }
+        }}
+      />
+    </ToastContext.Provider>
+  );
 }
 
 export function useToast(): ToastApi {

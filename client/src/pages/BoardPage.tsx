@@ -9,6 +9,8 @@ import { useToast } from "../contexts/ToastContext";
 import { Icon } from "../components/Icon";
 import { KanbanCard } from "../components/KanbanCard";
 import { STATUS_CLASS } from "../components/StatusMenu";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 interface BoardPageProps {
   project: Project | null;
@@ -48,14 +50,14 @@ export function BoardPage({ project, onOpenTask }: BoardPageProps) {
           <h1 className="page-title">Board</h1>
         </div>
         <div className="page-head-actions">
-          <button className="btn btn-ghost"><Icon name="share" size={14}/> Share</button>
+          <Button variant="ghost"><Icon name="share" size={14}/> Share</Button>
         </div>
       </div>
 
       <div className="filters">
         <div className="filter-search">
           <Icon name="search" size={14}/>
-          <input placeholder="Search" readOnly/>
+          <Input placeholder="Search" readOnly className="border-0 bg-transparent shadow-none h-7 px-1 focus-visible:ring-0"/>
         </div>
         {isManager && (
           <select className="dropdown" value={filters.teamId ?? ""}

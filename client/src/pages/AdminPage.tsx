@@ -10,6 +10,8 @@ import type { User } from "@mini-jira/shared";
 import { Icon } from "../components/Icon";
 import { Avatar } from "../components/Avatar";
 import { FormField } from "../components/FormField";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import { colorFor, initials } from "../utils/colors";
 import { EditUserModal } from "../modals/EditUserModal";
 
@@ -128,12 +130,12 @@ export function AdminPage() {
             <div style={{ marginTop: 12 }}>
               <FormField label="New team" required error={teamError}>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <input className="input" placeholder="e.g. DevOps" value={teamName}
+                  <Input placeholder="e.g. DevOps" value={teamName}
                          onChange={(e) => { setTeamName(e.target.value); if (teamError) setTeamError(""); }}
-                         style={{ flex: 1 }}/>
-                  <button className="btn btn-primary sm" onClick={createTeam} disabled={submitting}>
+                         className="flex-1"/>
+                  <Button size="sm" onClick={createTeam} disabled={submitting}>
                     <Icon name="plus" size={14}/> Add
-                  </button>
+                  </Button>
                 </div>
               </FormField>
             </div>
@@ -167,10 +169,10 @@ export function AdminPage() {
                     <option value="">No team</option>
                     {data.teams.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </select>
-                  <button className="btn btn-ghost sm" title="Edit user / reset password"
+                  <Button variant="ghost" size="sm" title="Edit user / reset password"
                           onClick={() => setEditingUser(u)}>
                     <Icon name="edit" size={14}/>
-                  </button>
+                  </Button>
                 </span>
               ) : (
                 <span className="label-chip">{data.teams.find((t) => t.id === u.teamId)?.name ?? "—"}</span>
@@ -183,11 +185,11 @@ export function AdminPage() {
               <div className="section-label" style={{ marginTop: 0 }}>Add a user</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <FormField label="Name" required error={userErrors.get("name")}>
-                  <input className="input" value={newUser.name}
+                  <Input value={newUser.name}
                          onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}/>
                 </FormField>
                 <FormField label="Email" required error={userErrors.get("email")}>
-                  <input className="input" value={newUser.email}
+                  <Input value={newUser.email}
                          onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}/>
                 </FormField>
               </div>
@@ -214,12 +216,12 @@ export function AdminPage() {
                            ? "Set the initial password (admin-set, permanent). The user can change it later."
                            : "Optional in local mode."}
                          error={userErrors.get("password")}>
-                <input className="input" type="password" value={newUser.password}
+                <Input type="password" value={newUser.password}
                        onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}/>
               </FormField>
-              <button className="btn btn-primary" onClick={createUser} disabled={submitting}>
+              <Button onClick={createUser} disabled={submitting}>
                 <Icon name="plus" size={14}/> {submitting ? "Adding…" : "Add user"}
-              </button>
+              </Button>
             </div>
           )}
         </div>

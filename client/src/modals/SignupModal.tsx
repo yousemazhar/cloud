@@ -4,6 +4,8 @@ import { asApiError } from "../api/errors";
 import { useToast } from "../contexts/ToastContext";
 import { FormField } from "../components/FormField";
 import { Icon } from "../components/Icon";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 
 export function SignupModal({ onClose, onSignedUp }: { onClose: () => void; onSignedUp: () => void }) {
   const { show } = useToast();
@@ -33,32 +35,32 @@ export function SignupModal({ onClose, onSignedUp }: { onClose: () => void; onSi
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" style={{ width: "min(440px, 96vw)" }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <span style={{ color: "var(--text-2)", fontWeight: 600 }}>Create your account</span>
-          <span style={{ flex: 1 }}/>
-          <button className="btn btn-ghost sm" onClick={onClose}><Icon name="x" size={16}/></button>
+          <span className="text-text-2 font-semibold">Create your account</span>
+          <span className="flex-1"/>
+          <Button variant="ghost" size="sm" onClick={onClose}><Icon name="x" size={16}/></Button>
         </div>
         <div className="modal-body" style={{ gridTemplateColumns: "1fr" }}>
           <div className="modal-main">
             <FormField label="Full name" required error={errors.get("name")}>
-              <input className="input" value={name} onChange={(e) => setName(e.target.value)}/>
+              <Input value={name} onChange={(e) => setName(e.target.value)}/>
             </FormField>
             <FormField label="Email" required error={errors.get("email")}>
-              <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
             </FormField>
             <FormField label="Password"
                        required
                        hint="Min 8 chars, mixed case, digit, and symbol."
                        error={errors.get("password")}>
-              <input className="input" type="password" value={password}
+              <Input type="password" value={password}
                      onChange={(e) => setPassword(e.target.value)}/>
             </FormField>
-            <div style={{ marginTop: 12, display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <button className="btn btn-ghost" onClick={onClose} disabled={busy}>Cancel</button>
-              <button className="btn btn-primary" onClick={submit} disabled={busy}>
+            <div className="mt-3 flex gap-2 justify-end">
+              <Button variant="ghost" onClick={onClose} disabled={busy}>Cancel</Button>
+              <Button onClick={submit} disabled={busy}>
                 {busy ? "Creating…" : "Sign up"}
-              </button>
+              </Button>
             </div>
-            <div className="field-hint" style={{ marginTop: 8 }}>
+            <div className="field-hint mt-2">
               You will be created as an employee with no team. An admin will assign you to one.
             </div>
           </div>
