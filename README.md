@@ -13,11 +13,11 @@ The full spec lives in [`Cloud Computing Project S'26.md`](Cloud%20Computing%20P
 - **Architecture diagram (Lucidchart, AWS 2024 icons):** <https://lucid.app/lucidchart/edeb630b-f41c-47a4-9ac5-03a005b86f81/edit?invitationId=inv_311351d4-8a87-4323-865d-eb098a9d7816>
 - **Demo video:** <https://drive.google.com/file/d/1ucmXCX7bRXMyN00QVbDdQJc1id28wIni/view?usp=sharing>
 
-Demo accounts on Cognito (password MiniJira#2026 for all): 
-ali@minijira.test — manager (all teams) 
-sara@minijira.test — employee (Frontend) 
-omar@minijira.test — employee (Backend) 
-jess@minijira.test — admin 
+## Demo accounts on Cognito (password MiniJira#2026 for all): 
+- ali@minijira.test — manager (all teams) 
+- sara@minijira.test — employee (Frontend) 
+- omar@minijira.test — employee (Backend) 
+- jess@minijira.test — admin 
 ## Repository layout
 
 Three-workspace npm monorepo:
