@@ -77,7 +77,8 @@ export class S3Storage implements AttachmentStorage {
       fileName: input.fileName,
       mimeType: input.mimeType,
       size: input.size,
-      url
+      url,
+      key: input.key
     };
   }
 

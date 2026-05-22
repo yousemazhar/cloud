@@ -41,7 +41,7 @@ flowchart LR
   SNS1[SNS tasks-assigned]
   SQS1[SQS assignment-events]
   L2[Lambda assignment-worker]
-  EB[EventBridge cron 09:00 UTC]
+  EB[EventBridge cron 06:00 UTC / 9:00 AM GMT+3]
   L3[Lambda daily-digest]
   SNS2[SNS daily-digest]
   SNS3[SNS alerts]
@@ -81,12 +81,12 @@ A polished diagram drawn with AWS standard icons (per spec) is committed at
 | **S3 artifacts** | Holds `server-bundle.tgz` for EC2 user-data. |
 | **Lambda image-resize** | S3 PUT trigger on originals → 400px JPEG to resized bucket. |
 | **Lambda assignment-worker** | SQS event source → audit-log row + `MiniJira/TasksAssignedPerTeam` metric. |
-| **Lambda daily-digest** | EventBridge cron `0 9 * * ? *` → scans Tasks, emails assignees, emits `OverdueTasks` metric. |
+| **Lambda daily-digest** | EventBridge cron `0 6 * * ? *` (9:00 AM GMT+3) → scans Tasks, emails assignees, emits `OverdueTasks` metric. |
 | **SNS `mini-jira-tasks-assigned`** | Fan-out: dynamic filtered assignee email subscriptions + SQS subscription. |
 | **SNS `mini-jira-daily-digest`** | Daily digest emails. |
 | **SNS `mini-jira-alerts`** | CloudWatch alarm target. |
 | **SQS `mini-jira-assignment-events`** | Buffers SNS messages for the worker Lambda. DLQ after 5 retries. |
-| **EventBridge** | One scheduled rule `mini-jira-daily-9am`. |
+| **EventBridge** | One scheduled rule `mini-jira-daily-9am-gmt3`. |
 | **CloudWatch** | Dashboard `MiniJira-Main` with 5 widgets; `OverdueTasks > 5` alarm → alerts topic. |
 | **IAM** | Per-Lambda least-privilege roles; EC2 instance role with DDB/S3/SNS permissions + SSM Session Manager. |
 
@@ -366,7 +366,7 @@ Then manually exercise the UI at the CloudFront URL:
    - S3 → originals bucket → show versioning enabled and the resized bucket has the thumbnail.
    - Lambda → show all three functions.
    - SNS → show three topics, fan-out from `tasks-assigned` to SQS + email.
-   - EventBridge → show the 9 AM scheduled rule.
+   - EventBridge → show the 9:00 AM GMT+3 scheduled rule.
    - CloudWatch → show the `MiniJira-Main` dashboard and the `OverdueTasks-GT5` alarm.
 
 Aim for 5–7 minutes total.
@@ -431,7 +431,7 @@ satisfied by this deployment.
 | Images linked to tasks | `attachments` array on Task rows |
 | Lambda triggered on new image | S3 PUT event source in `lambda-stack.ts` |
 | SNS+SQS event-driven assignment | `messaging-stack.ts` + `assignment-worker.ts` + `TasksAssignedPerTeam` metric |
-| EventBridge 9 AM digest | `daily-digest.ts` + rule in `lambda-stack.ts` |
+| EventBridge 9:00 AM GMT+3 digest | `daily-digest.ts` + rule in `lambda-stack.ts` |
 | CloudWatch ≥4 widgets + alarm | `observability-stack.ts` (5 widgets, 1 alarm) |
 | Polished UI with Kanban, modal, toasts | Existing `client/src/App.tsx` |
 

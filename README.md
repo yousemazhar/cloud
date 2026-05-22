@@ -7,6 +7,12 @@ today and is wired behind service interfaces so a single env flag swaps it onto 
 
 The full spec lives in [`Cloud Computing Project S'26.md`](Cloud%20Computing%20Project%20S%2726.md).
 
+## Submission links
+
+- **Live web app (CloudFront):** <https://d2r9r2l6xg406y.cloudfront.net/>
+- **Architecture diagram (Lucidchart, AWS 2024 icons):** <https://lucid.app/lucidchart/edeb630b-f41c-47a4-9ac5-03a005b86f81/edit?invitationId=inv_311351d4-8a87-4323-865d-eb098a9d7816>
+- **Demo video:** <https://drive.google.com/file/d/1ucmXCX7bRXMyN00QVbDdQJc1id28wIni/view?usp=sharing>
+
 ## Repository layout
 
 Three-workspace npm monorepo:
@@ -33,7 +39,7 @@ or **Omar** (Backend) via the demo login screen to walk the spec's grading scena
 
 ```bash
 npm run dev          # client + server in watch mode
-npm test             # vitest (server workspace) — 116 tests across 24 files
+npm test             # vitest (server workspace) — 163 tests across 32 files
 npm run typecheck    # tsc across shared, server, client
 npm run build        # shared -> server -> client
 ```
@@ -98,18 +104,41 @@ versioning enabled so the bytes survive overwrites.
 Vitest + Supertest under [`server/test/`](server/test). One file per resource; each new
 route ships with at least one positive case and one access-denied case (404 cross-team,
 403 wrong role). Service wiring (notifier, AWS-mode auth surface) gets its own regression
-files. `npm test` from the repo root runs all 116 tests.
+files. `npm test` from the repo root runs all 163 tests.
 
 ## AWS deployment
 
-The live AWS deployment is documented in [`DEPLOYMENT.md`](DEPLOYMENT.md). It provisions
-the infrastructure the app consumes: VPC across 2 AZs,
-ALB + Auto Scaling Group of EC2 running this server, CloudFront, Cognito User Pool with
-`custom:role` / `custom:teamId` attributes, DynamoDB tables with GSIs
-(`teamId-deadline-index`, `assigneeId-deadline-index` on Tasks), S3 originals (versioned) +
-resized buckets, image-resize Lambda, SNS topic + SQS + assignment-worker Lambda,
-EventBridge 9 AM rule + daily-digest Lambda, and a CloudWatch dashboard with the required
-widgets and alarms.
+Live deployment: **<https://d2r9r2l6xg406y.cloudfront.net/>** (region `us-east-1`,
+account `839629614250`). Eight CDK stacks under [`infra/lib/`](infra/lib) — `MiniJira-Network`,
+`-Data`, `-Auth`, `-Messaging`, `-Lambdas`, `-Compute`, `-Edge`, `-Observability`. Full
+provisioning + rollout steps live in [`DEPLOYMENT.md`](DEPLOYMENT.md). The infrastructure
+the app consumes:
+
+- **VPC** `10.20.0.0/16` across 2 AZs (`us-east-1a`, `us-east-1b`); public subnets for the
+  ALB, private subnets (with egress via a single NAT) for the EC2 ASG.
+- **ALB + Auto Scaling Group** — internet-facing ALB on `:80` with health check
+  `GET /api/health`; ASG of `t3.micro` running this server (min 2 / max 4 / desired 2,
+  one instance per AZ).
+- **CloudFront** in front of the ALB, HTTPS-redirecting, `/assets/*` cached.
+- **Cognito** User Pool `mini-jira-users` with `custom:role` / `custom:teamId` attributes.
+- **DynamoDB** — six tables (`MiniJira_Tasks` + GSIs `teamId-deadline-index`,
+  `assigneeId-deadline-index`; `MiniJira_Projects` + `teamId-index`; `MiniJira_Comments`;
+  `MiniJira_AuditLogs`; `MiniJira_Users` + `email-index`; `MiniJira_Teams`), on-demand.
+- **S3** — originals (versioned), resized (30-day TTL), web (React build), artifacts
+  (server bundle).
+- **Lambdas** — `mini-jira-image-resize` (S3 PUT → 400 px thumbnail with `sharp`),
+  `mini-jira-assignment-worker` (SQS → audit log + CloudWatch metric),
+  `mini-jira-daily-digest` (EventBridge cron → scan tasks → SNS).
+- **SNS** — `mini-jira-tasks-assigned` (filtered-email fan-out + SQS subscription),
+  `mini-jira-daily-digest`, `mini-jira-alerts`.
+- **SQS** — `mini-jira-assignment-events` (`visibilityTimeout` 60 s, 4-day retention) with
+  a DLQ `mini-jira-assignment-events-dlq` (14-day retention, `maxReceiveCount` 5).
+- **EventBridge** rule `mini-jira-daily-9am-gmt3` (`cron(0 6 * * ? *)` UTC ≡ 09:00 GMT+3)
+  → `mini-jira-daily-digest`.
+- **CloudWatch** — dashboard `MiniJira-Main` (TasksCreated, TasksClosed per team,
+  TaskTimeToCloseMs, EC2 CPU, OverdueTasks) and alarm `MiniJira-OverdueTasks-GT5` that
+  publishes to `mini-jira-alerts`. Both Lambda `cloudwatch:PutMetricData` grants are
+  scoped via a `cloudwatch:namespace = MiniJira` condition.
 
 Assignment notifications use SNS fanout:
 

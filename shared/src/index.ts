@@ -46,6 +46,7 @@ export interface AttachmentVersion {
   mimeType: string;
   size: number;
   url: string;
+  key: string;
   uploadedAt: string;
   uploadedBy: string;
   active: boolean;

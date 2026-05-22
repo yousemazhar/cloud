@@ -929,12 +929,31 @@
     "Name": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
    }
   },
+  "ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UsersTable9725E9C8",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+   }
+  },
   "ExportsOutputRefTasksTable88911DC507408875": {
    "Value": {
     "Ref": "TasksTable88911DC5"
    },
    "Export": {
     "Name": "MiniJira-Data:ExportsOutputRefTasksTable88911DC507408875"
+   }
+  },
+  "ExportsOutputRefUsersTable9725E9C857961836": {
+   "Value": {
+    "Ref": "UsersTable9725E9C8"
+   },
+   "Export": {
+    "Name": "MiniJira-Data:ExportsOutputRefUsersTable9725E9C857961836"
    }
   },
   "ExportsOutputFnGetAttProjectsTableAA0A2089ArnA2260F04": {
@@ -957,17 +976,6 @@
    },
    "Export": {
     "Name": "MiniJira-Data:ExportsOutputFnGetAttCommentsTableBBDBF0A8ArnC37CA4A1"
-   }
-  },
-  "ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99": {
-   "Value": {
-    "Fn::GetAtt": [
-     "UsersTable9725E9C8",
-     "Arn"
-    ]
-   },
-   "Export": {
-    "Name": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
    }
   },
   "ExportsOutputFnGetAttTeamsTableE80F987EArnFF84A080": {
@@ -1025,14 +1033,6 @@
    },
    "Export": {
     "Name": "MiniJira-Data:ExportsOutputRefCommentsTableBBDBF0A89EAECA43"
-   }
-  },
-  "ExportsOutputRefUsersTable9725E9C857961836": {
-   "Value": {
-    "Ref": "UsersTable9725E9C8"
-   },
-   "Export": {
-    "Name": "MiniJira-Data:ExportsOutputRefUsersTable9725E9C857961836"
    }
   },
   "ExportsOutputRefTeamsTableE80F987EA947034E": {

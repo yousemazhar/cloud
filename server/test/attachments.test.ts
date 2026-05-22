@@ -1,6 +1,15 @@
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
-import { auth, login, newApp, type App } from "./helpers.js";
+import { createApp } from "../src/app.js";
+import type {
+  AttachmentStorage,
+  ConfirmInput,
+  ConfirmedUpload,
+  MultipartUpload,
+  PresignInput,
+  PresignedUpload
+} from "../src/services/storage.js";
+import { auth, buildServices, login, newApp, type App } from "./helpers.js";
 
 const onePixelPng = Buffer.from(
   "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000d49444154789c63f8cf00000003000100184d4d000000000049454e44ae426082",
@@ -59,6 +68,66 @@ describe("Attachments", () => {
       .set("Authorization", `Bearer ${sara}`)
       .attach("file", Buffer.from("hello"), { filename: "note.txt", contentType: "text/plain" })
       .expect(400);
+  });
+
+  it("re-signs the attachment URL on every read", async () => {
+    class FakePresignedStorage implements AttachmentStorage {
+      readonly uploadMode = "presigned" as const;
+      private signCount = 0;
+      async presignUpload(input: PresignInput): Promise<PresignedUpload> {
+        const attachmentId = `attachment-${input.fileName}`;
+        const key = `tasks/${input.taskId}/${attachmentId}`;
+        return {
+          attachmentId,
+          uploadUrl: `https://fake.invalid/put/${key}`,
+          key,
+          publicUrl: await this.publicUrl(key)
+        };
+      }
+      async confirm(input: ConfirmInput): Promise<ConfirmedUpload> {
+        return {
+          attachmentId: input.attachmentId,
+          fileName: input.fileName,
+          mimeType: input.mimeType,
+          size: input.size,
+          key: input.key,
+          url: await this.publicUrl(input.key)
+        };
+      }
+      async consumeMultipart(): Promise<MultipartUpload> {
+        throw new Error("not used");
+      }
+      async publicUrl(key: string): Promise<string> {
+        this.signCount += 1;
+        return `https://fake.invalid/get/${key}?sig=${this.signCount}`;
+      }
+      async softDelete(): Promise<void> {}
+    }
+
+    const services = buildServices();
+    const storage = new FakePresignedStorage();
+    services.storage = storage;
+    const app = createApp(services);
+    const sara = await login(app, "user-sara");
+
+    const presign = await auth(app, sara)
+      .post("/api/tasks/task-a/attachments/presign")
+      .send({ fileName: "x.png", mimeType: "image/png", size: 10 })
+      .expect(201);
+    const { attachmentId, key } = presign.body.presigned as { attachmentId: string; key: string };
+
+    await auth(app, sara)
+      .post("/api/tasks/task-a/attachments")
+      .send({ attachmentId, key, fileName: "x.png", mimeType: "image/png", size: 10 })
+      .expect(201);
+
+    const first = await auth(app, sara).get("/api/tasks/task-a/attachments").expect(200);
+    const second = await auth(app, sara).get("/api/tasks/task-a/attachments").expect(200);
+    const firstUrl = first.body.attachments[0].url as string;
+    const secondUrl = second.body.attachments[0].url as string;
+    expect(firstUrl).not.toEqual(secondUrl);
+    expect(firstUrl).toContain(`/get/${key}?sig=`);
+    expect(secondUrl).toContain(`/get/${key}?sig=`);
   });
 
   it("blocks cross-team employees from uploading", async () => {

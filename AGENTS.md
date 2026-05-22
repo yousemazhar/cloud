@@ -129,7 +129,7 @@ The deployment workstream provisions: VPC + public/private subnets across 2 AZs,
 running this server, CloudFront in front of the ALB, Cognito User Pool (with `custom:role` /
 `custom:teamId` attributes), DynamoDB tables + GSIs (`teamId-deadline-index`,
 `assigneeId-deadline-index` on Tasks), S3 originals (versioned) + resized buckets, image-resize
-Lambda, SNS topic + SQS + assignment-worker Lambda, EventBridge 9 AM rule + daily-digest Lambda,
+Lambda, SNS topic + SQS + assignment-worker Lambda, EventBridge 09:00 GMT+3 rule + daily-digest Lambda,
 CloudWatch dashboard + alarms. The app code in this repo is the producer side; those resources
 consume from it. When infra exists, exercise the AWS impls end-to-end with a smoke-test script
 (`scripts/smoke-aws.ts` — TBD) before pointing the ALB at the new build.

@@ -115,7 +115,7 @@ export class SnsNotifier implements AssignmentNotifier {
       // assignments (set by ensureSubscription on first publish if it's missing).
       { arn: this.topics.tasksAssigned, attributes: emailFilterAttributes(normalized) }
     ];
-    if (this.topics.dailyDigest) targets.push({ arn: this.topics.dailyDigest });
+    if (this.topics.dailyDigest) targets.push({ arn: this.topics.dailyDigest, attributes: emailFilterAttributes(normalized) });
     if (this.topics.alerts) targets.push({ arn: this.topics.alerts });
     for (const target of targets) {
       try {

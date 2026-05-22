@@ -67,6 +67,17 @@ export function createApp(services: AppServices) {
   const app = express();
   const { auth, tasks, projects, comments, audit, users, teams, storage, notifier, metrics, userAdmin, logger } = services;
 
+  async function refreshAttachment(attachment: AttachmentVersion, req: Request): Promise<AttachmentVersion> {
+    if (!attachment.key) return attachment;
+    const url = await storage.publicUrl(attachment.key, req);
+    return { ...attachment, url };
+  }
+
+  async function withFreshAttachments<T extends { attachments: AttachmentVersion[] }>(task: T, req: Request): Promise<T> {
+    const attachments = await Promise.all(task.attachments.map((a) => refreshAttachment(a, req)));
+    return { ...task, attachments };
+  }
+
   app.use(
     pinoHttp({
       logger,
@@ -400,7 +411,8 @@ export function createApp(services: AppServices) {
       if (typeof status === "string" && status) filters.status = status;
       const list = await tasks.list(filters);
       const visible = list.filter((task) => canSeeTask(authed.user, task));
-      res.json({ tasks: visible });
+      const refreshed = await Promise.all(visible.map((task) => withFreshAttachments(task, req)));
+      res.json({ tasks: refreshed });
     } catch (error) {
       next(error);
     }
@@ -457,7 +469,8 @@ export function createApp(services: AppServices) {
         comments.listForTask(task.id),
         audit.listForTask(task.id)
       ]);
-      res.json({ task: { ...task, comments: taskComments, auditLogs: taskAudit } });
+      const refreshed = await withFreshAttachments(task, req);
+      res.json({ task: { ...refreshed, comments: taskComments, auditLogs: taskAudit } });
     } catch (error) {
       next(error);
     }
@@ -624,7 +637,8 @@ export function createApp(services: AppServices) {
     try {
       const authed = authedRequest(req);
       const task = await getVisibleTask(authed, req.params.taskId);
-      res.json({ attachments: task.attachments });
+      const refreshed = await withFreshAttachments(task, req);
+      res.json({ attachments: refreshed.attachments });
     } catch (error) {
       next(error);
     }
@@ -665,12 +679,15 @@ export function createApp(services: AppServices) {
             mimeType: file.mimeType,
             size: file.size,
             url: file.url,
+            key: file.key,
             uploadedAt: nowIso(),
             uploadedBy: authed.user.id,
             active: true
           };
           const updated = await tasks.addAttachment(task.id, attachment);
-          res.status(201).json({ attachment, task: updated ?? task });
+          const refreshedTask = await withFreshAttachments(updated ?? task, req);
+          const refreshedAttachment = await refreshAttachment(attachment, req);
+          res.status(201).json({ attachment: refreshedAttachment, task: refreshedTask });
         } catch (error) {
           next(error);
         }
@@ -692,12 +709,15 @@ export function createApp(services: AppServices) {
           mimeType: confirmed.mimeType,
           size: confirmed.size,
           url: confirmed.url,
+          key: confirmed.key,
           uploadedAt: nowIso(),
           uploadedBy: authed.user.id,
           active: true
         };
         const updated = await tasks.addAttachment(task.id, attachment);
-        res.status(201).json({ attachment, task: updated ?? task });
+        const refreshedTask = await withFreshAttachments(updated ?? task, req);
+        const refreshedAttachment = await refreshAttachment(attachment, req);
+        res.status(201).json({ attachment: refreshedAttachment, task: refreshedTask });
       } catch (error) {
         next(error);
       }
@@ -713,7 +733,7 @@ export function createApp(services: AppServices) {
       if (!attachment) throw httpError(404, "Attachment not found");
       await tasks.setAttachmentActive(task.id, attachment.id, false);
       await tasks.touch(task.id, nowIso());
-      await storage.softDelete(attachment.url);
+      await storage.softDelete(attachment.key ?? attachment.url);
       res.status(204).end();
     } catch (error) {
       next(error);

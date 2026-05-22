@@ -132,7 +132,7 @@
     ],
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
-     "S3Key": "292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c.zip"
+     "S3Key": "7706e01870f812dc548477e98fa99326d59315fdf7c0bcb5a10bf9e57a25031d.zip"
     },
     "Environment": {
      "Variables": {
@@ -170,7 +170,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MiniJira-Lambdas/ImageResizeFn/Resource",
-    "aws:asset:path": "asset.292e091d562bb11190e5d325d8d888c5f2d7b3f15b9216a76d0632a40bd9853c",
+    "aws:asset:path": "asset.7706e01870f812dc548477e98fa99326d59315fdf7c0bcb5a10bf9e57a25031d",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -596,6 +596,11 @@
       },
       {
        "Action": "cloudwatch:PutMetricData",
+       "Condition": {
+        "StringEquals": {
+         "cloudwatch:namespace": "MiniJira"
+        }
+       },
        "Effect": "Allow",
        "Resource": "*"
       }
@@ -784,11 +789,25 @@
          "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
         },
         {
+         "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+        },
+        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttTasksTable88911DC5ArnA683FDD2"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "MiniJira-Data:ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
            },
            "/index/*"
           ]
@@ -810,6 +829,11 @@
       },
       {
        "Action": "cloudwatch:PutMetricData",
+       "Condition": {
+        "StringEquals": {
+         "cloudwatch:namespace": "MiniJira"
+        }
+       },
        "Effect": "Allow",
        "Resource": "*"
       }
@@ -835,12 +859,15 @@
     ],
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-839629614250-us-east-1",
-     "S3Key": "3c19e00054b5bbd33ce24b5246a114c28761ce694bcd4555b1a8efca12a5fc92.zip"
+     "S3Key": "c0ac346242bdb618db91da12bef9765688b06552d9566f663cced3bd37c3aebd.zip"
     },
     "Environment": {
      "Variables": {
       "DYNAMO_TASKS_TABLE": {
        "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefTasksTable88911DC507408875"
+      },
+      "DYNAMO_USERS_TABLE": {
+       "Fn::ImportValue": "MiniJira-Data:ExportsOutputRefUsersTable9725E9C857961836"
       },
       "DAILY_DIGEST_TOPIC_ARN": {
        "Fn::ImportValue": "MiniJira-Messaging:ExportsOutputRefDailyDigestTopicF5B539A452F046E6"
@@ -880,7 +907,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "MiniJira-Lambdas/DailyDigestFn/Resource",
-    "aws:asset:path": "asset.3c19e00054b5bbd33ce24b5246a114c28761ce694bcd4555b1a8efca12a5fc92",
+    "aws:asset:path": "asset.c0ac346242bdb618db91da12bef9765688b06552d9566f663cced3bd37c3aebd",
     "aws:asset:is-bundled": true,
     "aws:asset:property": "Code"
    }
@@ -914,8 +941,8 @@
   "DailyDigestSchedule5C061357": {
    "Type": "AWS::Events::Rule",
    "Properties": {
-    "Name": "mini-jira-daily-9am",
-    "ScheduleExpression": "cron(0 9 * * ? *)",
+    "Name": "mini-jira-daily-9am-gmt3",
+    "ScheduleExpression": "cron(0 6 * * ? *)",
     "State": "ENABLED",
     "Tags": [
      {

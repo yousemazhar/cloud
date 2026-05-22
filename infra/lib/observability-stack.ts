@@ -4,6 +4,7 @@ import {
   ComparisonOperator,
   Dashboard,
   GraphWidget,
+  MathExpression,
   Metric,
   Stats,
   TextWidget,
@@ -42,10 +43,9 @@ export class ObservabilityStack extends Stack {
       period: Duration.hours(24)
     });
 
-    const tasksClosed = new Metric({
-      namespace: ns,
-      metricName: "TasksClosed",
-      statistic: Stats.SUM,
+    const tasksClosedPerTeam = new MathExpression({
+      expression: `SEARCH('{${ns},teamId} MetricName="TasksClosed"', 'Sum', 86400)`,
+      label: "TasksClosed by team",
       period: Duration.hours(24)
     });
 
@@ -93,8 +93,8 @@ export class ObservabilityStack extends Stack {
         height: 6
       }),
       new GraphWidget({
-        title: "Tasks closed per day (sum across teams)",
-        left: [tasksClosed],
+        title: "Tasks closed per day (per team)",
+        left: [tasksClosedPerTeam],
         width: 12,
         height: 6
       })

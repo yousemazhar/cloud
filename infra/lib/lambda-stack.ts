@@ -4,7 +4,7 @@ import { NodejsFunction, OutputFormat } from "aws-cdk-lib/aws-lambda-nodejs";
 import { RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Bucket, EventType, IBucket } from "aws-cdk-lib/aws-s3";
 import { LambdaDestination as S3LambdaDestination } from "aws-cdk-lib/aws-s3-notifications";
-import { ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import { PolicyStatement, ServicePrincipal } from "aws-cdk-lib/aws-iam";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { Queue } from "aws-cdk-lib/aws-sqs";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
@@ -16,6 +16,7 @@ import * as path from "path";
 
 interface LambdaStackProps extends StackProps {
   tasksTable: Table;
+  usersTable: Table;
   auditLogsTable: Table;
   originalsBucket: Bucket;
   resizedBucket: Bucket;
@@ -28,7 +29,7 @@ interface LambdaStackProps extends StackProps {
  * Three Lambdas required by spec:
  *   - image-resize: S3 PUT on originals -> 400px thumbnail in resized bucket
  *   - assignment-worker: SQS event -> audit log row + CloudWatch metric
- *   - daily-digest: EventBridge 9 AM cron -> scans tasks due today -> SNS
+ *   - daily-digest: EventBridge 9:00 AM GMT+3 cron -> scans tasks due today -> SNS
  *
  * Handlers live under server/src/lambdas/. esbuild bundles each via NodejsFunction.
  */
@@ -109,10 +110,14 @@ export class LambdaStack extends Stack {
       batchSize: 5,
       reportBatchItemFailures: true
     }));
-    // CloudWatch PutMetricData is granted automatically? No — needs an explicit policy.
-    assignmentWorker.addToRolePolicy(new (require("aws-cdk-lib/aws-iam").PolicyStatement)({
+    // CloudWatch PutMetricData has no resource-level ARNs; scope via the
+    // cloudwatch:namespace condition to keep this least-privilege.
+    assignmentWorker.addToRolePolicy(new PolicyStatement({
       actions: ["cloudwatch:PutMetricData"],
-      resources: ["*"]
+      resources: ["*"],
+      conditions: {
+        StringEquals: { "cloudwatch:namespace": "MiniJira" }
+      }
     }));
 
     // -------- daily-digest --------
@@ -127,6 +132,7 @@ export class LambdaStack extends Stack {
       logRetention: RetentionDays.ONE_WEEK,
       environment: {
         DYNAMO_TASKS_TABLE: props.tasksTable.tableName,
+        DYNAMO_USERS_TABLE: props.usersTable.tableName,
         DAILY_DIGEST_TOPIC_ARN: props.dailyDigestTopic.topicArn,
         ALERTS_TOPIC_ARN: props.alertsTopic.topicArn,
         METRIC_NAMESPACE: "MiniJira",
@@ -135,17 +141,21 @@ export class LambdaStack extends Stack {
       bundling: commonBundling
     });
     props.tasksTable.grantReadData(dailyDigest);
+    props.usersTable.grantReadData(dailyDigest);
     props.dailyDigestTopic.grantPublish(dailyDigest);
     props.alertsTopic.grantPublish(dailyDigest);
-    dailyDigest.addToRolePolicy(new (require("aws-cdk-lib/aws-iam").PolicyStatement)({
+    dailyDigest.addToRolePolicy(new PolicyStatement({
       actions: ["cloudwatch:PutMetricData"],
-      resources: ["*"]
+      resources: ["*"],
+      conditions: {
+        StringEquals: { "cloudwatch:namespace": "MiniJira" }
+      }
     }));
 
     new Rule(this, "DailyDigestSchedule", {
-      ruleName: "mini-jira-daily-9am",
-      // cron(0 9 * * ? *) -> every day 09:00 UTC
-      schedule: Schedule.cron({ minute: "0", hour: "9" }),
+      ruleName: "mini-jira-daily-9am-gmt3",
+      // EventBridge cron is UTC. 09:00 Africa/Cairo (GMT+3, no DST) == 06:00 UTC year-round.
+      schedule: Schedule.cron({ minute: "0", hour: "6" }),
       targets: [new EventLambdaTarget(dailyDigest)]
     });
 

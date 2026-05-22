@@ -11,11 +11,11 @@
        {
         "Ref": "AWS::Region"
        },
-       "\",\"metrics\":[[\"MiniJira\",\"TasksCreated\",{\"period\":86400,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":2,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tasks closed per day (sum across teams)\",\"region\":\"",
+       "\",\"metrics\":[[\"MiniJira\",\"TasksCreated\",{\"period\":86400,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":12,\"y\":2,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tasks closed per day (per team)\",\"region\":\"",
        {
         "Ref": "AWS::Region"
        },
-       "\",\"metrics\":[[\"MiniJira\",\"TasksClosed\",{\"period\":86400,\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":8,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Average time-to-close (ms)\",\"region\":\"",
+       "\",\"metrics\":[[{\"label\":\"TasksClosed by team\",\"expression\":\"SEARCH('{MiniJira,teamId} MetricName=\\\"TasksClosed\\\"', 'Sum', 86400)\",\"period\":86400}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":12,\"height\":6,\"x\":0,\"y\":8,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Average time-to-close (ms)\",\"region\":\"",
        {
         "Ref": "AWS::Region"
        },

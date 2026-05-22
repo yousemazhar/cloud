@@ -442,10 +442,36 @@
       ]
     }
   ],
+  "/MiniJira-Data/Exports/Output{\"Fn::GetAtt\":[\"UsersTable9725E9C8\",\"Arn\"]}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
   "/MiniJira-Data/Exports/Output{\"Ref\":\"TasksTable88911DC5\"}": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ExportsOutputRefTasksTable88911DC507408875"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
+    }
+  ],
+  "/MiniJira-Data/Exports/Output{\"Ref\":\"UsersTable9725E9C8\"}": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsOutputRefUsersTable9725E9C857961836"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -472,19 +498,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "ExportsOutputFnGetAttCommentsTableBBDBF0A8ArnC37CA4A1"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/MiniJira-Data/Exports/Output{\"Fn::GetAtt\":[\"UsersTable9725E9C8\",\"Arn\"]}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputFnGetAttUsersTable9725E9C8Arn5684EF99"
     },
     {
       "type": "aws:cdk:creationStack",
@@ -563,19 +576,6 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "ExportsOutputRefCommentsTableBBDBF0A89EAECA43"
-    },
-    {
-      "type": "aws:cdk:creationStack",
-      "data": [
-        "...aws-cdk-lib, node internals...",
-        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
-      ]
-    }
-  ],
-  "/MiniJira-Data/Exports/Output{\"Ref\":\"UsersTable9725E9C8\"}": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "ExportsOutputRefUsersTable9725E9C857961836"
     },
     {
       "type": "aws:cdk:creationStack",

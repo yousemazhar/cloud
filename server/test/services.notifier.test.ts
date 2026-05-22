@@ -187,6 +187,35 @@ describe("SnsNotifier", () => {
     });
   });
 
+  it("creates filtered daily-digest subscriptions so users only receive their own digest", async () => {
+    const client = new FakeSnsClient();
+    const notifier = new SnsNotifier({
+      client: client as never,
+      topics: {
+        tasksAssigned: "arn:aws:sns:us-east-1:123456789012:mini-jira-tasks-assigned",
+        dailyDigest: "arn:aws:sns:us-east-1:123456789012:mini-jira-daily-digest"
+      }
+    });
+
+    await notifier.subscribeUser("Kareem.Elfeel@gmail.com");
+
+    const subscribeCalls = client.calls.filter((call) => call instanceof SubscribeCommand);
+    expect(subscribeCalls).toHaveLength(2);
+    const dailyDigestSubscribe = inputOf<{
+      TopicArn: string;
+      Endpoint: string;
+      Attributes: Record<string, string>;
+    }>(subscribeCalls[1]);
+    expect(dailyDigestSubscribe).toMatchObject({
+      TopicArn: "arn:aws:sns:us-east-1:123456789012:mini-jira-daily-digest",
+      Endpoint: "kareem.elfeel@gmail.com",
+      Attributes: {
+        FilterPolicy: JSON.stringify({ assigneeEmail: ["kareem.elfeel@gmail.com"] }),
+        FilterPolicyScope: "MessageAttributes"
+      }
+    });
+  });
+
   it("publishes the same assignment event payload with assigneeEmail attributes for SNS fanout", async () => {
     const client = new FakeSnsClient();
     const notifier = new SnsNotifier({

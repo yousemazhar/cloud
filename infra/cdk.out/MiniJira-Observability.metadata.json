@@ -3,7 +3,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:61:1)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:62:1)",
         "...node internals, ts-node, ts-node, ts-node..."
       ]
     },
@@ -57,7 +57,7 @@
       "data": [
         "...new Dashboard2 in aws-cdk-lib...",
         "new ObservabilityStack (P:\\uni_projects\\cloud\\infra\\lib\\observability-stack.ts:74:23)",
-        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:61:1)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:62:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }
@@ -72,7 +72,7 @@
       "data": [
         "...new Alarm2 in aws-cdk-lib...",
         "new ObservabilityStack (P:\\uni_projects\\cloud\\infra\\lib\\observability-stack.ts:128:19)",
-        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:61:1)",
+        "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:62:1)",
         "...node internals, ts-node, ts-node..."
       ]
     }

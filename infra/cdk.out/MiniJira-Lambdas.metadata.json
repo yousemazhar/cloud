@@ -29,7 +29,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:152:5)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:162:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -43,7 +43,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:153:5)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:163:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -57,7 +57,7 @@
     {
       "type": "aws:cdk:creationStack",
       "data": [
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:154:5)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:164:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -98,7 +98,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:51:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -113,7 +113,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addPermission in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:81:17)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:82:17)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -128,7 +128,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:51:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals..."
       ]
@@ -143,7 +143,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addEventNotification in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:87:27)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -158,7 +158,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addEventNotification in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:87:27)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals..."
       ]
@@ -173,7 +173,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:93:30)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -188,7 +188,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:124:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -203,7 +203,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Rule2 in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:145:5)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:155:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node, ts-node..."
       ]
@@ -218,7 +218,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new Rule2 in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:145:5)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:155:5)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)"
       ]
     }
@@ -245,7 +245,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:51:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -260,7 +260,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:51:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -275,7 +275,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:50:25)"
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:51:25)"
       ]
     }
   ],
@@ -288,7 +288,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addEventNotification in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:87:27)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -303,7 +303,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addEventNotification in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)"
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:87:27)"
       ]
     }
   ],
@@ -316,7 +316,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:93:30)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -331,7 +331,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:92:30)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:93:30)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -346,7 +346,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...NodejsFunction.addEventSource in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:108:22)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:109:22)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -361,7 +361,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:124:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -376,7 +376,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...new NodejsFunction in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:119:25)",
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:124:25)",
         "<anonymous> (P:\\uni_projects\\cloud\\infra\\bin\\mini-jira.ts:26:17)",
         "...node internals, ts-node..."
       ]
@@ -417,7 +417,7 @@
       "type": "aws:cdk:creationStack",
       "data": [
         "...WrappedClass.addEventNotification in aws-cdk-lib...",
-        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:86:27)"
+        "new LambdaStack (P:\\uni_projects\\cloud\\infra\\lib\\lambda-stack.ts:87:27)"
       ]
     }
   ],

@@ -24,6 +24,7 @@ export interface ConfirmedUpload {
   mimeType: string;
   size: number;
   url: string;
+  key: string;
 }
 
 export interface MultipartUpload {

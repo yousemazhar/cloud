@@ -26,6 +26,7 @@ const messaging = new MessagingStack(app, "MiniJira-Messaging", { env, notifyEma
 const lambdas = new LambdaStack(app, "MiniJira-Lambdas", {
   env,
   tasksTable: data.tasksTable,
+  usersTable: data.usersTable,
   auditLogsTable: data.auditLogsTable,
   originalsBucket: data.originalsBucket,
   resizedBucket: data.resizedBucket,

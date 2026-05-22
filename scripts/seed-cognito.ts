@@ -23,6 +23,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import {
   ListSubscriptionsByTopicCommand,
+  SetSubscriptionAttributesCommand,
   SNSClient,
   SubscribeCommand,
   type Subscription
@@ -62,7 +63,7 @@ interface SeedUser {
   id: string;
   email: string;
   name: string;
-  role: "manager" | "employee";
+  role: "manager" | "employee" | "admin";
   teamId: string; // empty string for managers
 }
 
@@ -178,7 +179,7 @@ async function main(): Promise<void> {
     const topics: { arn: string; filter?: boolean }[] = [
       { arn: args.tasksAssignedTopicArn, filter: true }
     ];
-    if (args.dailyDigestTopicArn) topics.push({ arn: args.dailyDigestTopicArn });
+    if (args.dailyDigestTopicArn) topics.push({ arn: args.dailyDigestTopicArn, filter: true });
     if (args.alertsTopicArn) topics.push({ arn: args.alertsTopicArn });
 
     for (const user of USERS) {
@@ -212,7 +213,10 @@ async function ensureEmailSubscription(
   const match = existing.find(
     (s) => s.Protocol === "email" && (s.Endpoint ?? "").toLowerCase() === normalized
   );
-  if (match && match.SubscriptionArn && match.SubscriptionArn !== "PendingConfirmation") return;
+  if (match && match.SubscriptionArn && match.SubscriptionArn !== "PendingConfirmation") {
+    if (filterByAssigneeEmail) await applyEmailFilter(sns, match.SubscriptionArn, normalized);
+    return;
+  }
   if (match && match.SubscriptionArn === "PendingConfirmation") return;
   await sns.send(new SubscribeCommand({
     TopicArn: topicArn,
@@ -225,6 +229,19 @@ async function ensureEmailSubscription(
           FilterPolicyScope: "MessageAttributes"
         }
       : undefined
+  }));
+}
+
+async function applyEmailFilter(sns: SNSClient, subscriptionArn: string, email: string): Promise<void> {
+  await sns.send(new SetSubscriptionAttributesCommand({
+    SubscriptionArn: subscriptionArn,
+    AttributeName: "FilterPolicy",
+    AttributeValue: JSON.stringify({ assigneeEmail: [email] })
+  }));
+  await sns.send(new SetSubscriptionAttributesCommand({
+    SubscriptionArn: subscriptionArn,
+    AttributeName: "FilterPolicyScope",
+    AttributeValue: "MessageAttributes"
   }));
 }
 
